@@ -642,9 +642,10 @@
   }
 
   // 숫자 카운트업 (13)
-  const statNum = document.getElementById('statNum');
-  if (statNum){
-    const target = parseInt(statNum.dataset.target, 10);
+  // 숫자 카운트업 (13, 1,700 등 여러 개 지원)
+  const countEls = document.querySelectorAll('.count-up[data-target]');
+  countEls.forEach((el) => {
+    const target = parseInt(el.dataset.target, 10);
     let done = false;
     const runCount = () => {
       if (done) return;
@@ -654,7 +655,7 @@
       function tick(now){
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
-        statNum.textContent = Math.round(eased * target);
+        el.textContent = Math.round(eased * target).toLocaleString('en-US');
         if (t < 1) requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
@@ -663,17 +664,17 @@
       const io2 = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) runCount(); });
       }, { threshold: 0.4 });
-      io2.observe(statNum);
+      io2.observe(el);
     } else {
       runCount();
     }
-  }
+  });
 
 
 (function(){
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvkoojee';
   const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwMOEFNLPsT9S-Mu6h4dVMRWZXTvtBxPFMeT-Bhazhn0LWaceIHmojJjKQEh25OXdP_dg/exec';
-  const TELEGRAM_BOT_TOKEN = '8988637490:AAFddrF82p5vMFB5lOcWh_j_VIm8AmC_Wdc';
+  const TELEGRAM_BOT_TOKEN = '8988637490:AAGMhQx1cdh7VMunQ22N7Hm7mXgdqfs2fRI';
   const TELEGRAM_CHAT_ID = '8459986647';
 
   const formArea = document.getElementById('formArea');
