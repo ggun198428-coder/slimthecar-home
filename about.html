@@ -219,14 +219,22 @@
 
   .trust-strip{
     display:flex; gap:10px; flex-wrap:wrap;
+    justify-content:center;
     margin:22px 0 6px;
   }
   .trust-chip{
     font-size:13px;
-    color:var(--text-dim);
+    font-weight:600;
+    color:var(--text);
+    background:var(--panel);
     border:1px solid var(--line);
     border-radius:100px;
-    padding:8px 14px;
+    padding:9px 16px 9px 12px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .trust-chip .chip-check{
+    color:var(--cash);
+    font-weight:800;
   }
 
   /* ---------- CTA ---------- */
@@ -607,9 +615,9 @@
     <h2>전국 어디서든 믿을 수 있는, 나만의 자동차 개인비서</h2>
     <p>13년 현장 경험을 바탕으로 국내 모든 금융사·렌트사와 이미 최고 조건으로 업무 협약을 맺었습니다. 전국 각 지역, 전 브랜드 카마스터·딜러와의 협력망도 구축해 나갈 예정입니다.</p>
     <div class="trust-strip">
-      <span class="trust-chip">국내 전 금융사 협약</span>
-      <span class="trust-chip">전국 렌트사 협약</span>
-      <span class="trust-chip">전 브랜드 카마스터·딜러 협력망</span>
+      <span class="trust-chip"><span class="chip-check">✓</span>국내 전 금융사 협약</span>
+      <span class="trust-chip"><span class="chip-check">✓</span>전국 렌트사 협약</span>
+      <span class="trust-chip"><span class="chip-check">✓</span>전 브랜드 카마스터·딜러 협력망</span>
     </div>
   </section>
 
