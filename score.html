@@ -310,6 +310,13 @@
 
   .disclaimer{max-width:760px; margin:0 auto; padding:0 20px 24px; font-size:11px; color:var(--text-mute); text-align:center;}
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LMDLVEX9BH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LMDLVEX9BH');
+</script>
 </head>
 <body>
 
@@ -323,7 +330,7 @@
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <div class="stage" id="stage"></div>
-  <div class="disclaimer">이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 입력값은 저장되거나 외부로 전송되지 않습니다.</div>
+  <div class="disclaimer">이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않으며, 서비스 개선을 위해 방문·진행 단계 등 익명 통계만 수집됩니다.</div>
 
 <script>
 (function(){
@@ -599,7 +606,10 @@
           <p class="intro-chaide-mobile"><b>슬림더카</b>가 만든 자동차 의사결정 카테고리,<br><b>차이드</b>의 첫 번째 기능입니다.<br><span class="chaide-slogan-line">비용과 시간을 슬림하게 — 자동차 이용 토탈 솔루션.</span></p>
         </div>
         <button class="btn btn-start" id="startBtn">내게 맞는 이용방식 알아보기</button>`;
-      root.querySelector('#startBtn').addEventListener('click', goNext);
+      root.querySelector('#startBtn').addEventListener('click', ()=>{
+        if (typeof gtag === 'function') gtag('event', 'wizard_start');
+        goNext();
+      });
     };
   }
 
@@ -958,6 +968,7 @@
 
   // ================= RESULT STEP (with live "조건 수정" review panel) =================
   function resultStep(root){
+    let resultViewSent = false;
     root.innerHTML = `
       <div id="resultCaptureArea">
         <div class="result-hero">
@@ -1038,6 +1049,11 @@
 
       root.querySelector('#resultHeadline').innerHTML =
         '고객님에게는 <em>'+LABEL[top]+'</em>이(가) 잘 맞을 가능성이 높아요 · '+fmt(fit[top])+'점';
+
+      if (!resultViewSent) {
+        resultViewSent = true;
+        if (typeof gtag === 'function') gtag('event', 'result_view', { top_product: LABEL[top] });
+      }
 
       const QUOTE_LABEL = {cash:'현금', loan:'할부', lease:'리스', rent:'장기렌트'};
       const quoteBtnEl = root.querySelector('#quoteBtn');
@@ -1131,6 +1147,8 @@
     const fit = computeFit();
     const ranked = PRODUCTS.slice().sort((a,b)=>fit[b]-fit[a]);
     const top = ranked[0];
+
+    if (typeof gtag === 'function') gtag('event', 'contact_view', { top_product: LABEL[top] });
 
     root.innerHTML = `
       <div class="eyebrow">실제 견적 받아보기</div>
@@ -1285,6 +1303,7 @@
         });
 
         if (res.ok) {
+          if (typeof gtag === 'function') gtag('event', 'contact_submit', { top_product: LABEL[top] });
           root.innerHTML = `
             <div class="check-badge" style="background:linear-gradient(135deg,#0B2545 0%, var(--teal) 100%);">✓</div>
             <div class="qtitle">감사합니다, ${contact.name}님!</div>
