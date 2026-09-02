@@ -673,7 +673,7 @@
 
 (function(){
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvkoojee';
-  const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwMOEFNLPsT9S-Mu6h4dVMRWZXTvtBxPFMeT-Bhazhn0LWaceIHmojJjKQEh25OXdP_dg/exec';
+  const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
   const TELEGRAM_BOT_TOKEN = '8988637490:AAGMhQx1cdh7VMunQ22N7Hm7mXgdqfs2fRI';
   const TELEGRAM_CHAT_ID = '8459986647';
 
@@ -737,6 +737,7 @@
 
     const payload = {
       _subject: `[슬림더카 홈페이지] ${name}님 상담신청`,
+      _sheet: '홈페이지상담',
       이름: name,
       휴대폰번호: phone,
       연락가능시간: time || '(선택 안함)',

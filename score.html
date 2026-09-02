@@ -343,7 +343,7 @@
   // 쪽에서는 감지가 불가능한 서버 측 필터라, 실패로도 안 뜹니다). 그래서 완전히 독립적인 백업
   // 경로로 구글시트에도 동시에 기록합니다. 아래 URL을 배포한 Google Apps Script 웹 앱 주소로
   // 채워넣으면 바로 작동합니다. 비워두면(빈 문자열) 이 백업 전송은 조용히 건너뜁니다.
-  const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwMOEFNLPsT9S-Mu6h4dVMRWZXTvtBxPFMeT-Bhazhn0LWaceIHmojJjKQEh25OXdP_dg/exec';
+  const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
 
   async function sendSheetsBackup(payload){
     if (!SHEETS_BACKUP_ENDPOINT) return;
