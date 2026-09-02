@@ -547,18 +547,18 @@
     <p class="beat-label">기록</p>
     <h2>숫자로 보는 13년</h2>
     <div class="career-stats">
-      <div class="career-stat"><span class="career-stat-num num">13</span><span class="career-stat-label">년 경력</span></div>
-      <div class="career-stat"><span class="career-stat-num num">1,700</span><span class="career-stat-label">대+ 판매</span></div>
+      <div class="career-stat"><span class="career-stat-num num count-up" data-target="13">0</span><span class="career-stat-label">년 경력</span></div>
+      <div class="career-stat"><span class="career-stat-num num count-up" data-target="1700">0</span><span class="career-stat-label">대 이상 판매</span></div>
     </div>
 
     <div class="roadmap">
       <div class="roadmap-row">
         <span class="roadmap-num num wide">13–16</span>
-        <div class="roadmap-body"><b>장기렌트·리스 영업</b><span>자동차 업계에 첫 발을 내딛고, 500대를 판매했습니다</span></div>
+        <div class="roadmap-body"><b>장기렌트·리스 영업</b><span>자동차 업계에 첫 발을 내딛고, 500대 이상 판매했습니다</span></div>
       </div>
       <div class="roadmap-row">
         <span class="roadmap-num num wide">17–24</span>
-        <div class="roadmap-body"><b>BMW 공식딜러</b><span>도이치모터스에서 980대를 판매하고, BMW Sales Cup을 수상했습니다</span></div>
+        <div class="roadmap-body"><b>BMW 공식딜러</b><span>BMW 공식딜러로 980대 이상 판매하고, BMW Sales Cup을 수상했습니다</span></div>
       </div>
       <div class="roadmap-row">
         <span class="roadmap-num num wide">24.08–</span>
@@ -625,9 +625,10 @@
   }
 
   // 숫자 카운트업 (13)
-  const statNum = document.getElementById('statNum');
-  if (statNum){
-    const target = parseInt(statNum.dataset.target, 10);
+  // 숫자 카운트업 (13, 1,700 등 여러 개 지원)
+  const countEls = document.querySelectorAll('.count-up[data-target]');
+  countEls.forEach((el) => {
+    const target = parseInt(el.dataset.target, 10);
     let done = false;
     const runCount = () => {
       if (done) return;
@@ -637,7 +638,7 @@
       function tick(now){
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 3);
-        statNum.textContent = Math.round(eased * target);
+        el.textContent = Math.round(eased * target).toLocaleString('en-US');
         if (t < 1) requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
@@ -646,11 +647,11 @@
       const io2 = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) runCount(); });
       }, { threshold: 0.4 });
-      io2.observe(statNum);
+      io2.observe(el);
     } else {
       runCount();
     }
-  }
+  });
 
 
 </script>
