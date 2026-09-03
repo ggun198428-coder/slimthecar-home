@@ -119,6 +119,13 @@
   section.active .more{ opacity:1; }
   .more:hover{ color:var(--teal); }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LMDLVEX9BH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LMDLVEX9BH');
+</script>
 </head>
 <body>
 
@@ -130,6 +137,10 @@
   const STEP = 0.1;
   const HOLD = 1.4;
   const TEAL = "#00aabe";
+  // 문자/광고 캠페인 등에서 붙는 ?utm_source=... 같은 쿼리스트링을 그대로 보존해서
+  // 다음 페이지(score.html)로 넘겨줍니다. score.html에서 이 값을 보고 캠페인 유입을
+  // 구분해서 상담신청 알림에 표시합니다.
+  const qs = location.search;
 
   const icons = {
     cash: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M5.5 9v0M18.5 15v0"/></svg>`,
@@ -193,6 +204,17 @@
 
     sectionDurations.push(s.last ? null : typingTime + HOLD);
   });
+
+  // CTA/더보기 링크에 캠페인 쿼리스트링을 이어붙이고, CTA 클릭을 GA4에 기록합니다.
+  const ctaBtn = document.getElementById('ctaBtn');
+  const moreLink = document.getElementById('moreLink');
+  if (ctaBtn) {
+    ctaBtn.href = 'score.html' + qs;
+    ctaBtn.addEventListener('click', () => {
+      if (typeof gtag === 'function') gtag('event', 'landing_cta_click');
+    });
+  }
+  if (moreLink) moreLink.href = 'index.html' + qs;
 
   document.querySelectorAll('.txt[data-text]').forEach(el => {
     const raw = el.dataset.text;

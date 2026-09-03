@@ -344,6 +344,13 @@
   const contact = { name:'', phone:'', time:'', region:'', consent:false };
 
   const PRODUCTS=['cash','loan','lease','rent'];
+
+  // landing.html 등에서 ?utm_source=sms 같은 캠페인 파라미터를 달고 넘어온 경우를 감지합니다.
+  // 실제 리드와 뒤섞이지 않도록, 상담신청 알림(텔레그램/이메일 제목)에 표시만 해줍니다 —
+  // 제출 자체는 평소와 동일하게 정상 처리됩니다.
+  const campaignSource = new URLSearchParams(location.search).get('utm_source');
+  const isCampaignLead = !!campaignSource;
+
   // 상담 신청 폼 제출 시 이 주소로 전송됩니다 (Formspree — 딜러님 이메일로 알림이 갑니다).
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvkoojee';
   // Formspree는 가끔 정상 제출을 스팸으로 오분류해서 대시보드에서 안 보일 수 있습니다(클라이언트
@@ -1280,7 +1287,8 @@
 
       const detailLines = ranked.map((p,i)=> `${i+1}위 ${LABEL[p]} ${fmt(fit[p])}점`).join('\n');
       const payload = {
-        _subject: `[차이드스코어] ${contact.name}님 상담신청 — ${LABEL[top]} ${fmt(fit[top])}점`,
+        _subject: (isCampaignLead ? `[캠페인:${campaignSource}] ` : '') + `[차이드스코어] ${contact.name}님 상담신청 — ${LABEL[top]} ${fmt(fit[top])}점`,
+        유입경로: isCampaignLead ? `캠페인(${campaignSource})` : '자체 사이트',
         이름: contact.name,
         휴대폰번호: contact.phone,
         연락가능시간: contact.time || '(선택 안함)',
@@ -1309,6 +1317,7 @@
       };
 
       const telegramText =
+        (isCampaignLead ? `🧪 <b>캠페인 유입 (${campaignSource})</b> — 지인 테스트일 수 있어요\n\n` : '') +
         `🚗 <b>새 상담신청 도착!</b>\n\n` +
         `<b>이름</b>: ${contact.name}\n` +
         `<b>휴대폰</b>: ${contact.phone}\n` +
