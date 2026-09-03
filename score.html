@@ -392,25 +392,24 @@
     { key:'purpose', eyebrow:'이용 목적', title:'주로 어떤 목적으로 사용하시나요?',
       grid2:true,
       options: ()=> state.biz==='법인'
-        ? [ {value:'임직원 출퇴근용', label:'임직원 출퇴근용 지급'},
-            {value:'임직원 공용', label:'임직원 공용'},
-            {value:'의전·행사용', label:'의전·행사용'},
-            {value:'영업·외근 등 복합업무용', label:'영업·외근 등 복합업무용'},
-            {value:'지방 출장 잦음', label:'지방 출장 잦음'},
+        ? [ {value:'대표(가족)사용', label:'대표 또는 대표 가족이 사용'},
+            {value:'임직원단독', label:'임직원 단독 사용'},
+            {value:'임직원공용', label:'임직원 공용 사용'},
             {value:'물류·배송용', label:'물류·배송용'},
-            {value:'현장·공사용', label:'현장·공사용 (자재·장비 운반)'} ]
+            {value:'자재·장비운반용', label:'자재·장비 운반용'},
+            {value:'기타', label:'기타'} ]
         : state.biz==='개인사업자'
-        ? [ {value:'출퇴근', label:'출퇴근'},
-            {value:'영업·외근 등 복합업무용', label:'영업·외근 등 복합업무용'},
-            {value:'지방 출장 잦음', label:'지방 출장 잦음'},
+        ? [ {value:'출퇴근', label:'출퇴근만'},
+            {value:'근거리업무용', label:'근거리 업무용'},
+            {value:'장거리업무용', label:'장거리 업무용'},
             {value:'물류·배송용', label:'물류·배송용'},
-            {value:'현장·공사용', label:'현장·공사용 (자재·장비 운반)'},
             {value:'직원 이용', label:'직원이 이용'},
             {value:'가족 이용', label:'가족이 이용'},
-            {value:'복합·데일리카', label:'복합·데일리카 사용'} ]
-        : [ {value:'출퇴근', label:'출퇴근'}, {value:'영업·외근', label:'영업·외근'},
-            {value:'가족용', label:'가족용'}, {value:'레저·여행', label:'레저·여행(세컨카)'},
-            {value:'복합·데일리카', label:'복합·데일리카 사용'} ] },
+            {value:'자재·장비운반용', label:'자재·장비 운반용'},
+            {value:'기타', label:'기타'} ]
+        : [ {value:'출퇴근', label:'출퇴근만'}, {value:'개인업무용', label:'개인 업무용'},
+            {value:'가족공용', label:'가족 공용 사용'}, {value:'레저·여행', label:'레저·여행(세컨카)'},
+            {value:'기타', label:'기타'} ] },
 
     { key:'vehicleType', eyebrow:'선호차량', title:'선호 또는 필요한 차량은 어떤 종류이신가요?', grid2:true,
       options:[ {value:'경차', label:'경차'}, {value:'세단', label:'세단'}, {value:'SUV', label:'SUV'},
@@ -439,8 +438,9 @@
 
     { key:'driver', eyebrow:'운전자 범위', title:'이 차량은 누가 운전하게 되나요?', grid2:true,
       options: ()=> state.biz==='법인'
-        ? [ {value:'임직원포함', label:'임직원 포함'},
-            {value:'대표자만', label:'대표자만'},
+        ? [ {value:'대표자만', label:'대표자만'},
+            {value:'대표자가족', label:'대표자 가족'},
+            {value:'임직원포함', label:'임직원 포함'},
             {value:'다수불특정', label:'여러 명이 수시로'} ]
         : state.biz==='개인사업자'
         ? [ {value:'본인만', label:'본인만'}, {value:'본인+배우자', label:'본인+배우자'},
@@ -804,6 +804,7 @@
       '직원포함':       {cash:0.5,  loan:0.5,  lease:2,    rent:2},
       '다수불특정':     {cash:0.25, loan:0.25, lease:2.25, rent:2.25},
       '대표자만':       {cash:1.25, loan:1.25, lease:1.25, rent:1.25},
+      '대표자가족':     {cash:0.9,  loan:0.9,  lease:1.55, rent:1.55},
       '임직원포함':     {cash:0.5,  loan:0.5,  lease:2,    rent:2},
     };
     // add(driverTable[state.driver||'본인만']); // FIT 미반영 (2026-09-03) — 위 주석 참고
