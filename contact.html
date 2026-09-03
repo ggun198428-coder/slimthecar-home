@@ -219,14 +219,22 @@
 
   .trust-strip{
     display:flex; gap:10px; flex-wrap:wrap;
+    justify-content:center;
     margin:22px 0 6px;
   }
   .trust-chip{
     font-size:13px;
-    color:var(--text-dim);
+    font-weight:600;
+    color:var(--text);
+    background:var(--panel);
     border:1px solid var(--line);
     border-radius:100px;
-    padding:8px 14px;
+    padding:9px 16px 9px 12px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .trust-chip .chip-check{
+    color:var(--cash);
+    font-weight:800;
   }
 
   /* ---------- CTA ---------- */
@@ -622,7 +630,10 @@
 
     <div class="consent-row">
       <input type="checkbox" id="c_consent">
-      <label for="c_consent">개인정보 수집·이용에 동의합니다. (상담 목적으로만 사용되며, 상담 완료 후 파기됩니다.)</label>
+      <label for="c_consent">개인정보 수집·이용 및 국외 이전에 동의합니다.<br>
+        <span style="opacity:.85; font-size:12px;">수집항목: 이름·연락처·지역·문의내용 / 목적: 상담 제공 / 보유기간: 상담 완료 후 파기<br>
+        국외 이전받는 자: Formspree Inc.(미국), Telegram Messenger Inc.(해외) / 이전 목적: 상담 접수·알림 처리</span>
+      </label>
     </div>
 
     <div class="submit-error" id="submitError" style="display:none;"></div>

@@ -219,14 +219,22 @@
 
   .trust-strip{
     display:flex; gap:10px; flex-wrap:wrap;
+    justify-content:center;
     margin:22px 0 6px;
   }
   .trust-chip{
     font-size:13px;
-    color:var(--text-dim);
+    font-weight:600;
+    color:var(--text);
+    background:var(--panel);
     border:1px solid var(--line);
     border-radius:100px;
-    padding:8px 14px;
+    padding:9px 16px 9px 12px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .trust-chip .chip-check{
+    color:var(--cash);
+    font-weight:800;
   }
 
   /* ---------- CTA ---------- */
@@ -588,7 +596,7 @@
     <div class="mini-card">
       <span class="mini-icon" style="background:var(--lease)"></span>
       <h4>믿을 수 있는 차이드 스코어</h4>
-      <p>13년간 검증한 데이터를 기반으로, 지금 내 상황에서 가장 합리적인 방식을 알려드려요.</p>
+      <p>13년 현장 경험을 계산 규칙으로 정리해서, 지금 내 상황에서 가장 합리적인 방식을 알려드려요.</p>
       <a href="score.html">차이드 스코어 체험하기 →</a>
     </div>
     <div class="mini-card">
