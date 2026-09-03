@@ -373,22 +373,10 @@
   }
 
   // 상담 신청이 들어오면 딜러님 휴대폰 텔레그램으로 즉시 푸시 알림을 보냅니다.
-  const TELEGRAM_BOT_TOKEN = '8988637490:AAGMhQx1cdh7VMunQ22N7Hm7mXgdqfs2fRI';
-  const TELEGRAM_CHAT_ID = '8459986647';
-
-  async function sendTelegramNotification(text){
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
-      });
-    } catch (e) {
-      // 텔레그램 알림은 부가 기능이라, 실패해도 상담 신청 자체(Formspree)는 막지 않습니다.
-      console.warn('Telegram notify failed', e);
-    }
-  }
+  // (예전엔 브라우저가 텔레그램 API를 직접 호출했는데, 그러면 토큰이 이 페이지 소스에
+  // 그대로 노출돼요 — 실제로 GitGuardian에 걸린 적 있음. 지금은 메시지 텍스트만
+  // Apps Script(서버)로 같이 보내고, 텔레그램 전송 자체는 서버 쪽에서 처리합니다.
+  // 토큰은 Apps Script의 Script Properties에만 저장되고 이 페이지엔 전혀 없습니다.)
   const LABEL={cash:'현금구매', loan:'할부', lease:'리스', rent:'장기렌트'};
 
   // 슬라이더/선택형 질문의 원본 값(예: ownPref=5)을 실제 답변 문구(예: '꼭 제 명의였으면 해요')로
@@ -1337,9 +1325,10 @@
         `<b>부채부담감</b>: ${findOptionLabel('debtBurden', state.debtBurden)||'-'} · <b>향후자금계획</b>: ${findOptionLabel('futureFundingPlan', state.futureFundingPlan)||'-'}\n` +
         `\n<b>진단결과 1위</b>: ${LABEL[top]} ${fmt(fit[top])}점\n` +
         `${detailLines}`;
-      // 텔레그램·구글시트 백업·Formspree 세 곳에 동시에 보냅니다. 텔레그램과 구글시트는
-      // 결과를 기다리지 않는 부가 채널이라, 실패해도 신청 자체(Formspree)를 막지 않습니다.
-      sendTelegramNotification(telegramText);
+      // 텔레그램·구글시트 백업·Formspree 세 곳에 동시에 보냅니다. 텔레그램 메시지는 Apps Script가
+      // 대신 보내주도록 payload에 같이 실어 보냅니다(_telegramText). 텔레그램·구글시트는 결과를
+      // 기다리지 않는 부가 채널이라, 실패해도 신청 자체(Formspree)를 막지 않습니다.
+      payload._telegramText = telegramText;
       sendSheetsBackup(payload);
 
       try {

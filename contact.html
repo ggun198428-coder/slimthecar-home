@@ -736,8 +736,8 @@
 (function(){
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvkoojee';
   const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
-  const TELEGRAM_BOT_TOKEN = '8988637490:AAGMhQx1cdh7VMunQ22N7Hm7mXgdqfs2fRI';
-  const TELEGRAM_CHAT_ID = '8459986647';
+  // 텔레그램 토큰은 더 이상 여기 두지 않습니다 — Apps Script(서버)의 Script Properties에만
+  // 저장되고, 이 페이지는 메시지 텍스트만 만들어서 구글시트 백업 요청에 같이 실어 보냅니다.
 
   const formArea = document.getElementById('formArea');
   if (!formArea) return;
@@ -749,16 +749,6 @@
         mode: 'no-cors',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(payload),
-      });
-    } catch (e) {}
-  }
-  async function sendTelegramNotification(text){
-    try {
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
       });
     } catch (e) {}
   }
@@ -816,7 +806,7 @@
       `<b>지역</b>: ${region || '(선택 안함)'}\n` +
       `<b>문의내용</b>: ${message || '(작성 안함)'}`;
 
-    sendTelegramNotification(telegramText);
+    payload._telegramText = telegramText;
     sendSheetsBackup(payload);
 
     try {
