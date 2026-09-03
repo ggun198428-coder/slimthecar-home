@@ -632,7 +632,7 @@
       <input type="checkbox" id="c_consent">
       <label for="c_consent">개인정보 수집·이용 및 국외 이전에 동의합니다.<br>
         <span style="opacity:.85; font-size:12px;">수집항목: 이름·연락처·지역·문의내용 / 목적: 상담 제공 / 보유기간: 상담 완료 후 파기<br>
-        국외 이전받는 자: Formspree Inc.(미국), Telegram Messenger Inc.(해외) / 이전 목적: 상담 접수·알림 처리</span>
+        국외 이전받는 자: Google LLC(미국) / 이전 목적: 상담 접수·알림 처리</span>
       </label>
     </div>
 
@@ -734,23 +734,24 @@
 
 
 (function(){
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvkoojee';
-  const SHEETS_BACKUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
-  // 텔레그램 토큰은 더 이상 여기 두지 않습니다 — Apps Script(서버)의 Script Properties에만
-  // 저장되고, 이 페이지는 메시지 텍스트만 만들어서 구글시트 백업 요청에 같이 실어 보냅니다.
+  // 상담 신청은 이 Google Apps Script 웹 앱 주소로 전송됩니다 — 구글시트 저장과
+  // 딜러님 이메일 알림을 서버 쪽에서 한 번에 처리합니다 (Formspree는 더 이상 쓰지 않습니다 —
+  // 무료 플랜 월 제출 한도를 넘으면 실제로는 접수가 다 됐는데도 고객 화면에 "오류"가
+  // 뜰 수 있는 문제가 있었습니다).
+  const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
 
   const formArea = document.getElementById('formArea');
   if (!formArea) return;
 
-  async function sendSheetsBackup(payload){
-    try {
-      await fetch(SHEETS_BACKUP_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload),
-      });
-    } catch (e) {}
+  async function submitLead(payload){
+    // Apps Script 웹앱은 브라우저에 CORS 응답을 못 줘서 결과 내용은 읽을 수 없지만,
+    // 요청 자체가 인터넷 연결 문제 없이 나갔는지는 여기서 확인할 수 있습니다.
+    await fetch(SUBMIT_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload),
+    });
   }
 
   const nameEl = document.getElementById('c_name');
@@ -798,48 +799,23 @@
       유입경로: '홈페이지 상담신청 페이지',
     };
 
-    const telegramText =
-      `🚗 <b>새 상담신청 도착! (홈페이지)</b>\n\n` +
-      `<b>이름</b>: ${name}\n` +
-      `<b>휴대폰</b>: ${phone}\n` +
-      `<b>연락가능시간</b>: ${time || '(선택 안함)'}\n` +
-      `<b>지역</b>: ${region || '(선택 안함)'}\n` +
-      `<b>문의내용</b>: ${message || '(작성 안함)'}`;
-
-    payload._telegramText = telegramText;
-    sendSheetsBackup(payload);
-
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-        body: JSON.stringify(payload),
-      });
+      await submitLead(payload);
 
-      if (res.ok) {
-        formArea.innerHTML = `
-          <div class="check-badge">✓</div>
-          <div style="font-family:'Noto Serif KR',serif; font-size:20px; font-weight:600; margin-bottom:10px;">감사합니다, ${name}님!</div>
-          <div style="color:var(--text-dim); font-size:14.5px; line-height:1.7;">
-            ${time ? time+'에 ' : ''}남겨주신 연락처로 곧 연락드릴게요.<br><br>
-            지금 바로 차이드 스코어로 진단을 받아보시면, 상담이 훨씬 더 빨라져요.
-          </div>
-          <a class="btn-cta" style="margin-top:22px;" href="score.html">차이드 스코어 체험하러 가기</a>`;
-        return;
-      }
-      const data = await res.json().catch(()=>null);
-      let msg = '전송에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.';
-      if (data && Array.isArray(data.errors) && data.errors.length) {
-        msg = data.errors.map(e => e.message || e.field).join(' / ');
-      } else if (data && data.error) {
-        msg = data.error;
-      }
-      throw new Error(msg);
+      formArea.innerHTML = `
+        <div class="check-badge">✓</div>
+        <div style="font-family:'Noto Serif KR',serif; font-size:20px; font-weight:600; margin-bottom:10px;">감사합니다, ${name}님!</div>
+        <div style="color:var(--text-dim); font-size:14.5px; line-height:1.7;">
+          ${time ? time+'에 ' : ''}남겨주신 연락처로 곧 연락드릴게요.<br><br>
+          지금 바로 차이드 스코어로 진단을 받아보시면, 상담이 훨씬 더 빨라져요.
+        </div>
+        <a class="btn-cta" style="margin-top:22px;" href="score.html">차이드 스코어 체험하러 가기</a>`;
+      return;
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = '상담 신청하기';
       errorBox.style.display = 'block';
-      errorBox.textContent = (err && err.message ? err.message : '전송에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.')
+      errorBox.textContent = '전송에 실패했어요. 인터넷 연결을 확인하고 다시 시도해주세요.'
         + ' 계속 실패하면 ' + (phone || '연락처') + '로 직접 연락드릴 수 있도록 화면을 캡처해 보내주세요.';
       validate();
     }
