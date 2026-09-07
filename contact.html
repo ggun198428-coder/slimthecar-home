@@ -797,7 +797,7 @@
   const kakaoBtn = document.getElementById('kakaoBtn');
   if (kakaoBtn) kakaoBtn.addEventListener('click', () => {
     if (typeof gtag === 'function') gtag('event', 'kakao_click');
-    window.open(KAKAO_URL, '_blank');
+    window.open('kakao-lead.html', '_blank');
   });
 
   submitBtn.addEventListener('click', async () => {
