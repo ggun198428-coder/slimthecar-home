@@ -271,6 +271,21 @@
     border-radius:14px;
     text-decoration:none;
   }
+  .btn-cta-outline{
+    display:block;
+    width:100%;
+    text-align:center;
+    background:transparent;
+    color:var(--text);
+    font-weight:600;
+    font-size:14px;
+    padding:14px 26px;
+    border-radius:14px;
+    border:1.5px solid var(--line);
+    text-decoration:none;
+    margin-top:10px;
+    cursor:pointer;
+  }
   .cta-foot{
     color:var(--text-dim);
     font-size:13px;
@@ -639,6 +654,7 @@
     <div class="submit-error" id="submitError" style="display:none;"></div>
 
     <button class="btn-cta" id="submitBtn" disabled style="cursor:not-allowed; opacity:0.5;">상담 신청하기</button>
+    <button type="button" class="btn-cta-outline" id="kakaoBtn">전화 연락 부담 없이 궁금한 점 물어보기</button>
     <p class="contact-note">차이드 스코어를 먼저 해보고 싶으시면 <a href="score.html" style="color:var(--accent); text-decoration:underline;">여기서 진단</a>부터 받아보실 수 있어요.</p>
   </div>
 </div>
@@ -739,6 +755,7 @@
   // 무료 플랜 월 제출 한도를 넘으면 실제로는 접수가 다 됐는데도 고객 화면에 "오류"가
   // 뜰 수 있는 문제가 있었습니다).
   const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec';
+  const KAKAO_URL = 'https://open.kakao.com/o/sVfTlzMi';
 
   const formArea = document.getElementById('formArea');
   if (!formArea) return;
@@ -776,6 +793,12 @@
   [nameEl, phoneEl, timeEl, regionEl].forEach(el => el.addEventListener('input', validate));
   consentEl.addEventListener('change', validate);
   validate();
+
+  const kakaoBtn = document.getElementById('kakaoBtn');
+  if (kakaoBtn) kakaoBtn.addEventListener('click', () => {
+    if (typeof gtag === 'function') gtag('event', 'kakao_click');
+    window.open(KAKAO_URL, '_blank');
+  });
 
   submitBtn.addEventListener('click', async () => {
     const name = nameEl.value.trim();
