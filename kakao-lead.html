@@ -564,8 +564,11 @@ function renderResultStep(body){
  var kakao = h('a',{class:'kl-cta kakao',href:KAKAO_URL,target:'_blank',text:'부담없이 카톡으로 상담하기'});
  var save = h('button',{class:'kl-cta save',text:'결과만 저장하기'});
  var savedMsg = h('div',{class:'kl-saved-msg',text:'저장했어요. 필요하실 때 편하게 다시 찾아주세요.'});
- save.onclick = function(){
-  save.disabled = true; save.textContent = '저장 중...';
+
+ var alreadySaved = false;
+ function saveToSheet(){
+  if (alreadySaved) return; // 두 버튼 중 하나라도 이미 저장했으면 중복 전송 방지
+  alreadySaved = true;
   var payload = {
    _sheet: '카톡유입',
    '브랜드': state.brand?state.brand.name:state.brandOther,
@@ -574,9 +577,19 @@ function renderResultStep(body){
    '옵션색상메모': state.memo,
    '유입경로': 'kakao-lead'
   };
-  fetch(SUBMIT_ENDPOINT, {method:'POST', mode:'no-cors', body: JSON.stringify(payload)})
-   .then(function(){ save.textContent='결과만 저장하기'; save.disabled=false; savedMsg.style.display='block'; })
-   .catch(function(){ save.textContent='결과만 저장하기'; save.disabled=false; savedMsg.style.display='block'; });
+  fetch(SUBMIT_ENDPOINT, {method:'POST', mode:'no-cors', body: JSON.stringify(payload)}).catch(function(){});
+ }
+
+ kakao.addEventListener('click', function(){
+  saveToSheet(); // 카톡으로 바로 넘어가도 상담사가 차종을 다시 안 물어보도록 항상 같이 저장
+ });
+
+ save.onclick = function(){
+  saveToSheet();
+  save.disabled = true; save.textContent = '저장 중...';
+  setTimeout(function(){
+   save.textContent='결과만 저장하기'; save.disabled=false; savedMsg.style.display='block';
+  }, 400);
  };
  ctaRow.appendChild(kakao); ctaRow.appendChild(save);
  body.appendChild(ctaRow);
