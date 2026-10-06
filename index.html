@@ -299,7 +299,7 @@
   .ncard .src{margin-top:auto; font-size:12.5px; color:var(--text-dim); display:flex; justify-content:space-between; align-items:center;}
   .ncard .src .arrow{color:var(--accent);}
   .news-empty{grid-column:1 / -1; color:var(--text-dimmer); font-size:14px; padding:30px 0; text-align:center;}
-  .news-foot{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:16px; font-size:12.5px; color:var(--text-dimmer);}
+  .news-foot{display:flex; justify-content:flex-end; align-items:center; gap:12px; margin-top:12px;}
   .more-btn{font-family:inherit; font-size:13px; font-weight:600; color:var(--text-dim); background:none; border:none; cursor:pointer; padding:6px 0;}
   .more-btn:hover{color:var(--accent);}
   .news-grid.in .ncard{opacity:1; transform:none;}
@@ -428,7 +428,7 @@
       <button type="button" data-cat="정책">정책</button>
     </div>
     <div class="news-grid reveal-stagger" id="newsGrid"></div>
-    <div class="news-foot"><span>제목·언론사·원문 링크만 표시합니다 (본문 미게재) · 1시간마다 자동 수집</span><button type="button" class="more-btn" id="newsMore">더 보기 →</button></div>
+    <div class="news-foot"><span></span><button type="button" class="more-btn" id="newsMore">더 보기 →</button></div>
   </div>
 </section>
 
@@ -750,6 +750,15 @@
     var h = Math.round(m / 60); if (h < 24) return h + '시간 전';
     var d = Math.round(h / 24); return d + '일 전';
   }
+  var SRC_MAP = {'daum':'다음뉴스','v.daum.net':'다음뉴스','edaily.co.kr':'이데일리','edaily':'이데일리','mk.co.kr':'매일경제','hankyung.com':'한국경제','mt.co.kr':'머니투데이','yna.co.kr':'연합뉴스','newsis.com':'뉴시스','news1.kr':'뉴스1','chosun.com':'조선일보','joongang.co.kr':'중앙일보','donga.com':'동아일보','hani.co.kr':'한겨레','khan.co.kr':'경향신문','etnews.com':'전자신문','zdnet.co.kr':'지디넷코리아','autoherald.co.kr':'오토헤럴드','motorgraph.com':'모터그래프','carguy.kr':'카가이','autodaily.co.kr':'오토데일리','dailycar.co.kr':'데일리카','global-autonews.com':'글로벌오토뉴스','thekoreaherald':'코리아헤럴드','naver':'네이버뉴스','n.news.naver.com':'네이버뉴스'};
+  function srcName(s){
+    var raw = String(s || '').trim(); if (!raw) return '';
+    var k = raw.toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/.*$/,'');
+    if (SRC_MAP[k]) return SRC_MAP[k];
+    var base = k.replace(/\.(co\.kr|com|kr|net|co)$/,'');
+    if (SRC_MAP[base]) return SRC_MAP[base];
+    return raw;
+  }
   function esc(s){ return String(s || '').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
   function renderTicker(){
@@ -776,9 +785,9 @@
     more.textContent = shown >= 12 ? '접기' : '더 보기 →';
   }
   function show(data){
-    ITEMS = (data.items || []).filter(function(it){ return it.title && it.link; });
+    ITEMS = (data.items || []).filter(function(it){ return it.title && it.link; }).map(function(it){ it.source = srcName(it.source); return it; });
     if (!ITEMS.length) return;
-    if (updated && data.updated) updated.textContent = '1시간마다 자동 업데이트 · 최신 기사 ' + ago(ITEMS[0].t);
+    if (updated) updated.textContent = '최신 기사 ' + ago(ITEMS[0].t);
     renderTicker(); renderCards(); sec.hidden = false;
     tabs.addEventListener('click', function(e){
       var b = e.target.closest('button'); if (!b) return;
