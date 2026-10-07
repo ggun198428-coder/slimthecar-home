@@ -1101,17 +1101,17 @@ var CFG = {
   function renderDates(){
     var u=reg.usage_type; if(!u){ $('#dates').innerHTML=''; return; }
     var h='';
-    if (u!=='cash') h+='<div class="field"><label>'+(u==='loan'?'할부 완납 예정월':'계약 만기월')+'</label><input type="month" id="dContract" value="'+esc((reg.contract_end||'').slice(0,7))+'"></div>';
+    if (u!=='cash') h+='<div class="field"><label>'+(u==='loan'?'할부 완납 예정일':'계약 만기일')+'</label><input type="date" id="dContract" value="'+esc(reg.contract_end||'')+'"><span class="hint">계약서의 만기일 그대로. 날짜를 모르면 해당 월 1일로 넣고 나중에 수정해도 돼요.</span></div>';
     if (u!=='rent') h+='<div class="field"><label>자동차보험 만기일</label><input type="date" id="dIns" value="'+esc(reg.insurance_end||'')+'"></div>';
-    h+='<div class="field"><label>최초 등록일 (정기검사 계산용 · 자동차등록증) <button class="inline-skip" id="skipReg" type="button">모르겠어요</button></label><input type="month" id="dReg" value="'+esc((reg.first_reg_date||'').slice(0,7))+'"><span class="hint">모르면 연식 기준으로 추정해서 계산해요.</span></div>';
+    h+='<div class="field"><label>최초 등록일 (정기검사 계산용 · 자동차등록증) <button class="inline-skip" id="skipReg" type="button">모르겠어요</button></label><input type="date" id="dReg" value="'+esc(reg.first_reg_date||'')+'"><span class="hint">모르면 연식 기준으로 추정해서 계산해요.</span></div>';
     if (u==='cash'||u==='loan') h+='<div class="field"><label>배기량 cc (선택 · 자동차세 금액 계산)</label><input type="number" id="dCc" inputmode="numeric" placeholder="예: 1598" value="'+esc(reg.displacement_cc||'')+'"></div>';
     $('#dates').innerHTML=h;
     var s=$('#skipReg'); if(s) s.addEventListener('click', function(){ $('#dReg').value=''; reg.first_reg_date=null; toast('연식 기준으로 추정할게요'); });
   }
   function readDates(){
-    var c=$('#dContract'); reg.contract_end = c && c.value ? c.value+'-01' : null;
+    var c=$('#dContract'); reg.contract_end = c && c.value ? c.value : null;
     var i=$('#dIns'); reg.insurance_end = i && i.value ? i.value : null;
-    var r=$('#dReg'); reg.first_reg_date = r && r.value ? r.value+'-01' : null;
+    var r=$('#dReg'); reg.first_reg_date = r && r.value ? r.value : null;
     var cc=$('#dCc'); reg.displacement_cc = cc && cc.value ? Number(cc.value) : null;
   }
   function renderPick(){
@@ -1185,10 +1185,15 @@ var CFG = {
     var enc=encodeURIComponent(name);
     var apps={ tmap:'tmap://route?goalname='+enc+'&goalx='+lng+'&goaly='+lat, naver:'nmap://route/car?dlat='+lat+'&dlng='+lng+'&dname='+enc+'&appname=slimthecar.com', kakao:'kakaomap://route?ep='+lat+','+lng+'&by=CAR' };
     var web={ tmap:'https://map.kakao.com/link/to/'+enc+','+lat+','+lng, naver:'https://map.naver.com/p/search/'+enc, kakao:'https://map.kakao.com/link/to/'+enc+','+lat+','+lng };
+    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile){
+      return ['naver','kakao'].map(function(k){ return '<button type="button" data-app="'+k+'" data-url="'+web[k]+'" data-web="'+web[k]+'" data-newtab="1"><i>'+({naver:'N',kakao:'K'}[k])+'</i>'+({naver:'네이버지도',kakao:'카카오맵'}[k])+'</button>'; }).join('');
+    }
     return ['tmap','naver','kakao'].map(function(k){ return '<button type="button" data-app="'+k+'" data-url="'+apps[k]+'" data-web="'+web[k]+'"><i>'+({tmap:'T',naver:'N',kakao:'K'}[k])+'</i>'+({tmap:'티맵',naver:'네이버지도',kakao:'카카오내비'}[k])+'</button>'; }).join('');
   }
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-app]'); if(!b) return; try{ localStorage.setItem(NAV_PREF_KEY, b.dataset.app); }catch(_){}
     document.querySelectorAll('.navi button.on').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    if (b.dataset.newtab){ window.open(b.dataset.web,'_blank'); return; }
     var t=Date.now(); location.href=b.dataset.url; setTimeout(function(){ if(Date.now()-t<2000 && !document.hidden) window.open(b.dataset.web,'_blank'); },1500); });
   var loc=null;
   function getLoc(cb){ if(!navigator.geolocation){ toast('이 브라우저는 위치를 지원하지 않아요'); return; } navigator.geolocation.getCurrentPosition(function(pos){ loc={lat:pos.coords.latitude, lng:pos.coords.longitude}; cb(); }, function(){ toast('위치 권한이 필요해요'); }, {timeout:8000, maximumAge:300000}); }
