@@ -86,7 +86,7 @@
   .nav-logo{display:flex; align-items:center;}
   .nav-logo img{height:30px; width:auto;}
   .nav-links{display:flex; align-items:center; gap:2px;}
-  .nav-links a{font-size:13.5px; font-weight:500; color:var(--text-dim); padding:9px 13px; border-radius:100px; white-space:nowrap; transition:color .2s, background .2s;}
+  .nav-links a{font-size:13.5px; font-weight:500; color:var(--text-dim); padding:9px 11px; border-radius:100px; white-space:nowrap; transition:color .2s, background .2s;}
   .nav-links a:hover{color:var(--text); background:var(--panel-hi);}
   .nav-links a.active{color:var(--text);}
   .nav-links a.nav-cta{margin-left:8px; color:var(--accent-ink); background:var(--accent); font-weight:700; padding:10px 16px;}
@@ -96,7 +96,7 @@
   .nav-toggle.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
   .nav-toggle.active span:nth-child(2){opacity:0;}
   .nav-toggle.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-  @media (max-width:860px){
+  @media (max-width:980px){
     .nav-inner{padding:12px 18px;}
     .nav-logo img{height:26px;}
     .nav-toggle{display:flex;}
@@ -215,6 +215,22 @@
   .foot-bottom{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:40px; padding-top:22px; border-top:1px solid var(--line); font-size:12px;}
   @media (max-width:760px){ .foot-grid{grid-template-columns:1fr 1fr;} .foot-brand{grid-column:1 / -1;} }
 
+  /* ---------- 아이콘 타일 ---------- */
+  .itile{position:relative; width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; box-shadow:0 14px 28px -14px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.25); transition:transform .4s var(--ease);}
+  .itile svg{width:26px; height:26px; filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));}
+  .itile::after{content:""; position:absolute; inset:-1px; border-radius:inherit; background:linear-gradient(135deg, rgba(255,255,255,.35), transparent 60%); pointer-events:none; mix-blend-mode:overlay;}
+  .itile.sm{width:40px; height:40px; border-radius:12px;} .itile.sm svg{width:20px; height:20px;}
+  .itile.lg{width:64px; height:64px; border-radius:20px;} .itile.lg svg{width:32px; height:32px;}
+  .g-teal{background:linear-gradient(135deg,#12B7B3,#0E7490);} .g-cyan{background:linear-gradient(135deg,#5EE0F5,#0891B2);}
+  .g-blue{background:linear-gradient(135deg,#60A5FA,#3B5BDB);} .g-violet{background:linear-gradient(135deg,#C4A6FF,#7C3AED);}
+  .g-orange{background:linear-gradient(135deg,#FFB15C,#F0612B);} .g-green{background:linear-gradient(135deg,#5EEAD4,#059669);}
+  .g-pink{background:linear-gradient(135deg,#FDA4AF,#DB2777);} .g-amber{background:linear-gradient(135deg,#FFD166,#D97706);}
+  .g-navy{background:linear-gradient(135deg,#334155,#0F172A); border:1px solid var(--line-hi);}
+  .card:hover .itile{transform:translateY(-4px) rotate(-6deg) scale(1.06);}
+  .card .bgicon{position:absolute; right:-18px; bottom:-22px; width:150px; height:150px; opacity:.06; pointer-events:none; transition:opacity .4s, transform .6s var(--ease);}
+  .card:hover .bgicon{opacity:.12; transform:rotate(-8deg) scale(1.08);}
+  .card .bgicon svg{width:100%; height:100%;}
+
   @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; scroll-behavior:auto !important;}
     .reveal, .reveal-stagger > *{opacity:1 !important; transform:none !important;}
@@ -268,6 +284,8 @@
       <a href="journey.html" class="active">걸어온 길</a>
       <a href="products.html">이용 방식 비교</a>
       <a href="score.html">차이드 스코어</a>
+      <a href="mycar.html">차이드 매니저</a>
+      <a href="today.html">주유·세차</a>
       <a class="nav-cta" href="contact.html">상담 신청</a>
     </nav>
   </div>
@@ -360,6 +378,8 @@
         <a href="journey.html">걸어온 길</a>
         <a href="products.html">이용 방식 비교</a>
         <a href="score.html">차이드 스코어</a>
+        <a href="mycar.html">차이드 매니저</a>
+        <a href="today.html">오늘의 주유·세차</a>
         <a href="contact.html">상담 신청</a>
       </div>
       <div class="foot-col">
@@ -369,7 +389,7 @@
       </div>
     </div>
     <div class="foot-bottom">
-      <div>슬림더카 대표 정지윤 · 사업자등록번호 379-02-03585</div>
+      <div>슬림더카 대표 정지윤 · 사업자등록번호 379-02-03585 · <a href="privacy.html" style="color:var(--text-dim)">개인정보처리방침</a> · <a href="terms.html" style="color:var(--text-dim)">이용약관</a></div>
       <div>© 2026 SLIM THE CAR</div>
     </div>
   </div>
