@@ -391,9 +391,15 @@
   .place b{font-size:14px; font-weight:600;} .place span{font-size:12px; color:var(--text-dimmer);}
   .place .pr{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:var(--accent-3); text-align:right;}
   .place .pr small{display:block; font-family:inherit; font-size:11px; color:var(--text-dimmer); font-weight:500;}
-  .navi{display:flex; gap:6px; margin-top:6px;}
-  .navi button{font-family:inherit; font-size:11px; font-weight:700; padding:6px 9px; border-radius:8px; border:1px solid var(--line-hi); background:var(--panel); color:var(--text-dim); cursor:pointer;}
-  .navi button.pref{color:var(--accent-ink); background:var(--accent); border-color:var(--accent);}
+  .navi{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+  .navi button{display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-size:11.5px; font-weight:700; padding:5px 10px 5px 6px; border-radius:8px; border:1px solid var(--line-hi); background:var(--panel); color:var(--text-dim); cursor:pointer; transition:background .2s, color .2s, border-color .2s, transform .2s var(--ease);}
+  .navi button i{width:16px; height:16px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-weight:900; font-size:10px; line-height:1; color:#fff; flex:0 0 auto;}
+  .navi button[data-app="tmap"] i{background:#E8322B;} .navi button[data-app="naver"] i{background:#03C75A;} .navi button[data-app="kakao"] i{background:#FEE500; color:#191919;}
+  .navi button:hover{background:var(--panel-hi); color:var(--text); transform:translateY(-1px);}
+  .navi button.on[data-app="tmap"]{background:#E8322B; border-color:#E8322B; color:#fff;}
+  .navi button.on[data-app="naver"]{background:#03C75A; border-color:#03C75A; color:#fff;}
+  .navi button.on[data-app="kakao"]{background:#FEE500; border-color:#FEE500; color:#191919;}
+  .navi button.on i{background:rgba(0,0,0,.18); color:inherit;}
   .wash{display:flex; align-items:center; gap:16px; margin-bottom:12px;}
   .wash .icon{width:64px; height:64px; border-radius:18px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.05); border:1px solid var(--line); flex:0 0 auto; position:relative; overflow:hidden;}
   .wash .icon svg{width:36px; height:36px;}
@@ -402,6 +408,7 @@
   .wash b{display:block; font-size:17px; letter-spacing:-0.01em;} .wash span{font-size:12.5px; color:var(--text-dim); line-height:1.5;}
   .wash .grade{font-size:11px; font-weight:800; letter-spacing:.06em; padding:3px 8px; border-radius:100px; margin-left:6px; vertical-align:middle;}
   .grade.good{background:rgba(94,234,212,.15); color:#5EEAD4;} .grade.ok{background:rgba(255,209,102,.15); color:#FFD166;} .grade.bad{background:rgba(255,138,138,.15); color:#FF8A8A;}
+  .days{display:flex; gap:6px;} .day{flex:1; text-align:center; padding:8px 4px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid var(--line); font-size:11px; color:var(--text-dimmer);} .day b{display:block; color:var(--text); font-size:12px; font-weight:600; margin-top:3px;} .day.ok b{color:#5EEAD4;}
   .loc-btn{display:flex; width:100%; align-items:center; justify-content:center; gap:8px; font-family:inherit; font-size:13.5px; font-weight:700; padding:12px; border-radius:12px; border:1px solid var(--line-hi); background:var(--panel); color:var(--text); cursor:pointer;}
   .loc-btn:hover{background:var(--panel-hi);}
 
@@ -911,7 +918,7 @@ var MYCAR_FUELS_ALL = ['가솔린','디젤','하이브리드','플러그인 하�
 var CFG = {
   SUPABASE_URL: 'https://mdyqomcgxymrzhflsscq.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1keXFvbWNneHltcnpoZmxzc2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNDMyNjcsImV4cCI6MjEwNjkxOTI2N30.6_Z4_oNuu0Zdhd2S_UIOlGHO4dY-zDnOWpPtHHMgIsU',
-  EDGE_URL: '',              // 예: https://xxxx.supabase.co/functions/v1  (유가·세차 실데이터; 비어 있으면 예시 표시)
+  API: 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec',   // Apps Script 웹앱 (action=today). 비어 있으면 예시 표시
   KAKAO_SCOPES: 'profile_nickname account_email',
 };
 
@@ -1178,32 +1185,59 @@ var CFG = {
     var enc=encodeURIComponent(name);
     var apps={ tmap:'tmap://route?goalname='+enc+'&goalx='+lng+'&goaly='+lat, naver:'nmap://route/car?dlat='+lat+'&dlng='+lng+'&dname='+enc+'&appname=slimthecar.com', kakao:'kakaomap://route?ep='+lat+','+lng+'&by=CAR' };
     var web={ tmap:'https://map.kakao.com/link/to/'+enc+','+lat+','+lng, naver:'https://map.naver.com/p/search/'+enc, kakao:'https://map.kakao.com/link/to/'+enc+','+lat+','+lng };
-    var pref=navPref();
-    return ['tmap','naver','kakao'].map(function(k){ return '<button type="button" class="'+(k===pref?'pref':'')+'" data-app="'+k+'" data-url="'+apps[k]+'" data-web="'+web[k]+'">'+({tmap:'티맵',naver:'네이버지도',kakao:'카카오내비'}[k])+'</button>'; }).join('');
+    return ['tmap','naver','kakao'].map(function(k){ return '<button type="button" data-app="'+k+'" data-url="'+apps[k]+'" data-web="'+web[k]+'"><i>'+({tmap:'T',naver:'N',kakao:'K'}[k])+'</i>'+({tmap:'티맵',naver:'네이버지도',kakao:'카카오내비'}[k])+'</button>'; }).join('');
   }
   document.addEventListener('click', function(e){ var b=e.target.closest('[data-app]'); if(!b) return; try{ localStorage.setItem(NAV_PREF_KEY, b.dataset.app); }catch(_){}
+    document.querySelectorAll('.navi button.on').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
     var t=Date.now(); location.href=b.dataset.url; setTimeout(function(){ if(Date.now()-t<2000 && !document.hidden) window.open(b.dataset.web,'_blank'); },1500); });
   var loc=null;
   function getLoc(cb){ if(!navigator.geolocation){ toast('이 브라우저는 위치를 지원하지 않아요'); return; } navigator.geolocation.getCurrentPosition(function(pos){ loc={lat:pos.coords.latitude, lng:pos.coords.longitude}; cb(); }, function(){ toast('위치 권한이 필요해요'); }, {timeout:8000, maximumAge:300000}); }
+  var TODAY=null, TODAY_LOC=null;
+  function loadToday(cb){
+    if (!CFG.API){ cb(null); return; }
+    var saved=null; try{ saved=JSON.parse(localStorage.getItem('stc_loc')||'null'); }catch(e){}
+    var l = loc || saved || null; var lat = l? l.lat : 37.5665, lng = l? l.lng : 126.9780;
+    if (TODAY && TODAY_LOC && TODAY_LOC.lat===lat && TODAY_LOC.lng===lng){ cb(TODAY); return; }
+    fetch(CFG.API+'?action=today&lat='+lat+'&lng='+lng,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ TODAY=d; TODAY_LOC={lat:lat,lng:lng}; TODAY.__label = l ? '내 위치 기준' : '서울 기준'; cb(d); }).catch(function(){ cb(null); });
+  }
   function renderFuel(){
     var P=$('#fuelPanel');
-    var demo = !CFG.EDGE_URL;
-    if (!loc){
-      P.innerHTML='<div class="panel-head"><h3>오늘의 유가'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">전국 평균</span></div><div class="fuel-row"><div class="fuel"><div class="n">휘발유</div><div class="p">1,648</div><div class="d down">▼ 3원</div></div><div class="fuel"><div class="n">경유</div><div class="p">1,521</div><div class="d up">▲ 2원</div></div></div><button class="loc-btn" id="fuelLoc">📍 내 주변 최저가 주유소 보기</button>';
-      $('#fuelLoc').addEventListener('click', function(){ getLoc(function(){ renderFuel(); renderWash(); }); }); return;
-    }
-    var items = [ {n:'SK 행복주유소', brand:'SK · 셀프 · 세차', lat:loc.lat+0.004, lng:loc.lng+0.003, price:1619, dist:'0.6km'}, {n:'GS칼텍스 중앙', brand:'GS · 셀프', lat:loc.lat-0.006, lng:loc.lng+0.002, price:1627, dist:'1.1km'}, {n:'현대오일뱅크 강변', brand:'HD · 일반', lat:loc.lat+0.008, lng:loc.lng-0.005, price:1634, dist:'1.4km'} ];
-    P.innerHTML='<div class="panel-head"><h3>내 주변 최저가 주유소'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">휘발유 · 가격순</span></div>'+items.map(function(it){ return '<div class="place"><div><b>'+esc(it.n)+'</b><br><span>'+esc(it.brand)+' · '+it.dist+'</span><div class="navi">'+naviLinks(it.n,it.lat,it.lng)+'</div></div><div class="pr">'+num(it.price)+'<small>원/L</small></div></div>'; }).join('');
-    if (!demo) fetch(CFG.EDGE_URL+'/mycar-local?type=fuel&lat='+loc.lat+'&lng='+loc.lng).then(function(r){return r.json();}).then(function(d){ /* 실데이터 렌더링은 S3에서 연결 */ }).catch(function(){});
+    P.innerHTML='<div class="panel-head"><h3>오늘의 유가</h3><span class="mini">불러오는 중…</span></div>';
+    loadToday(function(d){
+      var demo = !(d && d.ok && d.fuel && d.fuel.gasoline);
+      var f = demo ? {gasoline:1648, diesel:1521, gasolineDiff:-3, dieselDiff:2} : d.fuel;
+      var g=f.gasolineDiff||0, q=f.dieselDiff||0;
+      var fuelRow='<div class="fuel-row"><div class="fuel"><div class="n">휘발유</div><div class="p">'+num(f.gasoline)+'</div><div class="d '+(g>0?'up':'down')+'">'+(g>0?'▲ ':'▼ ')+Math.abs(g)+'원</div></div><div class="fuel"><div class="n">경유</div><div class="p">'+num(f.diesel)+'</div><div class="d '+(q>0?'up':'down')+'">'+(q>0?'▲ ':'▼ ')+Math.abs(q)+'원</div></div></div>';
+      if (!loc){
+        P.innerHTML='<div class="panel-head"><h3>오늘의 유가'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">전국 평균'+(demo?'':' · '+esc(f.date||''))+'</span></div>'+fuelRow+'<button class="loc-btn" id="fuelLoc">📍 내 주변 최저가 주유소 보기</button>';
+        $('#fuelLoc').addEventListener('click', function(){ getLoc(function(){ try{ localStorage.setItem('stc_loc', JSON.stringify({lat:+loc.lat.toFixed(3), lng:+loc.lng.toFixed(3)})); }catch(e){} renderFuel(); renderWash(); }); }); return;
+      }
+      var items = (d && d.stations) ? d.stations.slice(0,5).map(function(it){ return {n:it.name, brand:it.brand+(it.self?' · 셀프':'')+(it.wash?' · 세차장':''), lat:it.lat, lng:it.lng, price:it.price, dist:it.dist}; }) : null;
+      var ex = !items;
+      if (!items) items=[ {n:'SK 행복주유소', brand:'SK · 셀프 · 세차', lat:loc.lat+0.004, lng:loc.lng+0.003, price:1619, dist:'0.6km'}, {n:'GS칼텍스 중앙', brand:'GS · 셀프', lat:loc.lat-0.006, lng:loc.lng+0.002, price:1627, dist:'1.1km'}, {n:'현대오일뱅크 강변', brand:'HD · 일반', lat:loc.lat+0.008, lng:loc.lng-0.005, price:1634, dist:'1.4km'} ];
+      P.innerHTML='<div class="panel-head"><h3>내 주변 최저가 주유소'+(ex?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">'+esc((d&&d.fuelLabel)||'휘발유')+' · 가격순 · 3km</span></div>'+fuelRow+(items.length? items.map(function(it){ return '<div class="place"><div><b>'+esc(it.n)+'</b><br><span>'+esc(it.brand)+' · '+esc(it.dist)+'</span><div class="navi">'+naviLinks(it.n,it.lat,it.lng)+'</div></div><div class="pr">'+num(it.price)+'<small>원/L</small></div></div>'; }).join('') : '<div class="place"><span>주변 3km에 주유소 정보가 없어요</span></div>');
+    });
   }
   function renderWash(){
-    var P=$('#washPanel'); var demo=!CFG.EDGE_URL;
-    var head='<div class="panel-head"><h3>세차 지수'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">날씨·미세먼지 기준</span></div>';
-    var good='<div class="wash"><div class="icon"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="#FFD166"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div><div><b>오늘 세차하기 좋아요<span class="grade good">좋음</span></b><span>3일간 비 예보 없음 · 미세먼지 보통. 세차하면 3일은 깨끗해요.</span></div></div>';
-    if (!loc){ P.innerHTML=head+good+'<button class="loc-btn" id="washLoc">📍 내 주변 세차장 보기</button>'; $('#washLoc').addEventListener('click', function(){ getLoc(function(){ renderFuel(); renderWash(); }); }); return; }
-    var items=[ {n:'워시엔조이 셀프세차', t:'셀프 · 24시간', lat:loc.lat+0.003, lng:loc.lng-0.004, dist:'0.5km'}, {n:'블루핸즈 자동세차', t:'자동 · 주유 시 할인', lat:loc.lat-0.005, lng:loc.lng-0.002, dist:'0.9km'}, {n:'손세차 디테일링 센터', t:'손세차 · 예약', lat:loc.lat+0.007, lng:loc.lng+0.006, dist:'1.3km'} ];
-    P.innerHTML=head+good+items.map(function(it){ return '<div class="place"><div><b>'+esc(it.n)+'</b><br><span>'+esc(it.t)+' · '+it.dist+'</span><div class="navi">'+naviLinks(it.n,it.lat,it.lng)+'</div></div><div class="pr" style="font-size:12px;color:var(--text-dimmer);font-weight:500;">가격 제보<br><small>곧 열려요</small></div></div>'; }).join('');
+    var P=$('#washPanel');
+    P.innerHTML='<div class="panel-head"><h3>세차 지수</h3><span class="mini">불러오는 중…</span></div>';
+    loadToday(function(d){
+      var w = d && d.wash; var demo = !w;
+      var grade = demo ? '좋음' : w.grade, cls = grade==='좋음'?'good':(grade==='보통'?'ok':'bad');
+      var head='<div class="panel-head"><h3>세차 지수'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">'+(demo?'날씨·미세먼지 기준':esc(d.__label||'')+(w.station?' · '+esc(w.station)+' 측정소':''))+'</span></div>';
+      var iconSun='<svg class="sun" viewBox="0 0 24 24" fill="none" stroke="#FFD166" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="#FFD166"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+      var iconRain='<svg viewBox="0 0 24 24" fill="none" stroke="#7CC8FF" stroke-width="1.8" stroke-linecap="round"><path d="M7 15a4 4 0 0 1-.5-8A6 6 0 0 1 18 6a4.5 4.5 0 0 1-.5 9z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/></svg>';
+      var box='<div class="wash"><div class="icon">'+(cls==='bad'?iconRain:iconSun)+'</div><div><b>'+esc(demo?'오늘 세차하기 좋아요':w.title)+'<span class="grade '+cls+'">'+esc(grade)+'</span></b><span>'+esc(demo?'3일간 비 예보 없음 · 미세먼지 보통. 세차하면 3일은 깨끗해요.':w.desc)+'</span></div></div>';
+      if (!demo && w.days) box+='<div class="days" style="margin:0 0 12px">'+w.days.slice(0,4).map(function(x){ return '<div class="day'+(x.ok?' ok':'')+'">'+esc(x.label)+'<b>'+esc(x.text)+'</b></div>'; }).join('')+'</div>';
+      if (!loc){ P.innerHTML=head+box+'<button class="loc-btn" id="washLoc">📍 내 주변 세차장 보기</button>'; $('#washLoc').addEventListener('click', function(){ getLoc(function(){ try{ localStorage.setItem('stc_loc', JSON.stringify({lat:+loc.lat.toFixed(3), lng:+loc.lng.toFixed(3)})); }catch(e){} renderFuel(); renderWash(); }); }); return; }
+      var items = (d && d.washes) ? d.washes.slice(0,5).map(function(it){ return {n:it.name, t:it.type+(it.tel?' · '+it.tel:''), lat:it.lat, lng:it.lng, dist:it.dist}; }) : null;
+      var ex=!items;
+      if (!items) items=[ {n:'워시엔조이 셀프세차', t:'셀프 · 24시간', lat:loc.lat+0.003, lng:loc.lng-0.004, dist:'0.5km'}, {n:'블루핸즈 자동세차', t:'자동 · 주유 시 할인', lat:loc.lat-0.005, lng:loc.lng-0.002, dist:'0.9km'}, {n:'손세차 디테일링 센터', t:'손세차 · 예약', lat:loc.lat+0.007, lng:loc.lng+0.006, dist:'1.3km'} ];
+      P.innerHTML=head+box+(ex?'<div style="font-size:11px;color:var(--text-dimmer);margin-bottom:6px">주변 세차장 <span class="ex-tag">예시</span></div>':'')+(items.length? items.map(function(it){ return '<div class="place"><div><b>'+esc(it.n)+'</b><br><span>'+esc(it.t)+' · '+esc(it.dist)+'</span><div class="navi">'+naviLinks(it.n,it.lat,it.lng)+'</div></div><div class="pr" style="font-size:12px;color:var(--text-dimmer);font-weight:500;">가격 제보<br><small>곧 열려요</small></div></div>'; }).join('') : '<div class="place"><span>주변 3km에 세차장 정보가 없어요</span></div>');
+    });
   }
+  // 저장된 위치가 있으면 바로 내 주변으로
+  try{ var __sv=JSON.parse(localStorage.getItem('stc_loc')||'null'); if(__sv&&__sv.lat) loc={lat:__sv.lat,lng:__sv.lng}; }catch(e){}
 
   /* ===================== 라우팅 ===================== */
   async function route(){
