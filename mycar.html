@@ -256,6 +256,8 @@
   .btn-kakao{display:inline-flex; align-items:center; justify-content:center; gap:10px; background:#FEE500; color:#191919; font-weight:800; font-size:16px; padding:17px 28px; border-radius:100px; border:none; cursor:pointer; font-family:inherit; transition:transform .25s var(--ease), box-shadow .25s; box-shadow:0 14px 34px -14px rgba(254,229,0,.6);}
   .btn-kakao:hover{transform:translateY(-2px); box-shadow:0 20px 44px -14px rgba(254,229,0,.75);}
   .btn-kakao svg{width:20px; height:20px;}
+  .more-fuel{display:block; margin:12px auto 0; background:none; border:0; color:var(--teal,#5EE0F5); font:inherit; font-size:14px; font-weight:700; cursor:pointer; padding:8px 12px;}
+  .more-fuel[hidden], #restFuel[hidden]{display:none;}
   .hero-points{display:flex; gap:18px; flex-wrap:wrap; margin-top:22px; color:var(--text-dimmer); font-size:13px;}
   .hero-points span{display:inline-flex; align-items:center; gap:7px;} .hero-points i{width:5px; height:5px; border-radius:50%; background:var(--accent);}
   .demo-dash{position:relative; padding:26px 24px 22px; animation:floaty 7s ease-in-out infinite;}
@@ -914,6 +916,23 @@ var MYCAR_EXTRA_BRANDS = [
 ];
 var MYCAR_FUELS_ALL = ['가솔린','디젤','하이브리드','플러그인 하이브리드','전기','LPG','수소'];
 
+/* 2026-10-08: 지금 판매 목록(DATA)에는 없지만 예전에 팔렸던 연료(단종된 디젤·LPG·PHEV 등).
+   차이드 매니저는 '지금 타는 차'를 등록하므로 판매 종료된 연료도 고를 수 있어야 함.
+   여기 없는 경우를 위해 연료 화면에 '다른 연료예요' 버튼으로 전체 연료도 항상 열 수 있음. */
+var MYCAR_FUEL_HISTORY = {
+  hyundai:  {'아반떼':['디젤','LPG'], '쏘나타':['디젤','LPG','PHEV'], '그랜저':['디젤','LPG'], '코나':['디젤'], '투싼':['디젤'], '싼타페':['디젤'], '팰리세이드':['디젤'], '스타리아':['LPG']},
+  kia:      {'모닝':['LPG'], '레이':['LPG'], 'K5':['디젤','LPG','PHEV'], 'K8':['LPG'], '셀토스':['디젤'], '스포티지':['디젤','LPG'], '쏘렌토':['디젤'], '니로':['PHEV'], '카니발':['디젤']},
+  genesis:  {'G70':['디젤'], 'G80':['디젤','전기'], 'GV70':['디젤'], 'GV80':['디젤']},
+  kgm:      {'티볼리':['디젤']},
+  bmw:      {'1시리즈':['디젤'], '2시리즈':['디젤'], '4시리즈':['디젤'], 'X2':['디젤']},
+  benz:     {'C클래스':['디젤'], 'E클래스':['디젤','PHEV'], 'S클래스':['디젤','PHEV'], 'CLA클래스':['디젤'], 'GLA':['디젤']},
+  audi:     {'A3':['디젤'], 'A5':['디젤'], 'Q3':['디젤']},
+  mini:     {'쿠퍼 3도어':['디젤'], '쿠퍼 5도어':['디젤'], '컨트리맨':['디젤','PHEV']},
+  volvo:    {'S90':['디젤'], 'XC60':['디젤'], 'XC90':['디젤'], 'V60 크로스컨트리':['디젤']},
+  landrover:{'레인지로버':['디젤'], '레인지로버 스포츠':['디젤'], '레인지로버 이보크':['디젤','PHEV'], '레인지로버 벨라':['디젤']}
+};
+var MYCAR_FUEL_ORDER = ['가솔린','디젤','LPG','하이브리드','E-Tech 하이브리드','PHEV','플러그인 하이브리드','전기','수소'];
+
 
 /* ===================== 설정 ===================== */
 var CFG = {
@@ -928,6 +947,10 @@ var CFG = {
   Object.keys(MYCAR_EXTRA).forEach(function(b){ var list=DATA.models[b]||(DATA.models[b]=[]); var names=list.map(function(m){return m.name;});
     MYCAR_EXTRA[b].forEach(function(n){ if(names.indexOf(n)<0) list.push({name:n, fuels:MYCAR_FUELS_ALL, cat:'그 외 · 구형'}); }); });
   MYCAR_EXTRA_BRANDS.forEach(function(b){ DATA.brands.push({id:b.id, name:b.name, origin:b.origin, logoUrl:'', text:true}); DATA.models[b.id]=b.models.map(function(n){ return {name:n, fuels:MYCAR_FUELS_ALL}; }); });
+  // 단종 연료 합치기 (현재 판매 연료 + 예전 연료), 정해진 순서로 정렬
+  Object.keys(MYCAR_FUEL_HISTORY).forEach(function(b){ (DATA.models[b]||[]).forEach(function(m){ var add=MYCAR_FUEL_HISTORY[b][m.name]; if(!add) return;
+    var f=m.fuels.slice(); add.forEach(function(x){ if(f.indexOf(x)<0) f.push(x); });
+    f.sort(function(a,c){ var ia=MYCAR_FUEL_ORDER.indexOf(a), ic=MYCAR_FUEL_ORDER.indexOf(c); return (ia<0?99:ia)-(ic<0?99:ic); }); m.fuels=f; }); });
 })();
 (function(){
   var $ = function(s, r){ return (r||document).querySelector(s); };
@@ -1128,9 +1151,16 @@ var CFG = {
       body=cats.map(function(c){ return (c?'<div class="sect-title">'+esc(c)+'</div>':'')+'<div class="pick-grid two">'+ms.filter(function(m){return (m.cat||'')===c;}).map(function(m){ return '<button type="button" class="pick'+(reg.model===m.name?' on':'')+'" data-m="'+esc(m.name)+'">'+esc(m.name)+'</button>'; }).join('')+'</div>'; }).join('')
         +'<div class="sect-title">목록에 없어요</div><div class="field" style="margin-bottom:0"><label for="modelFree">차종 직접 입력</label><div style="display:flex;gap:8px"><input id="modelFree" placeholder="예: 6시리즈 GT, 제네시스 쿠페" value="'+esc(reg.model_free||'')+'"><button type="button" class="btn btn-primary" id="modelFreeGo" style="padding:12px 18px;white-space:nowrap">다음 →</button></div></div>'
         +'<div class="flow-nav"><button class="btn btn-ghost" id="rBack">뒤로</button></div>'; }
-    if (sub==='fuel'){ var fl=(DATA.fuelLabel&&DATA.fuelLabel[reg.brand])||'연료'; title='<h2>'+esc(reg.model)+' '+fl+'은요?</h2><p class="sub"></p>';
+    if (sub==='fuel'){ var fl=(DATA.fuelLabel&&DATA.fuelLabel[reg.brand])||'연료'; var lc=fl.charCodeAt(fl.length-1)-0xAC00, josa=(lc>=0&&lc<11172&&lc%28)?'은':'는';
+      title='<h2>'+esc(reg.model)+' '+fl+josa+'요?</h2><p class="sub">'+(fl==='연료'?'예전에 판매된 연료도 고를 수 있어요':'')+'</p>';
       var mm=(DATA.models[reg.brand]||[]).find(function(m){return m.name===reg.model;})||{fuels:MYCAR_FUELS_ALL};
-      body='<div class="pick-grid two">'+mm.fuels.map(function(f){ return '<button type="button" class="pick'+(reg.fuel===f?' on':'')+'" data-f="'+esc(f)+'">'+esc(f)+'</button>'; }).join('')+'</div><div class="flow-nav"><button class="btn btn-ghost" id="rBack">뒤로</button></div>'; }
+      var pick=function(f){ return '<button type="button" class="pick'+(reg.fuel===f?' on':'')+'" data-f="'+esc(f)+'">'+esc(f)+'</button>'; };
+      var hasP=mm.fuels.indexOf('PHEV')>=0||mm.fuels.indexOf('플러그인 하이브리드')>=0;
+      var rest=(fl==='연료')?MYCAR_FUELS_ALL.filter(function(f){ return mm.fuels.indexOf(f)<0 && !(hasP && f==='플러그인 하이브리드'); }):[];
+      var restOn=rest.indexOf(reg.fuel)>=0;
+      body='<div class="pick-grid two">'+mm.fuels.map(pick).join('')+'</div>'
+        +(rest.length?'<button type="button" class="more-fuel" id="moreFuel"'+(restOn?' hidden':'')+'>다른 연료예요 ▾</button><div class="pick-grid two" id="restFuel"'+(restOn?'':' hidden')+' style="margin-top:10px">'+rest.map(pick).join('')+'</div>':'')
+        +'<div class="flow-nav"><button class="btn btn-ghost" id="rBack">뒤로</button></div>'; }
     if (sub==='year'){ title='<h2>연식은요?</h2><p class="sub">자동차등록증의 연식 또는 출고 연도.</p>'; var y=new Date().getFullYear(); var ys=[]; for(var i=0;i<14;i++) ys.push(y+1-i);
       body='<div class="pick-grid">'+ys.map(function(yy){ return '<button type="button" class="pick'+(reg.model_year===yy?' on':'')+'" data-y="'+yy+'">'+yy+'</button>'; }).join('')+'</div><div class="flow-nav"><button class="btn btn-ghost" id="rBack">뒤로</button></div>'; }
     slideIn(title+'<div class="crumbs">'+crumbs+'</div>'+body);
@@ -1140,6 +1170,7 @@ var CFG = {
     var flt=$('#modelFilter'); if (flt){ flt.addEventListener('input', function(){ var q=flt.value.trim().toLowerCase().replace(/\s+/g,''); $$('[data-m]').forEach(function(b){ var t=b.dataset.m.toLowerCase().replace(/\s+/g,''); b.style.display = (!q || t.indexOf(q)>=0) ? '' : 'none'; }); $$('.sect-title').forEach(function(t){ var g=t.nextElementSibling; if(g && g.classList.contains('pick-grid')){ var any=$$('[data-m]',g).some(function(b){return b.style.display!=='none';}); t.style.display=any?'':'none'; g.style.display=any?'':'none'; } }); }); }
     var mf=$('#modelFreeGo'); if (mf){ var go=function(){ var v=($('#modelFree').value||'').trim(); if(!v){ toast('차종을 입력해 주세요'); return; } if(reg.model!==v) reg.fuel=null; reg.model=v; reg.model_free=v; sub='fuel'; renderPick(); }; mf.addEventListener('click', go); $('#modelFree').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } }); }
     $$('[data-f]').forEach(function(b){ b.addEventListener('click', function(){ reg.fuel=b.dataset.f; sub='year'; renderPick(); }); });
+    var mfb=$('#moreFuel'); if (mfb) mfb.addEventListener('click', function(){ mfb.hidden=true; var rf=$('#restFuel'); if(rf) rf.hidden=false; });
     $$('[data-y]').forEach(function(b){ b.addEventListener('click', function(){ reg.model_year=Number(b.dataset.y); step=3; renderStep(); }); });
     var back=$('#rBack'); if(back) back.addEventListener('click', function(){ if(sub==='brand'){ step=1; renderStep(); } else if(sub==='model'){ sub='brand'; renderPick(); } else if(sub==='fuel'){ sub='model'; renderPick(); } else { sub='fuel'; renderPick(); } });
   }
