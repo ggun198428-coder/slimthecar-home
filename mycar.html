@@ -1008,6 +1008,12 @@ var CFG = {
       var row = Object.assign({ user_id: store.user.id }, store.vehicle); delete row.id_tmp;
       var r = await sb.from('vehicles').upsert(row).select().single(); if (r.error) throw r.error; store.vehicle = r.data;
     },
+    notifyReg: async function(){   // 등록 완료 알림톡(T1) 요청 — 같은 차량은 서버에서 1번만 발송
+      if (DEMO || !sb) return;
+      try { var ss=(await sb.auth.getSession()).data.session; if(!ss) return;
+        fetch(CFG.SUPABASE_URL+'/functions/v1/notify', { method:'POST', keepalive:true, headers:{'Content-Type':'application/json','Authorization':'Bearer '+ss.access_token,'apikey':CFG.SUPABASE_ANON_KEY}, body: JSON.stringify({action:'reg_done'}) }).catch(function(){});
+      } catch(e){}
+    },
     deleteAll: async function(){
       if (DEMO){ await api.logout(); return; }
       await sb.from('vehicles').delete().eq('user_id', store.user.id);
@@ -1118,6 +1124,7 @@ var CFG = {
         if (odo){ reg.last_service_est = reg.last_service_est||{}; MAINT.forEach(function(m){ if(!reg.last_service[m.k]){ reg.last_service[m.k] = Math.floor(odo/m.km)*m.km; reg.last_service_est[m.k]=true; } else if (reg.last_service[m.k] && !(reg.last_service_est&&reg.last_service_est[m.k]) ){ /* 사용자 입력값 유지 */ } }); if (oil) delete reg.last_service_est.oil; }
         $('#rNext').disabled=true; $('#rNext').textContent='저장 중…';
         try { await api.saveVehicle(reg); } catch(e){ toast('저장에 실패했어요. 다시 시도해 주세요'); $('#rNext').disabled=false; $('#rNext').textContent='등록 완료'; return; }
+        api.notifyReg();
         $('#donePlate').textContent = reg.plate; burst(); show('#vDone');
       });
     }
