@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="canonical" href="https://slimthecar.com/score.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="몇 가지 질문에 답하면 지금 상황에 가장 잘 맞는 자동차 이용방식(현금·할부·리스·장기렌트)을 무료로 진단해드립니다.">
 <title>CHAIDE SCORE | 슬림더카</title>
@@ -340,6 +341,140 @@
   .consent-row input{width:16px; height:16px; margin-top:1px; flex:0 0 auto;}
 
   .disclaimer{max-width:760px; margin:0 auto; padding:0 20px 24px; font-size:11px; color:var(--text-mute); text-align:center;}
+  /* ---------- 역전 슬라이더 (what-if) ---------- */
+  .flip-panel{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 20px 16px; margin-bottom:16px;}
+  .flip-panel h3{font-size:13.5px; color:var(--navy); margin:0 0 2px;}
+  .flip-panel .fp-sub{font-size:12px; color:var(--text-mute); margin:0 0 14px;}
+  .fp-row{display:grid; grid-template-columns:72px 1fr 96px; gap:12px; align-items:center; margin-bottom:12px;}
+  .fp-row:last-of-type{margin-bottom:0;}
+  .fp-row label{font-size:12px; font-weight:700; color:var(--text);}
+  .fp-row input[type=range]{width:100%; accent-color:var(--teal); cursor:pointer; margin:0;}
+  .fp-row .fp-val{font-size:11.5px; white-space:nowrap; font-weight:700; color:var(--teal); text-align:right; font-variant-numeric:tabular-nums;}
+  .fp-flip{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); display:flex; flex-direction:column; gap:7px;}
+  .fp-flip .fp-line{display:flex; gap:8px; align-items:flex-start; font-size:12.5px; line-height:1.55; color:var(--text);}
+  .fp-flip .fp-line i{flex:0 0 auto; width:18px; height:18px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:11px; font-weight:800; color:#fff; background:var(--teal); margin-top:1px;}
+  .fp-flip .fp-line b{color:var(--navy);}
+  .fp-flip .fp-line.stable i{background:var(--good);}
+  .fp-reset{font-size:11.5px; color:var(--text-mute); text-decoration:underline; text-underline-offset:2px; cursor:pointer; margin-top:10px; display:inline-block;}
+  .fp-reset[hidden]{display:none;}
+  @media (max-width:480px){ .fp-row{grid-template-columns:64px 1fr 84px; gap:8px;} }
+
+  /* ---------- 결과 공유 ---------- */
+  /* ===== 차이드 매니저 진입 카드 ===== */
+  .mgr-card{position:relative; overflow:hidden; isolation:isolate; word-break:keep-all; margin:18px 0 6px; padding:24px 22px 18px; border-radius:22px; color:#fff;
+    background:radial-gradient(120% 90% at 0% 0%, #12345f 0%, #071D3C 55%, #050f22 100%); box-shadow:0 30px 60px -34px rgba(7,29,60,.75);}
+  .mgr-card::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px; z-index:-1;
+    background:conic-gradient(from var(--mgr-a,0deg), rgba(254,229,0,.0), rgba(254,229,0,.85), rgba(0,154,183,.8), rgba(196,166,255,.7), rgba(254,229,0,.0) 70%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:mgrSpin 6s linear infinite;}
+  @property --mgr-a{syntax:'<angle>'; initial-value:0deg; inherits:false;}
+  @keyframes mgrSpin{to{--mgr-a:360deg}}
+  .mgr-glow{position:absolute; z-index:-1; inset:-40% -20% auto auto; width:360px; height:360px; border-radius:50%;
+    background:radial-gradient(circle, rgba(254,229,0,.28), rgba(254,229,0,0) 62%); filter:blur(6px); animation:mgrFloat 7s ease-in-out infinite;}
+  .mgr-glow::after{content:""; position:absolute; left:-520px; top:300px; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle, rgba(0,154,183,.35), rgba(0,154,183,0) 65%);}
+  @keyframes mgrFloat{0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,24px)}}
+  .mgr-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:18px; align-items:center;}
+  .mgr-eb{display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:800; letter-spacing:.04em; color:#FEE500; background:rgba(254,229,0,.12); border:1px solid rgba(254,229,0,.35); padding:5px 11px; border-radius:999px;}
+  .mgr-eb i{width:7px; height:7px; border-radius:50%; background:#FEE500; box-shadow:0 0 0 0 rgba(254,229,0,.7); animation:mgrPing 1.8s ease-out infinite;}
+  @keyframes mgrPing{0%{box-shadow:0 0 0 0 rgba(254,229,0,.7)} 100%{box-shadow:0 0 0 9px rgba(254,229,0,0)}}
+  .mgr-copy h3{margin:12px 0 8px; font-size:24px; line-height:1.28; font-weight:800; letter-spacing:-.02em; color:#fff;}
+  .mgr-copy h3 em{font-style:normal; background:linear-gradient(90deg,#FEE500,#FFD15C 40%,#7FE3F2 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .mgr-copy p{margin:0 0 14px; font-size:13.5px; line-height:1.6; color:rgba(255,255,255,.78);}
+  .mgr-chips{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:7px;}
+  .mgr-chips li{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#fff; padding:7px 11px; border-radius:11px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+    opacity:0; transform:translateY(10px) scale(.92); transition:opacity .5s cubic-bezier(.2,.8,.2,1), transform .5s cubic-bezier(.2,.8,.2,1); transition-delay:calc(var(--d) * 90ms + 150ms);}
+  .mgr-chips svg{width:15px; height:15px; fill:none; stroke:#7FE3F2; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round;}
+  .mgr-card.in .mgr-chips li{opacity:1; transform:none;}
+  .mgr-phone{position:relative; padding:12px; border-radius:20px; background:#B2C7D9; box-shadow:0 22px 40px -22px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.35); transform:rotate(2deg); animation:mgrBob 5s ease-in-out infinite;}
+  @keyframes mgrBob{0%,100%{transform:rotate(2deg) translateY(0)} 50%{transform:rotate(1deg) translateY(-6px)}}
+  .mgr-ph-top{display:flex; align-items:center; gap:7px; margin-bottom:9px; color:#1b2733;}
+  .mgr-ph-top b{font-size:12.5px;} .mgr-ph-top small{margin-left:auto; font-size:10px; font-weight:700; color:#41546a; background:rgba(255,255,255,.55); padding:2px 7px; border-radius:6px;}
+  .mgr-ph-av{width:24px; height:24px; border-radius:9px; background:#071D3C; color:#FEE500; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center;}
+  .mgr-bub{background:#fff; color:#1b2733; font-size:12px; line-height:1.5; padding:9px 11px; border-radius:4px 14px 14px 14px; margin-bottom:7px; box-shadow:0 4px 10px -6px rgba(0,0,0,.25);
+    opacity:0; transform:translateY(12px) scale(.94); transform-origin:0 0; transition:opacity .55s cubic-bezier(.2,.8,.2,1), transform .55s cubic-bezier(.34,1.56,.64,1);}
+  .mgr-bub b{display:block; font-size:12.5px; margin-bottom:2px; color:#071D3C;}
+  .mgr-bub.b1{transition-delay:.45s;} .mgr-bub.b2{transition-delay:1.25s;}
+  .mgr-card.in .mgr-bub{opacity:1; transform:none;}
+  .mgr-typing{display:inline-flex; gap:4px; background:#fff; padding:8px 11px; border-radius:4px 12px 12px 12px; opacity:0; transition:opacity .4s 2s;}
+  .mgr-card.in .mgr-typing{opacity:1;}
+  .mgr-typing i{width:5px; height:5px; border-radius:50%; background:#9aa7b4; animation:mgrDot 1.2s infinite;} .mgr-typing i:nth-child(2){animation-delay:.15s} .mgr-typing i:nth-child(3){animation-delay:.3s}
+  @keyframes mgrDot{0%,60%,100%{transform:translateY(0); opacity:.5} 30%{transform:translateY(-4px); opacity:1}}
+  /* 카카오 로그인 버튼: 카카오 디자인 가이드(배경 #FEE500 · 심볼 #000 · 라벨 85% 검정 · 12px 라운드) */
+  .k-start{position:relative; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:20px; height:58px; border-radius:12px; background:#FEE500; color:rgba(0,0,0,.85);
+    font-size:17px; font-weight:700; text-decoration:none; letter-spacing:-.01em; overflow:visible; transition:transform .2s, box-shadow .25s; box-shadow:0 16px 34px -14px rgba(254,229,0,.75);}
+  .k-start:hover{transform:translateY(-2px); box-shadow:0 22px 44px -14px rgba(254,229,0,.9);}
+  .k-start:active{transform:translateY(0) scale(.985);}
+  .k-start .k-sym{width:22px; height:22px; flex:none;}
+  .k-start strong{font-weight:900;}
+  .k-start::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; overflow:hidden;
+    background:linear-gradient(105deg, transparent 35%, rgba(255,255,255,.75) 50%, transparent 65%) no-repeat; background-size:220% 100%; background-position:160% 0; animation:kSheen 3.4s ease-in-out infinite 1s;}
+  @keyframes kSheen{0%{background-position:160% 0} 45%,100%{background-position:-60% 0}}
+  .k-halo{position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow:0 0 0 0 rgba(254,229,0,.65); animation:kHalo 2.2s ease-out infinite;}
+  @keyframes kHalo{0%{box-shadow:0 0 0 0 rgba(254,229,0,.6)} 80%,100%{box-shadow:0 0 0 14px rgba(254,229,0,0)}}
+  .mgr-foot{display:flex; justify-content:space-between; align-items:center; margin-top:11px; font-size:12px; color:rgba(255,255,255,.6);}
+  .mgr-foot a{color:#7FE3F2; font-weight:700; text-decoration:none;} .mgr-foot a:hover{text-decoration:underline;}
+  @media (max-width:640px){
+    .mgr-card{padding:20px 16px 16px;}
+    .mgr-grid{grid-template-columns:1fr; gap:14px;}
+    .mgr-copy h3{font-size:21px;}
+    .mgr-phone{transform:none; animation:none; padding:10px;}
+    .mgr-bub.b2,.mgr-typing{display:none;}
+    .k-start{height:56px; font-size:16.5px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .mgr-card::before,.mgr-glow,.mgr-phone,.mgr-eb i,.k-halo,.k-start::after,.mgr-typing i{animation:none !important;}
+    .mgr-chips li,.mgr-bub,.mgr-typing{opacity:1 !important; transform:none !important; transition:none !important;}
+  }
+  /* ===== 결과 보관·공유 ===== */
+  .vault{margin:18px 0 16px;}
+  .vault-head{display:flex; align-items:center; gap:10px; margin:0 4px 10px; color:var(--navy);}
+  .vault-head b{font-size:13px; font-weight:800; letter-spacing:.02em; white-space:nowrap;}
+  .vault-dia{width:7px; height:7px; transform:rotate(45deg); background:linear-gradient(135deg,#E9C46A,var(--gold)); box-shadow:0 0 0 3px rgba(217,164,65,.18);}
+  .vault-rule{flex:1; height:1px; background:linear-gradient(90deg, rgba(217,164,65,.55), rgba(217,164,65,0));}
+  .vault-list{background:var(--paper); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:0 1px 0 rgba(255,255,255,.8) inset, 0 18px 40px -30px rgba(7,29,60,.45);}
+  .vt{position:relative; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px; width:100%; padding:15px 18px; background:transparent; border:0; border-top:1px solid var(--line);
+    text-align:left; font-family:inherit; color:inherit; cursor:pointer; transition:background .3s ease;}
+  .vt:first-child{border-top:0;}
+  .vt[hidden]{display:none;}
+  .vt::before{content:""; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:0 3px 3px 0; background:linear-gradient(var(--gold),#E9C46A); transform:scaleY(0); transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  .vt:hover{background:linear-gradient(90deg, rgba(232,247,250,.9), rgba(232,247,250,0) 80%);}
+  .vt:hover::before{transform:scaleY(1);}
+  .vt:focus-visible{outline:2px solid var(--teal); outline-offset:-2px;}
+  .vt-ic{position:relative; width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:#F3D58A;
+    background:linear-gradient(145deg,#12345f,#071D3C); box-shadow:0 8px 18px -10px rgba(7,29,60,.7), inset 0 1px 0 rgba(255,255,255,.12); transition:transform .35s cubic-bezier(.34,1.56,.64,1), background .3s;}
+  .vt-ic > svg{width:21px; height:21px; transition:opacity .2s, transform .3s;}
+  .vt:hover .vt-ic{transform:translateY(-2px) rotate(-4deg);}
+  .vt-ic .vt-chk{position:absolute; opacity:0; transform:scale(.4); color:#fff;}
+  .vt-spin{position:absolute; inset:-3px; border-radius:15px; border:2px solid transparent; border-top-color:var(--teal); border-right-color:var(--teal); opacity:0; animation:vtSpin .8s linear infinite;}
+  @keyframes vtSpin{to{transform:rotate(360deg)}}
+  .vt-tx{min-width:0;}
+  .vt-t{display:block; font-size:14.5px; font-weight:700; color:var(--navy); letter-spacing:-.01em;}
+  .vt-t em{font-style:normal; font-size:11px; font-weight:700; color:#9A6B12; background:var(--gold-soft); border:1px solid rgba(217,164,65,.35); padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:2px;}
+  .vt-s{display:block; font-size:12px; color:var(--text-mute); margin-top:3px; transition:color .2s;}
+  .vt-go{width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--navy); border:1px solid var(--line); transition:transform .3s cubic-bezier(.2,.8,.2,1), background .3s, color .3s, border-color .3s;}
+  .vt-go svg{width:14px; height:14px;}
+  .vt:hover .vt-go{transform:translateX(3px); background:var(--navy); color:#fff; border-color:var(--navy);}
+  .vt.is-busy{pointer-events:none;} .vt.is-busy .vt-spin{opacity:1;} .vt.is-busy .vt-ic > svg:first-child{opacity:.35;}
+  .vt.is-done .vt-ic{background:linear-gradient(145deg,#14a37a,var(--good));}
+  .vt.is-done .vt-ic > svg:first-child{opacity:0; transform:scale(.6);}
+  .vt.is-done .vt-chk{opacity:1; transform:scale(1); transition:opacity .2s, transform .45s cubic-bezier(.34,1.56,.64,1);}
+  .vt.is-done .vt-s{color:var(--good); font-weight:700;}
+  @media (max-width:520px){ .vt{padding:14px 14px; gap:12px;} .vt-ic{width:40px; height:40px;} .vt-t{font-size:14px;} .vt-t em{display:inline-block; margin:3px 0 0 0; vertical-align:0;} }
+  @media (prefers-reduced-motion:reduce){ .vt, .vt *{transition:none !important; animation:none !important;} }
+  .share-row{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:12px;}
+  .share-row button{font-family:inherit; font-size:12.5px; font-weight:700; padding:10px 14px; border-radius:999px; border:1.5px solid var(--navy); background:#fff; color:var(--navy); cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+  .share-row button:hover{background:var(--navy); color:#fff;}
+  .share-row button[hidden]{display:none;}
+  .share-toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); background:var(--navy); color:#fff; font-size:13px; font-weight:600; padding:11px 18px; border-radius:999px; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:300; box-shadow:0 10px 30px rgba(7,29,60,.35);}
+  .share-toast.on{opacity:1; transform:translateX(-50%) translateY(0);}
+  .shared-banner{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:var(--gold-soft); border:1px solid #F1DDAE; border-radius:14px; padding:14px 16px; margin-bottom:16px; font-size:13px; color:#6B4A0E;}
+  .shared-banner b{color:#4A3306;}
+  .shared-banner button{font-family:inherit; font-size:12.5px; font-weight:800; padding:10px 14px; border-radius:999px; border:none; background:var(--navy); color:#fff; cursor:pointer; white-space:nowrap;}
+
+
+  html.scoring #scoreBarsWrap, html.scoring #whyBoxWrap, html.scoring #riskWrap, html.scoring #flipPanel{opacity:.45; transition:opacity .3s;}
+  .calc-dot{display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--teal,#009AB7); margin-right:8px; vertical-align:middle; animation:calcPulse 1s ease-in-out infinite;}
+  @keyframes calcPulse{0%,100%{transform:scale(.7); opacity:.5} 50%{transform:scale(1.1); opacity:1}}
+  .retry-btn{font:inherit; font-weight:700; color:#fff; background:var(--navy,#071D3C); border:none; border-radius:8px; padding:6px 12px; margin-left:6px; cursor:pointer;}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LMDLVEX9BH"></script>
 <script>
@@ -475,35 +610,27 @@
             {value:'가족공용', label:'가족 공용 사용'}, {value:'레저·여행', label:'레저·여행(세컨카)'},
             {value:'기타', label:'기타'} ] },
 
-    // 2026-09-11: 종전에 '승합밴' 하나로 묶여 있던 것을 '승합차(9인승 이상)'와 '화물밴'으로
-    // 분리했습니다. 종전 구조에서는 카니발 9인승·스타리아 같은 승합차가 화물과 같은 취급을 받아
-    // 렌트가 0점으로 고정되고 "렌트 법적으로 불가능"이라는 틀린 안내까지 나갔습니다. 실제로는
-    // 장기렌트가 되는 차종이고, 9인승 이상은 부가세 매입세액 공제 대상이라 오히려 렌트가
-    // 유리해질 수 있는 구간입니다. 정반대로 안내하고 있었던 셈입니다.
     { key:'vehicleType', eyebrow:'선호차량', title:'선호 또는 필요한 차량은 어떤 종류이신가요?', grid2:true,
       options:[ {value:'경차', label:'경차'}, {value:'세단', label:'세단'}, {value:'SUV', label:'SUV'},
-        {value:'승합차', label:'승합차 (9인승 이상)'},
-        {value:'화물트럭', label:'화물트럭'}, {value:'화물밴', label:'화물밴 (화물 등록)'},
-        {value:'픽업트럭', label:'픽업트럭'},
+        {value:'화물트럭', label:'화물트럭'}, {value:'승합밴', label:'승합밴'}, {value:'픽업트럭', label:'픽업트럭'},
         {value:'custom', label:'이미 정한 차종이 있어요', custom:true,
           customPlaceholder:'차량명을 입력해주세요 (예: 카니발, 아반떼, EV3 등)'} ] },
 
-    // 화물트럭·화물밴·픽업트럭은 렌터카사가 취급하지 않는 차종(렌트 불가)이 원칙입니다.
-    // 다만 운수업·자동차판매업·자동차임대업·운전학원업·경비업(출동차량) 등에서 영업 목적으로
-    // "직접 사용"하는 차량은 8인승 이하 승용차라도 매입세액 공제가 열리는 예외라서, 그때는
-    // 부가세가 포함된 렌트료 쪽이 오히려 유리해집니다. 이 질문은 사업자·법인이 공제 가능성이
-    // 있는 차종(경차·승합차·화물·픽업)을 골랐을 때만 노출됩니다.
+    // 화물트럭·승합밴·픽업트럭은 렌터카사가 취급하지 않는 차종(렌트 불가)이 원칙이지만,
+    // 운수업·자동차판매업·자동차임대업·운전학원업·경비업(출동차량) 등에서 영업 목적으로
+    // "직접 사용"하는 차량은 부가세 매입세액공제(환급) 대상이라 오히려 부가세 포함 렌트가
+    // 가장 유리해지는 예외 케이스입니다. 이 질문은 사업자·법인이 해당 차종을 골랐을 때만 노출됩니다.
     { key:'vatRefund', eyebrow:'영업용 사용', title:'이 차량을 운수업·자동차판매업·자동차임대업·운전학원업·경비업 등에서 영업 목적으로 직접 사용하시나요?',
-      help:'해당되면 매입세액 공제 여부가 달라져 계산 방식이 바뀌어요. 잘 모르시겠다면 "아니요"를 선택해주세요.',
-      skip: ()=> state.biz==='개인' || !['경차','승합차','화물트럭','화물밴','픽업트럭'].includes(state.vehicleType),
+      help:'해당되면 부가세 환급 혜택이 있어 계산 방식이 달라져요. 잘 모르시겠다면 "아니요"를 선택해주세요.',
+      skip: ()=> state.biz==='개인' || !['경차','화물트럭','승합밴','픽업트럭'].includes(state.vehicleType),
       options:[ {value:'no', label:'아니요, 일반 업무용이에요'}, {value:'yes', label:'네, 영업용으로 직접 사용해요'} ] },
 
     // 번호판은 "리스 vs 렌트"를 가르는 축이 아니라 "렌트 vs 나머지 세 방식(현금·할부·리스는
     // 모두 일반 번호판)"을 가르는 축입니다. 화물등록 차종은 렌트가 이미 0점 확정이라 무의미한
-    // 질문이 되므로 skip 처리합니다(승합차는 렌트가 되므로 skip 대상이 아닙니다).
-    // "상관없어요"와 "렌터카 번호판이어도 상관없어요"는 사실상 같은 뜻이라 2개로 통합했습니다.
+    // 질문이 되므로 skip 처리합니다. "상관없어요"와 "렌터카 번호판이어도 상관없어요"는 사실상
+    // 같은 뜻이라 2개 선택지로 통합했습니다.
     { key:'plateSensitivity', eyebrow:'번호판', title:'차량 번호판, 신경 쓰이는 부분이 있으신가요?',
-      skip: ()=> ['화물트럭','화물밴','픽업트럭'].includes(state.vehicleType),
+      skip: ()=> ['화물트럭','승합밴','픽업트럭'].includes(state.vehicleType),
       options:[ {value:'general', label:'일반 번호판이었으면 해요'},
         {value:'no_pref', label:'상관없어요'},
         {value:'rental_ok', label:'허·하·호 번호판도 상관없어요'} ] },
@@ -728,6 +855,8 @@
     if (disclaimerEl){
       if (step.id === 'contact'){
         disclaimerEl.textContent = '상담 신청 시 입력하신 이름·연락처 등은 상담 목적으로 Google LLC(미국) 등을 통해 전송·저장됩니다. 앞서 답변하신 진단 내용 자체는 별도로 저장되지 않으며, 서비스 개선을 위한 익명 통계만 함께 수집됩니다.';
+      } else if (step.id === 'result'){
+        disclaimerEl.textContent = '이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않습니다. 공유 링크에는 답변 내용만 담기며 개인정보는 포함되지 않습니다.';
       } else {
         disclaimerEl.textContent = '이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않으며, 서비스 개선을 위해 방문·진행 단계 등 익명 통계만 수집됩니다.';
       }
@@ -754,434 +883,44 @@
   // scores FIT (situation/preference match), per the 8 weighted factors in
   // CHAIDE_SCORE_1.0. The final MONEY×0.6 + FIT×0.4 CHAIDE SCORE is completed once
   // real quotes are in hand.
-  // ===== 부가세 매입세액 공제 판정 (2026-09-11 4차 신설) =====
-  //
-  // 종전에는 `vatRefund==='yes'`(운수업 등 영업용 직접사용) 하나로만 공제 이점을 열었습니다.
-  // 그런데 부가가치세법은 **서로 다른 두 개의 제도**를 두고 있습니다.
-  //
-  //  ① 차종 기준 — 제39조 ①항 5호는 "개별소비세 과세대상 자동차"(8인승 이하 승용차)의
-  //     구입·임차·유지 매입세액을 불공제로 규정합니다. 뒤집으면 **경차·9인승 이상 승합·화물차는
-  //     애초에 이 불공제 대상이 아니어서**, 사업자가 사업 관련으로 쓰면 공제가 됩니다.
-  //     운수업 여부와 무관합니다.
-  //  ② 업종 기준 — 운수업·자동차판매업·자동차임대업·운전학원업·경비업 등에서 자동차를
-  //     직접 영업에 쓰는 경우엔 **8인승 이하 승용차라도** 공제가 열립니다.
-  //
-  // 둘은 독립적이고, 어느 한쪽만 충족해도 공제가 됩니다. 종전 로직은 ②만 보고 있어서
-  // "승합차를 일반 업무용으로 쓰는 사업자"가 받아야 할 이점을 받지 못했습니다.
-  // 어느 경우든 **사업자·법인**이어야 하고, 사업과 무관한 사용·면세사업 사용은 별도로
-  // 불공제입니다(그건 개인이 판단할 영역이라 진단에서 단정하지 않습니다).
-  // 근거: `claude/부가세_비용처리_기준.md` §2.
-  const VAT_DEDUCTIBLE_TYPES = ['경차','승합차','화물트럭','화물밴','픽업트럭'];
-  const FREIGHT_TYPES = ['화물트럭','화물밴','픽업트럭'];
-  function isFreightType(v){ return FREIGHT_TYPES.includes(v); }
-  function vatDeductible(){
-    const isBizUser = (state.biz==='개인사업자' || state.biz==='법인');
-    const byVehicle = VAT_DEDUCTIBLE_TYPES.includes(state.vehicleType); // ① 차종 기준
-    const byUse = (state.vatRefund==='yes');                            // ② 업종 기준
-    return { deductible: isBizUser && (byVehicle || byUse), byVehicle, byUse, isBizUser };
+  // ================= ENGINE =================
+  // 점수 계산(규칙·가중치)은 서버(Supabase Edge Function `chaide-score`)에서만 수행됩니다.
+  // 브라우저는 답변(state)을 보내고 점수·이유·확인사항·역전 정보만 받아 캐시합니다.
+  const SCORE_API = 'https://mdyqomcgxymrzhflsscq.supabase.co/functions/v1/chaide-score';
+  const SCORE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1keXFvbWNneHltcnpoZmxzc2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNDMyNjcsImV4cCI6MjEwNjkxOTI2N30.6_Z4_oNuu0Zdhd2S_UIOlGHO4dY-zDnOWpPtHHMgIsU';
+  const ENGINE_KEYS = ['accident','biz','bizPriority','budget','debtBurden','dispBurden','driver','futureFundingPlan','initialCash','insHistory','km','mgmtPref','months','ownPref','plateSensitivity','priority','purpose','vatRefund','vehicleType'];
+  const ENGINE = { key:null, res:null };
+  const ENGINE_CACHE = new Map();
+  const ENGINE_PENDING = new Map();   // key → [callbacks]  (같은 상태 동시 요청 합치기)
+  function engineKey(){ const o={}; ENGINE_KEYS.forEach(k=>{ if (state[k]!==undefined && state[k]!==null) o[k]=state[k]; }); return JSON.stringify(o); }
+  function ensureScore(cb){
+    const key = engineKey();
+    if (ENGINE_CACHE.has(key)){ ENGINE.res = ENGINE_CACHE.get(key); ENGINE.key = key; cb && cb(ENGINE.res); return; }
+    if (ENGINE_PENDING.has(key)){ if (cb) ENGINE_PENDING.get(key).push(cb); return; }
+    ENGINE_PENDING.set(key, cb ? [cb] : []);
+    document.documentElement.classList.add('scoring');
+    fetch(SCORE_API, { method:'POST', headers:{ 'Content-Type':'application/json', 'apikey':SCORE_ANON, 'Authorization':'Bearer '+SCORE_ANON }, body: JSON.stringify({ state: JSON.parse(key), flips:true }) })
+      .then(r => r.json())
+      .then(j => {
+        if (!j || !j.ok) throw new Error((j && j.error) || 'score');
+        ENGINE_CACHE.set(key, j);
+        const cbs = ENGINE_PENDING.get(key) || []; ENGINE_PENDING.delete(key);
+        if (engineKey() === key){ ENGINE.res = j; ENGINE.key = key; cbs.forEach(fn => { try { fn(j); } catch(e){} }); }
+      })
+      .catch(() => { ENGINE_PENDING.delete(key); if (engineKey() === key) showScoreError(); })
+      .finally(() => { if (ENGINE_PENDING.size === 0) document.documentElement.classList.remove('scoring'); });
   }
-
-  function computeFit(){
-    const T = state.months||48, km = state.km||17500;
-    const vehiclePrice = state.budget||4500;
-    const own = state.ownPref||3, disp = state.dispBurden||3, mgmt = state.mgmtPref||3;
-    const bizImportance = state.bizPriority||3;
-    const insYears = state.insHistory==null?5:state.insHistory;
-    const accident = state.accident==='yes';
-    // '제한없음'은 현금구매 희망자를 위한 선택지입니다. 계산상 "돈이 무한대로 있다"로 취급해서
-    // 초기자금 부족 페널티(아래)가 전혀 붙지 않게 하고, 별도 보너스도 추가로 줍니다.
-    const isUnlimitedCash = state.initialCash==='unlimited';
-    const initialCash = isUnlimitedCash ? Infinity : (state.initialCash||0);
-
-    const fit = {cash:0, loan:0, lease:0, rent:0};
-    const add = (o)=>PRODUCTS.forEach(p=>fit[p]+=o[p]);
-
-    // 이용기간이 짧을수록(특히 2년 이하) 렌트·리스·할부는 짧은 기간에 초기 감가·수수료를
-    // 회수해야 해서 월 대여료/할부금이 비싸지는 구조라 현금이 크게 유리해집니다.
-    // 반대로 4~5년처럼 중장기로 가면 렌트·리스가 상대적으로 유리해집니다.
-    if (T<=24) add({cash:22, loan:8, lease:4, rent:4});
-    else if (T<=36) add({cash:14, loan:12, lease:12, rent:12});
-    else if (T<=60) add({cash:6, loan:12, lease:19, rent:19});
-    else if (T<=84) add({cash:16, loan:18, lease:10, rent:8});
-    else add({cash:20, loan:16, lease:6, rent:4});
-
-    const priorityTable = {
-      // 리스는 금융상품이라 심사가 렌트보다 까다롭고 보증금·선납금 요구가 높은 편이라 렌트보다
-      // 낮게, 다만 명의가 금융사 명의라 심사가 할부보다는 유한 편이라 할부보다는 높게 뒀습니다.
-      '초기비용최소화': {cash:2, loan:9, lease:13, rent:18},
-      '월납최소화':     {cash:14, loan:8, lease:17, rent:17},
-      // '총비용최소화': 실제 견적 사례 분석 결과, 현금의 총비용 우위는 "4년 뒤 매각가가
-      // 차량가의 절반을 넘느냐"에 달려있어 FIT 단계(실제 잔가를 모르는 상태)에서 확정할 수
-      // 없습니다. 이전에는 현금에 크게 유리하게(16점) 뒀지만, 실제로는 승부가 갈릴 수 있는
-      // 사안이라 격차를 줄였습니다. 실제 승자는 MONEY(실제 견적) 단계에서 확정됩니다.
-      '총비용최소화':   {cash:14, loan:12, lease:11, rent:10},
-    };
-    const f2 = Object.assign({}, priorityTable[state.priority||'총비용최소화']);
-    // '초기비용최소화'를 이미 선택한 경우 "초기자금이 적다"는 신호가 priorityTable에 이미
-    // 크게 반영돼 있습니다(현금 2점 vs 렌트/리스 18점). 여기서 초기자금 조건까지 또 적용하면
-    // 같은 신호를 두 번 반영하는 셈이라, 이 경우엔 절반 크기로만 추가 반영합니다.
-    if (vehiclePrice>0 && initialCash < vehiclePrice*0.3){
-      const dampen = (state.priority==='초기비용최소화') ? 0.5 : 1;
-      f2.cash = Math.max(0, f2.cash-6*dampen); f2.loan = Math.max(0, f2.loan-6*dampen);
-      f2.lease = Math.min(20, f2.lease+2*dampen); f2.rent = Math.min(20, f2.rent+2*dampen);
-    }
-    // '제한없음'은 "돈이 부족해서 어쩔 수 없이 특정 방식을 고른다"가 아니라 "원하는 만큼
-    // 선납금·보증금·다운페이먼트를 낼 수 있다"는 뜻입니다. 이건 4가지 방식 모두의 총비용을
-    // 개선할 수 있는 여력이라, 렌트·리스·할부도 함께 보너스를 받습니다. 다만 현금은 이자·리스
-    // 마진 자체가 아예 없어지는 방식이라 총비용 관점에서 가장 크게 유리해집니다.
-    if (isUnlimitedCash){
-      // '제한없음'과 향후자금계획이 동시에 '있음'/'가능성있음'이면, 그 돈이 사실 온전히
-      // 자유롭게 쓸 수 있는 돈이 아닐 가능성이 큽니다("얼마든 쓸 수 있다"면서 "1~3년 내 큰
-      // 돈이 필요할 수도 있다"는 건 같은 돈 얘기 안에서 서로 살짝 모순되는 조합). 그래서
-      // 현금 보너스만 향후자금계획 답변에 따라 감쇠시킵니다. 할부/리스/렌트의 보너스(+5/+3/+3,
-      // "선납금·보증금을 더 낼 수 있다"는 의미)는 이 모순과 직접 관련 없어 그대로 둡니다.
-      const cashBonusTable = {'있음':3.5, '가능성있음':6};
-      const cashBonus = cashBonusTable[state.futureFundingPlan] ?? 10;
-      f2.cash = Math.min(20, f2.cash+cashBonus); f2.loan = Math.min(20, f2.loan+5);
-      f2.lease = Math.min(20, f2.lease+3); f2.rent = Math.min(20, f2.rent+3);
-    }
-    add(f2);
-
-    const ownPct=(own-1)/4, dispPct=(disp-1)/4;
-    add({
-      cash:  15*(0.6*ownPct + 0.4*(1-dispPct)),
-      loan:  15*(0.5*ownPct + 0.3*(1-dispPct)),
-      lease: 15*(0.2*(1-ownPct) + 0.6*dispPct),
-      rent:  15*(0.2*(1-ownPct) + 0.6*dispPct),
-    });
-
-    // 현금·할부는 보험·세금·정비를 직접 관리하는 게 동일해서 완전히 같은 값입니다(이전엔
-    // 근거 없이 할부가 현금보다 높았던 버그). 렌트는 "관리를 대신 해준다"가 핵심 가치라
-    // 직접관리를 원하는 사람에겐 그 가치가 무의미해 0점, 리스는 자동차세 대납·청구대행 정도의
-    // 부분적 편의는 있어 baseline을 살짝 남겨뒀습니다. '보통' 구간에서 리스=렌트 동점으로
-    // 맞춰서 "직접관리 성향이 강해질 때만 렌트가 리스를 앞서가는" 자연스러운 흐름을 만들었습니다.
-    const mgmtTable = {
-      1: {cash:5.0, loan:5.0, lease:3.5, rent:0},
-      3: {cash:2.5, loan:2.5, lease:5.0, rent:5.0},
-      5: {cash:0,   loan:0,   lease:8.0, rent:10.0},
-    };
-    add(mgmtTable[state.mgmtPref||3]);
-
-    // 부채 부담감: 소유선호(명의)와는 별개 축입니다. 할부는 개인 신용정보에 대출로 명확히
-    // 잡히지만, 리스는 상품·계약구조에 따라 잡히는 정도가 다르고(향후자금계획 RISK 문구로
-    // 별도 안내), 렌트는 임대서비스 구조라 개인 부채로 안 잡힙니다. 그래서 부담감의 영향을
-    // 할부엔 크게(70%), 리스엔 작게(30%), 렌트엔 전혀 안 주는 방식으로 나눴습니다.
-    const debtPct = ((state.debtBurden||3)-1)/4; // 0=부담없음 ~ 1=매우 부담
-    add({
-      cash:  8*debtPct,
-      loan:  8*(1-debtPct)*0.7,
-      lease: 8*(1-debtPct)*0.3,
-      rent:  0,
-    });
-
-    // 현금·할부·리스는 모두 개인이 직접 자동차보험에 가입하는 구조라 사고이력·보험경력의
-    // 영향이 완전히 동일해야 합니다(이전엔 근거 없이 리스만 더 유리하게 잡혀있었음). 렌트만
-    // 렌터카사 자체 보험구조라 개인 이력의 영향을 덜 받아 차별화했습니다. 보험경력은 3~5년과
-    // 5년 이상을 구분해서, 경력이 쌓일수록 렌트와의 격차가 더 벌어지도록 세분화했습니다.
-    if (accident) add({cash:1, loan:1, lease:1, rent:5});
-    else if (insYears<3) add({cash:2.5, loan:2.5, lease:2.5, rent:3.5});
-    else if (insYears<5) add({cash:3, loan:3, lease:3, rent:2});
-    else add({cash:3, loan:3, lease:3, rent:1});
-
-    // 주행거리 6단계 세분화. 많이 탈수록 감가·정비 리스크가 커지는데, 렌트/리스는 그 리스크를
-    // 회사가 떠안는 구조라 다주행 고객에게 유리해집니다. 현금은 항상 할부보다 1점 높게
-    // 유지했습니다(할부는 중도 매각·해지 시 중도상환위약금 리스크가 있어 항상 현금보다 낮아야 함).
-    const kmTable = [
-      {max:5000,  s:{cash:6, loan:5, lease:3, rent:3}},
-      {max:12500, s:{cash:5, loan:4, lease:4, rent:4}},
-      {max:17500, s:{cash:4, loan:3, lease:5, rent:5}},
-      {max:22500, s:{cash:3, loan:2, lease:6, rent:6}},
-      {max:27500, s:{cash:2, loan:1, lease:7, rent:7}},
-      {max:Infinity, s:{cash:1, loan:0, lease:8, rent:9}},
-    ];
-    add((kmTable.find(t=>km<=t.max) || kmTable[kmTable.length-1]).s);
-
-    if (state.biz==='개인'){ add({cash:3, loan:3, lease:2, rent:2}); }
-    else {
-      const scale = bizImportance/5;
-      add({cash:1, loan:1+1*(1-scale), lease:2+3*scale, rent:2+3*scale});
-    }
-
-    // 운전자 범위는 FIT(성향 매칭)에는 반영하지 않습니다. 현금·할부·리스는 각자 자동차보험에
-    // 가입하고 렌트는 보험이 포함된 구조라 "누가 운전하느냐"에 따라 실제 보험료·렌탈료가
-    // 달라지긴 하지만, 그건 MONEY(실제 견적) 레이어의 문제지 "이 방식이 나한테 맞는가"를
-    // 가르는 요소가 아닙니다. 다만 상담 시 견적을 낼 때 꼭 필요한 정보라 질문은 계속 받고
-    // 구글시트·이메일로 전달합니다. driverTable은 향후 MONEY 엔진에서 실제
-    // 보험료·렌탈료 견적에 반영할 때 참고용으로 남겨둡니다(현재는 미사용).
-    const driverTable = {
-      '본인만':        {cash:1.25, loan:1.25, lease:1.25, rent:1.25},
-      '본인+배우자':    {cash:1.1,  loan:1.1,  lease:1.4,  rent:1.4},
-      '본인+특정1인':   {cash:1.1,  loan:1.1,  lease:1.4,  rent:1.4},
-      '가족(자녀포함)': {cash:0.9,  loan:0.9,  lease:1.55, rent:1.55},
-      '직원포함':       {cash:0.5,  loan:0.5,  lease:2,    rent:2},
-      '다수불특정':     {cash:0.25, loan:0.25, lease:2.25, rent:2.25},
-      '대표자만':       {cash:1.25, loan:1.25, lease:1.25, rent:1.25},
-      '대표자가족':     {cash:0.9,  loan:0.9,  lease:1.55, rent:1.55},
-      '임직원포함':     {cash:0.5,  loan:0.5,  lease:2,    rent:2},
-    };
-    // add(driverTable[state.driver||'본인만']); // FIT 미반영 (2026-09-03) — 위 주석 참고
-
-    // 번호판: 현금·할부·리스는 모두 일반 번호판이라 한 편이고, 렌트만 렌터카 번호판을 쓰는
-    // 다른 편입니다. "상관없어요"(순수 무관심)와 "허·하·호도 괜찮아요"(적극적 긍정)는 신호의
-    // 확신도가 다르므로 분리했습니다 — 무관심층까지 렌트 선호로 취급하면 다른 항목들이 만든
-    // 성향을 왜곡합니다. 강한긍정의 크기도 6→4로 낮춰 일반 번호판 선호(+4)와 대칭을 맞췄고,
-    // 이로써 번호판은 "다른 8개 항목이 만든 격차가 4점 미만인 접전"에서만 결과를 뒤집을 수
-    // 있고, 뚜렷한 리드(5점 이상)를 단독으로 뒤집지는 못합니다.
-    if (state.plateSensitivity==='general') add({cash:4, loan:4, lease:4, rent:0});
-    else if (state.plateSensitivity==='rental_ok') add({cash:0, loan:0, lease:0, rent:4});
-    // 'no_pref'는 중립이라 아무 가산도 없음 (의도적으로 분기 없음)
-
-    // 화물트럭·화물밴·픽업트럭(화물 등록 차종)은 렌터카사가 취급하지 않아 렌트 점수를 0으로
-    // 고정합니다. 그 경우 매입세액 공제의 이점은 리스·할부·현금 쪽에만 반영됩니다.
-    // 2026-09-11: 승합차(9인승 이상)를 이 목록에서 뺐습니다 — 렌트가 되는 차종입니다.
-    const isFreightVehicle = isFreightType(state.vehicleType);
-    const canDeductVat = vatDeductible().deductible;
-    if (isFreightVehicle){
-      fit.rent = 0;
-      if (canDeductVat){
-        // 렌트는 여전히 불가능하지만, 매입세액 공제가 열리면 리스·할부·현금의 실질 비용이
-        // 낮아집니다. 리스는 취득 관련 세액과 비용처리가 함께 붙어 가장 유리.
-        fit.lease += 12; fit.loan += 4; fit.cash += 4;
-      } else {
-        // 렌트 상품이 없는 대신, 비용처리가 가능하고 심사가 상대적으로 유연한 리스로 수요가 몰립니다.
-        fit.lease += 8;
-      }
-    } else if (canDeductVat){
-      // 경차·승합차처럼 렌트가 가능하면서 매입세액 공제가 열리는 경우엔, 부가세가 포함된
-      // 렌트료가 공제 대상이 되어 실질적으로 가장 저렴해집니다. 리스도 취득 관련 세액 측면에서
-      // 그다음으로 유리하고, 현금·할부는 이 혜택이 없어 상대적으로 낮게 포지션됩니다.
-      fit.rent += 18;
-      fit.lease += 8;
-      fit.cash = Math.max(0, fit.cash-6);
-      fit.loan = Math.max(0, fit.loan-6);
-    }
-
-    PRODUCTS.forEach(p=> fit[p]=Math.max(0, Math.min(100, fit[p])));
-    return fit;
+  function showScoreError(){
+    const el = document.querySelector('#resultHeadline');
+    if (el) el.innerHTML = '결과를 불러오지 못했어요. 네트워크를 확인하고 <button type="button" class="retry-btn" id="scoreRetry">다시 시도</button>';
+    const b = document.querySelector('#scoreRetry'); if (b) b.addEventListener('click', ()=>{ if (window.__refreshResults) window.__refreshResults(); });
   }
+  function computeFit(){ return ENGINE.res ? ENGINE.res.fit : {cash:0, loan:0, lease:0, rent:0}; }
 
   function fmt(n){ return Math.round(n).toLocaleString('ko-KR'); }
 
-  function buildReasons(top, fit){
-    const pos=[], neg=[];
-    if (fit[top]>=70) pos.push('답변하신 이용성향과 상품구조가 잘 맞아요');
-    if (state.priority==='초기비용최소화' && (top==='lease'||top==='rent')) pos.push('초기자금 최소화 우선순위 반영');
-    if (state.priority==='총비용최소화' && (top==='cash'||top==='loan')) pos.push('총비용 최소화 우선순위 반영');
-    if ((state.dispBurden||0)>=4 && (top==='lease'||top==='rent')) pos.push('처분 부담 없음 (반납으로 종료)');
-    if ((state.mgmtPref||0)>=4 && (top==='lease'||top==='rent')) pos.push('보험·정비·세금 관리 위임 가능');
-    if (state.biz!=='개인' && (state.bizPriority||0)>=3 && (top==='lease'||top==='rent')) pos.push('사업자 비용처리 관점에서 유리');
-    if ((state.km||0)>22500 && (top==='lease'||top==='rent')) pos.push('많은 주행거리의 감가·정비 리스크를 렌트/리스가 흡수');
-    if ((state.km||0)<=12500 && (top==='cash'||top==='loan')) pos.push('주행거리가 적어 감가 부담이 크지 않음');
-    if ((state.ownPref||0)>=4 && (top==='cash'||top==='loan')) pos.push('내 명의 소유 선호 반영');
-    if ((state.debtBurden||0)>=4 && top==='cash') pos.push('대출·부채 부담을 최소화하고 싶은 성향 반영');
-    if ((state.debtBurden||0)<=2 && top==='loan') pos.push('대출·부채에 대한 부담이 적어 할부 활용 여지 있음');
-    if (state.plateSensitivity==='general' && (top==='cash'||top==='loan'||top==='lease')) pos.push('일반 번호판 선호 반영');
-    if (state.plateSensitivity==='rental_ok' && top==='rent') pos.push('렌터카 번호판에 대한 거부감 없음 반영');
-    // "부가세 환급"이라는 단독 표현은 쓰지 않습니다. 부가세가 붙는 것과 그걸 돌려받는 것은
-    // 별개이고(부가세법 제39조 ①항 5호), 8인승 이하 승용차는 렌트료에 부가세가 찍혀도 원칙적으로
-    // 불공제입니다. "사업자는 렌트하면 10% 환급"으로 읽히는 표현은 그대로 캡처돼 돌아다닙니다.
-    const isFreightVehicle = isFreightType(state.vehicleType);
-    const vat = vatDeductible();
-    if (isFreightVehicle && top==='lease') pos.push('화물 등록 차종은 렌터카 상품이 없어, 비용처리 가능·심사 유연한 리스로 추천');
-    if (vat.deductible && isFreightVehicle && (top==='lease'||top==='loan'||top==='cash')) pos.push('매입세액 공제가 가능한 차종이라 리스·할부·현금의 실질비용이 낮아질 여지가 있음');
-    if (vat.deductible && !isFreightVehicle && (top==='rent'||top==='lease')){
-      // 왜 공제가 열렸는지(차종 때문인지 업종 때문인지)를 구분해서 보여줍니다 — 상담에서
-      // 근거를 바로 짚을 수 있어야 하기 때문입니다.
-      pos.push(vat.byVehicle
-        ? '매입세액 공제가 가능한 차종이라, 부가세가 포함된 렌트료 쪽이 실질적으로 유리해질 수 있음'
-        : '영업 목적 직접사용이라 매입세액 공제가 열려, 부가세가 포함된 렌트료 쪽이 실질적으로 유리해질 수 있음');
-    }
-    if (pos.length===0) pos.push('전반적으로 무난하게 맞는 조합이에요');
-
-    if ((state.km||0)>22500 && (top==='cash'||top==='loan')) neg.push('주행거리가 많은 편이라 감가·정비 부담을 직접 지게 됨');
-    if (isFreightVehicle) neg.push('화물 등록 차종(화물트럭·화물밴·픽업트럭)은 렌터카사가 취급하지 않아 렌트는 추천에서 제외됨');
-    if (top==='lease') neg.push('잔존가·반납조건을 계약 전 반드시 확인');
-    if (top==='rent') neg.push('중도해지 위약금 조건 확인 필요');
-    if (top==='loan') neg.push('중도상환수수료·잔여원금 조건 확인');
-    if (top==='cash') neg.push('중고차 매각 시점의 가치 변동 리스크는 고객 부담');
-    if ((state.debtBurden||0)>=4 && top==='loan') neg.push('대출·할부금에 부담을 느끼는 편이라 실제 월 납입 여력 재확인 필요');
-    if (state.plateSensitivity==='general' && top==='rent') neg.push('일반 번호판을 선호하시는데 장기렌트는 렌터카 번호판이 부착됨');
-    if (neg.length===0) neg.push('특이 리스크 없음');
-    return {pos, neg};
-  }
-
-  const RISK_INFO_BASE = {
-    // 리스 정산 공식은 `미회수 원금 × 손해배상금률 × (잔여월수÷전체월수)` 또는
-    // `잔여 렌트료 × 위약금률`입니다. 잔존가치는 미회수 원금이 줄어드는 '속도'에 영향을 줄 뿐
-    // 공식에 직접 들어가지 않으므로, 기준을 '미회수 원금'으로 표기합니다.
-    rent:{label:'장기렌트', level:2, text:'면책금·초과주행·반납조건, 중도해지 위약금 산식 확인'},
-    lease:{label:'리스', level:3, text:'중도 교체 시 정산금(미회수 원금 기준) 발생 가능성 확인'},
-    loan:{label:'할부', level:2, text:'중도 교체 시 순자산(중고차시세−잔여원금) 확인 필요'},
-    cash:{label:'현금구매', level:3, text:'매각가가 차량가 절반 안팎을 넘어야 총비용이 유리해짐'},
-  };
-
-  // ===== RISK 층 =====
-  // 여기서 다루는 항목은 전부 "어느 회사와 계약하느냐에 따라 달라지는 요소"입니다. 진단 시점엔
-  // 계약 상대가 정해져 있지 않으므로 설계문서 §1.1 원칙대로 FIT 배점에는 절대 반영하지 않고
-  // RISK 문구로만 조건부 노출합니다. computeFit()은 이 함수와 완전히 분리되어 있습니다.
-  //
-  // level 가산 규칙: 조건부 경고가 늘면 대부분의 결과가 상한(5)에 붙어 변별력이 사라지므로,
-  // level을 올리는 항목은 A(위약금 산식) · D(비용처리 전제) · E(대표가족↔비용처리 모순)와
-  // 기존 3종(여신한도 · 리스 월납 · 운전자 다수)뿐입니다. B · C · F는 문구만 추가합니다.
-  function getRiskInfo(p){
-    const base = RISK_INFO_BASE[p];
-    let level = base.level;
-    const notes = [];
-    const isLeaseOrRent = (p==='lease' || p==='rent');
-    const km = Number(state.km)||0;
-    const budget = Number(state.budget)||0;
-    const bizPriority = Number(state.bizPriority)||0;
-    const isBiz = (state.biz==='개인사업자' || state.biz==='법인');
-
-    // 리스·할부는 금융상품이라 신용·여신한도에 영향을 줄 수 있습니다. "리스=부채니까 FIT 감점"
-    // 같은 방식으로 점수에 반영하지 않고, 향후 자금계획이 있다고 답한 고객에게만 경고합니다.
-    const plan = state.futureFundingPlan;
-    if ((p==='lease' || p==='loan') && (plan==='있음' || plan==='가능성있음')){
-      level++;
-      notes.push('향후 자금계획이 있다면 이 차량 금융이 여신한도에 영향을 줄 수 있어 사전 확인이 필요합니다.');
-    }
-
-    // 월 리스료엔 보험·세금이 포함되지 않는 경우가 많아, "월납이 싸다"고 오해하기 쉬운 지점.
-    if (p==='lease' && state.priority==='월납최소화'){
-      level++;
-      notes.push('리스료엔 보험·세금이 포함돼 있지 않아 실제 월 부담은 직접 확인해야 합니다.');
-    }
-
-    // A. 위약금 산식 경고 — level +1, 리스·렌트 상시
-    //
-    // 2026-09-11 재검토(공시자료 대조): 당초 `months >= 36` 게이트를 뒀으나 근거가 없어 제거했습니다.
-    // 공시된 중도해지 요율표가 확인된 회사 전부 "잔여기간이 많이 남아 있을수록 요율이 높은"
-    // 구간제입니다(예: 1년미만 36% → 4년초과 25%). 즉 계약이 길어서 위험한 게 아니라 초반에
-    // 해지해서 위험한 구조라, 오히려 짧은 계약을 고른 고객이 경고를 못 보는 문제가 있었습니다.
-    //
-    // 종전 문구에 있던 "계약 전체 기간 기준"(잔여기간 무관) 패턴은 삭제했습니다. 근거였던
-    // 회사의 현행 공시가 오히려 일할 정산(`월렌트료×12÷365×미경과일수`)이라 확인되었고,
-    // 대조한 어느 회사에서도 잔여 무관 방식이 나오지 않았습니다. 한 곳에서만 나온 주장은
-    // 고객 화면에 올리지 않습니다.
-    //
-    // 고객 화면에는 회사명도 요율 수치도 올리지 않고 "무엇이 갈리는지"(구조)만 안내합니다(§1.1).
-    if (isLeaseOrRent){
-      level++;
-      notes.push('중도해지 위약금은 회사마다 계산 방식이 다릅니다. 남은 일수로 계산하는 곳과 남은 개월수로 계산하는 곳이 있고, 요율도 잔여기간이 많이 남아 있을수록 높아지는 구간제라 초반에 해지할수록 부담이 큽니다. 요율은 약관이 아니라 신청서에 기재되는 경우가 많아 계약 건별로 달라집니다. 지금 조건 그대로 "2년 차에 해지하면 얼마인지"를 숫자로 받아 확인하세요.');
-    }
-
-    // A-2. 리스 중도 종료 경로(반납 vs 인수) — 문구만, level 가산 없음
-    // 대조한 회사 전부 리스 중도정산 공식이 `미회수원금 × 요율 × (잔여월수 ÷ 전체월수)`로 동일한데,
-    // 중도반납에 쓰는 요율과 중도인수에 쓰는 요율이 회사마다 몇 배씩 벌어집니다(반납이 훨씬 비쌈).
-    // A와 항상 겹치므로 여기서 level을 또 올리면 리스가 무조건 상한에 붙어 변별력을 잃습니다.
-    if (p === 'lease'){
-      notes.push('리스는 중도에 끝낼 때 차를 반납하느냐 인수하느냐에 따라 적용되는 요율 자체가 몇 배까지 달라집니다. 대체로 반납이 인수보다 훨씬 비쌉니다. 중도 교체 가능성이 있다면 두 경우의 금액을 모두 확인하세요.');
-    }
-
-    // B. 만기 인수/반납 전환 페널티 — 문구만 (level 가산 없음)
-    // 인수형 선택 후 반납 시 차량가의 12%를 부과하는 사례 확인. 8천만원 차량이면 960만원.
-    if (isLeaseOrRent && Number(state.ownPref) === 3){
-      notes.push('계약할 때 정하는 만기 처리(인수/반납)를 나중에 바꾸면 차량가의 일정 %가 별도로 발생하는 상품이 있습니다. 지금 정하기 어려우시다면 변경 조건부터 확인하세요.');
-    }
-
-    // B-2. 만기 인수 비용 — 문구만 (level 가산 없음)
-    // 만기에 차를 가져오려면 소유권 이전비용(취득세·용도변경비 등)이 고객 부담이라고 여러 회사가
-    // 명시합니다. 최초 등록 취득세는 월 이용료에 이미 포함돼 있어 고객이 "또 내야 하나" 하고
-    // 혼동하기 쉬우므로, 만기 인수 시점의 이전 비용이라는 걸 분명히 구분해 씁니다.
-    // 종전에는 ownPref===3(아직 못 정한 사람)만 B 경고를 받고, 정작 인수를 확정한 ownPref===5는
-    // 조건부 경고가 하나도 없었습니다.
-    if (isLeaseOrRent && Number(state.ownPref) === 5){
-      notes.push('만기에 차량을 본인 명의로 가져오실 계획이라면, 월 이용료와 별개로 소유권 이전 비용(취득세·용도변경 비용 등)이 그 시점에 따로 발생합니다. 인수 금액과 이 비용까지 더해서 총비용을 비교하세요.');
-    }
-
-    // C. 약정 주행거리(미달 무환급) — 문구만 (level 가산 없음)
-    // 미달 환급 조항은 확인한 회사 어디에도 없습니다.
-    // 2026-09-11 2차: 종전 문구 뒷부분("초과 시 단가·공제거리가 다르다")은 저주행 고객에게는
-    // 사실상 해당이 없고 정작 필요한 고주행 고객에게는 안 뜨고 있었습니다. 아래 C-2로 분리.
-    if (isLeaseOrRent && km > 0 && km <= 12500){
-      notes.push('약정 주행거리는 덜 타셔도 환급되지 않습니다. 거리를 넉넉히 잡아두는 게 손해를 막는 방법이 아니라는 뜻이라, 실제 주행량에 맞춰 정하셔야 합니다.');
-    }
-
-    // C-2. 고주행 초과주행 부담 — 문구만 (level 가산 없음)
-    // 공시 기준 km당 단가는 국산 100원대부터 수입·운용리스 400~500원대까지 벌어지고,
-    // 기본공제거리도 아예 없는 곳부터 1만km까지 갈립니다. 수입차는 일정 거리를 넘으면 단가가
-    // 한 단계 오르는 회사도 있습니다. FIT은 고주행에 리스·렌트를 밀어주는데(§4.7 렌트 최대 9점)
-    // 정작 그 고객이 초과주행 경고를 못 보던 공백을 메웁니다.
-    // 임계값은 2만km(17500)부터 — 이렇게 해야 모든 고객이 C와 C-2 중 정확히 하나를 받습니다.
-    if (isLeaseOrRent && km >= 17500){
-      notes.push('주행이 많으신 편이라 약정 거리를 넘겼을 때의 부담을 꼭 보셔야 합니다. km당 추가 단가가 회사마다 몇 배씩 차이 나고, 초과분에서 그냥 빼주는 기본 거리도 아예 없는 곳부터 1만km까지 제각각입니다. 차종에 따라 일정 거리를 넘으면 단가가 한 단계 더 오르는 상품도 있습니다.');
-    }
-
-    // D. 사업자·법인 비용처리 전제 — level +1
-    // 법인세법 시행령(2016.4.1 시행), 소득세법 시행령(2021.11 시행).
-    // 복식부기의무자·전문직 개인사업자도 해당됩니다.
-    //
-    // 2026-09-11 3차: 차종 조건을 추가했습니다. 임직원 전용 특약 요건은 세법상 '업무용승용차',
-    // 즉 개별소비세 과세대상인 8인승 이하 승용차에만 걸립니다. 실제 약관에도
-    // "8인 이하 승용차 (경차 및 9인승 이상 승용/승합 제외)"로 명시돼 있습니다.
-    // 종전에는 차종과 무관하게 떠서, 경차·승합차·화물·픽업을 고른 사업자에게 들 필요도 없는
-    // 보험을 들라고 안내하고 있었습니다.
-    // 업무용승용차(8인승 이하 승용차)가 아닌 차종 목록은 부가세 공제대상 차종 목록과 동일합니다
-    // — 둘 다 "개별소비세 과세대상 소형승용차냐"라는 같은 기준에서 나오기 때문입니다.
-    const isNonPassengerVehicle = VAT_DEDUCTIBLE_TYPES.includes(state.vehicleType);
-    if (isLeaseOrRent && isBiz && bizPriority >= 3 && !isNonPassengerVehicle){
-      level++;
-      let t = '비용처리를 받으시려면 임직원 전용 자동차보험(임직원 운전자 한정 운전 특약) 가입이 전제입니다. 미가입하거나 계약 중 운전자 범위를 바꾸면 그해 납입액이 손금으로 인정되지 않을 수 있습니다.';
-      if (budget >= 8500) t += ' 차량가 8천만원 이상 법인 업무용 승용차는 법인전용 번호판 부착도 요건입니다.';
-      notes.push(t);
-    }
-
-    // D-2. 승용차 사업자에게 부가세 구조 안내 — 문구만 (level 가산 없음)
-    // 8인승 이하 승용차를 고른 사업자는 vatRefund 질문 자체가 skip되어, "렌트는 과세·리스는
-    // 면세인데 그 10%는 원칙적으로 공제가 안 된다"는 사실을 어디서도 안내받지 못했습니다.
-    // 리스 월납이 싸 보이는 이유가 여기 있는데 그 이유를 설명하지 않고 있었던 셈입니다.
-    // 근거: 부가가치세법 제39조 ①항 5호(개별소비세 과세대상 자동차의 구입·임차·유지 매입세액
-    // 불공제), 제26조 ①항 11호 + 시행령 제40조 ①항 9호(시설대여업 면세).
-    // 세법은 개정되므로 단정하지 않고 "세무 담당자 확인"으로 닫습니다.
-    if (isLeaseOrRent && isBiz && bizPriority >= 3 && !isNonPassengerVehicle){
-      notes.push('장기렌트는 임대 서비스라 이용료에 부가세 10%가 붙고, 리스는 금융상품으로 분류돼 원칙적으로 면세입니다. 그래서 리스 쪽 월납이 싸 보일 수 있는데, 붙는 것과 돌려받는 것은 별개입니다. 8인승 이하 승용차는 렌트료에 부가세가 찍혀도 그 매입세액을 원칙적으로 공제받지 못합니다. 9인승 이상 승합·화물차·경차라면 얘기가 달라집니다. 비용처리(손금)와 부가세 공제는 다른 제도라, 최종 판단은 세무 담당자와 확인하세요.');
-    }
-
-    // E. 대표 가족 사용 ↔ 비용처리 모순 — level +1, 4개 카드 전부
-    // §4.8이 리스·렌트에 +3을 주는데 실제로는 비용처리가 막히는 조합이라 경고가 반드시 필요합니다.
-    // (FIT 배점은 건드리지 않습니다 — §1.1: 서로 다른 두 축 사이에 인과를 만들지 않는다)
-    if (state.biz==='법인' && (state.driver==='대표자가족' || state.purpose==='대표(가족)사용') && bizPriority >= 3){
-      level++;
-      notes.push('대표님 가족이 사용하시는데 비용처리도 중요하다고 답해주셨습니다. 임직원 전용 특약은 임직원 외 운전을 제한하기 때문에 두 조건이 충돌할 수 있습니다. 실제 운전자 범위와 비용처리 요건을 먼저 정리하셔야 합니다.');
-    }
-
-    // F. 자기부담금 구조 — 문구만 (level 가산 없음)
-    if (isLeaseOrRent && (state.accident==='yes' || (state.insHistory != null && Number(state.insHistory) <= 2))){
-      notes.push('자기부담금은 사고 건당 정액인 곳과 손해액의 20~30%를 부담하는 곳이 있습니다. 수리비가 자기부담금보다 적으면 실제 수리비를 내고, 반납 시 고치지 않은 손상은 부위별로 추가됩니다.');
-
-      // F-2. 전손·대파 시 강제 중도해지 — 같은 트리거, 문구만
-      // 수리비가 차량 기준가액의 일정 비율을 넘거나 전손·멸실이면 고객 의사와 무관하게 계약이
-      // 종료되고, 자기부담금과는 별개의 중도해지 정산금이 붙는 구조가 여러 회사에서 확인됩니다.
-      // F는 "수리비를 얼마 내나"까지만 말해서 이 부분이 통째로 빠져 있었습니다.
-      notes.push('큰 사고가 나면 자기부담금으로 끝나지 않을 수 있습니다. 수리비가 차량 가액의 일정 비율을 넘거나 전손·도난이 되면 본인 의사와 관계없이 계약이 그 시점에 종료되고, 자기부담금과는 별개로 중도해지 정산금이 청구되는 구조입니다. 사고가 크게 났을 때 어떻게 정산되는지 미리 확인하세요.');
-    }
-
-    // G. 보증금·선납금 — 문구만 (level 가산 없음)
-    // 보증금은 이자가 붙지 않고, 선납금은 인수로 계약을 끝내면 반환되지 않는다고 명시한 회사가
-    // 있습니다. 중도해지 시에도 위약금·연체료를 먼저 충당한 뒤 남는 금액만 돌려주는 구조입니다.
-    // 초기자금을 많이 넣겠다고 답한 고객일수록 걸리는 금액이 큽니다.
-    if (isLeaseOrRent && (state.initialCash === 'unlimited' || Number(state.initialCash) >= 750)){
-      notes.push('초기 비용을 보증금이나 선납금으로 많이 넣으실수록 그 돈이 묶입니다. 보증금에는 이자가 붙지 않고, 선납금은 중도에 차량을 인수하는 방식으로 계약을 끝내면 돌려받지 못하는 상품이 있습니다. 중도해지 때도 위약금·미납분을 먼저 차감한 뒤 남는 금액만 환불됩니다.');
-    }
-
-    // H. 지정 정비공장 한정 — 문구만 (level 가산 없음)
-    // 제휴 정비업체에서만 입고정비가 가능하다고 약관·신청서에 명시한 회사가 여러 곳 있습니다.
-    // "직접 관리하고 싶다"고 답한 고객에게 실제로 걸리는 제약이라 이 조건에만 띄웁니다.
-    if (isLeaseOrRent && Number(state.mgmtPref) === 1){
-      notes.push('직접 관리하고 싶다고 답해주셨는데, 정비를 원하는 곳에서 받지 못하고 지정된 제휴 정비업체에서만 받아야 하는 상품이 있습니다. 다니시는 정비소나 특정 브랜드 전문 공업사를 계속 쓰실 생각이라면 정비 조건을 계약 전에 확인하세요.');
-    }
-
-    // 운전자범위는 FIT 점수엔 반영 안 하지만(위 driverTable 주석 참고), 실제로 누가 운전하느냐에
-    // 따라 현금·할부·리스는 개인 보험료가, 렌트는 렌탈료(보험 포함 구조)가 달라집니다. 어느
-    // 상품이 1위로 나오든 관계없이 4개 카드 전부에 동일하게 경고합니다.
-    const multiDriver = ['직원포함','임직원포함','다수불특정'].includes(state.driver);
-    if (multiDriver){
-      level++;
-      notes.push('여러 명이 운전하시는 경우, 등록되지 않은 사람이 몰다가 사고가 나면 보상이 적용되지 않습니다. 임직원 전용 특약에 가입하면 직계가족도 운행할 수 없고, 사실혼 배우자는 인정되지 않으며, 사고일 이후 등록은 소급되지 않습니다. 대리운전 기사도 종합보험 가입자여야 합니다.');
-    }
-
-    return { label: base.label, level: Math.min(5, level), text: base.text, notes };
-  }
+  function buildReasons(top, fit){ return ENGINE.res ? ENGINE.res.reasons : {pos:[], neg:[]}; }
+  function getRiskInfo(p){ return (ENGINE.res && ENGINE.res.risks && ENGINE.res.risks[p]) || { label: LABEL[p], level: 0, text: '', notes: [] }; }
 
   function downloadSummaryText(fit, ranked){
     // html2canvas를 못 쓰는 상황(오프라인 등)을 위한 텍스트 백업 저장 방식입니다.
@@ -1210,6 +949,18 @@
     URL.revokeObjectURL(url);
   }
 
+  // 결과 보관·공유 버튼: 진행 중 / 완료 표시 (버튼 안 아이콘·문구 구조 유지)
+  function stBusy(btn, on, msg){
+    if (!btn) return; const s = btn.querySelector('.vt-s');
+    btn.classList.toggle('is-busy', !!on); btn.disabled = !!on;
+    if (s) s.textContent = on ? (msg || '만드는 중…') : (btn.classList.contains('is-done') ? s.textContent : s.dataset.s);
+  }
+  function stDone(btn, msg){
+    if (!btn) return; const s = btn.querySelector('.vt-s');
+    btn.classList.add('is-done'); if (s) s.textContent = msg || '완료';
+    clearTimeout(btn._dt); btn._dt = setTimeout(()=>{ btn.classList.remove('is-done'); if (s) s.textContent = s.dataset.s; }, 2600);
+  }
+
   async function downloadSummary(fit, ranked, btnEl){
     // 저장용 이미지는 화면에 보이는 순서와 다르게, "내 점수 바꿔보기"(인터랙티브 버튼)는 빼고
     // 대신 페이지 맨 아래 있는 상담 전화번호 배너는 반드시 포함해서 별도로 조합합니다.
@@ -1223,8 +974,7 @@
       downloadSummaryText(fit, ranked);
       return;
     }
-    const originalLabel = btnEl ? btnEl.textContent : null;
-    if (btnEl){ btnEl.textContent = '이미지 만드는 중…'; btnEl.disabled = true; }
+    stBusy(btnEl, true, '이미지 만드는 중…');
 
     const captureWidth = document.getElementById('resultCaptureArea').offsetWidth || 400;
     const temp = document.createElement('div');
@@ -1247,13 +997,14 @@
         a.href = url; a.download = 'CHAIDE_SCORE_진단결과.png';
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        stDone(btnEl, '저장했어요 · 사진/다운로드 폴더');
       }, 'image/png');
     } catch (e){
       console.warn('결과 이미지 저장 실패, 텍스트로 대체합니다.', e);
       downloadSummaryText(fit, ranked);
     } finally {
       document.body.removeChild(temp);
-      if (btnEl){ btnEl.textContent = originalLabel; btnEl.disabled = false; }
+      stBusy(btnEl, false);
     }
   }
 
@@ -1261,11 +1012,22 @@
   function resultStep(root){
     let resultViewSent = false;
     root.innerHTML = `
+      <div id="sharedBanner"></div>
       <div id="resultCaptureArea">
         <div class="result-hero">
           <div class="kicker">당신의 CHAIDE REPORT</div>
           <h2 id="resultHeadline"></h2>
           <div id="scoreBarsWrap"></div>
+        </div>
+
+        <div class="flip-panel" id="flipPanel">
+          <h3>조건을 바꾸면 결과가 어디서 뒤집힐까요?</h3>
+          <p class="fp-sub">세 가지만 움직여 보세요. 점수가 바로 바뀌고, 1위가 바뀌는 지점을 알려드려요.</p>
+          <div class="fp-row"><label for="fpMonths">이용기간</label><input type="range" id="fpMonths" min="0" max="5" step="1"><span class="fp-val" id="fpMonthsVal"></span></div>
+          <div class="fp-row"><label for="fpKm">주행거리</label><input type="range" id="fpKm" min="0" max="5" step="1"><span class="fp-val" id="fpKmVal"></span></div>
+          <div class="fp-row"><label for="fpCash">초기자금</label><input type="range" id="fpCash" min="0" max="5" step="1"><span class="fp-val" id="fpCashVal"></span></div>
+          <div class="fp-flip" id="fpFlip"></div>
+          <span class="fp-reset" id="fpReset" hidden>원래 답변으로 되돌리기</span>
         </div>
 
         <div class="score-toggle-btn" id="toggleReview">
@@ -1289,14 +1051,52 @@
         </div>
       </div>
 
+      <section class="vault" aria-label="결과 보관 및 공유">
+        <div class="vault-head"><span class="vault-dia"></span><b>결과 보관 · 공유</b><span class="vault-rule"></span></div>
+        <div class="vault-list">
+        <button type="button" class="vt" id="saveBtn"><span class="vt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg><svg class="vt-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><i class="vt-spin"></i></span><span class="vt-tx"><b class="vt-t">상세 결과 저장 <em>내 보관용</em></b><span class="vt-s" data-s="순위 · 추천 이유 · 위험도 전체를 이미지로">순위 · 추천 이유 · 위험도 전체를 이미지로</span></span><span class="vt-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button>
+        <button type="button" class="vt" id="shareImg"><span class="vt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 15.5l2.5-3 2 2.2 1.5-1.7 1.5 2.5"/><circle cx="10" cy="8.5" r="1.4"/></svg><svg class="vt-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><i class="vt-spin"></i></span><span class="vt-tx"><b class="vt-t">공유용 결과 카드 저장</b><span class="vt-s" data-s="인스타 · 카톡에 올리기 좋은 세로 카드">인스타 · 카톡에 올리기 좋은 세로 카드</span></span><span class="vt-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button>
+        <button type="button" class="vt" id="shareLink"><span class="vt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg><svg class="vt-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><i class="vt-spin"></i></span><span class="vt-tx"><b class="vt-t">링크 복사</b><span class="vt-s" data-s="친구가 누르면 내 결과가 바로 열려요">친구가 누르면 내 결과가 바로 열려요</span></span><span class="vt-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button>
+        <button type="button" class="vt" id="shareNative" hidden><span class="vt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3.5"/><path d="M8 7.5l4-4 4 4"/><path d="M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12"/></svg><svg class="vt-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><i class="vt-spin"></i></span><span class="vt-tx"><b class="vt-t">바로 공유하기</b><span class="vt-s" data-s="카톡 · 문자로 결과 카드와 링크 보내기">카톡 · 문자로 결과 카드와 링크 보내기</span></span><span class="vt-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button>
+        </div>
+      </section>
+
       <div class="cta-panel">
         <p class="trust-line">✓ 전 금융사 간편비교 · 중간수수료 없음<br>전문가 맞춤 상담</p>
         <h3>지금까지 답변한 조건, 다시 설명 안 해도 돼요</h3>
         <p>업계 경력 10년 이상 전문가가 최대한 빠르게 연락드립니다.</p>
         <button class="btn btn-primary" id="quoteBtn" style="width:100%;">내 조건으로 상담받기 →</button>
         <button class="btn btn-outline-navy" id="kakaoBtn" style="width:100%; margin-top:8px;">전화 연락 부담 없이 궁금한 점 물어보기</button>
-        <span class="cta-save-link" id="saveBtn">결과만 저장하기</span>
       </div>
+
+      <section class="mgr-card" id="mgrCard" aria-label="차이드 매니저">
+        <div class="mgr-glow" aria-hidden="true"></div>
+        <div class="mgr-grid">
+          <div class="mgr-copy">
+            <span class="mgr-eb"><i></i>차이드 매니저 · 무료</span>
+            <h3>진단은 여기까지,<br><em>관리는 지금부터</em></h3>
+            <p>지금 타는 차를 한 번 등록해두면, 챙길 날이 다가올 때 카카오톡으로 먼저 알려드려요.</p>
+            <ul class="mgr-chips">
+              <li style="--d:0"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>계약 만기</li>
+              <li style="--d:1"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>보험 갱신</li>
+              <li style="--d:2"><svg viewBox="0 0 24 24"><path d="M9 4h6l1 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3z"/><path d="M8.5 13.5l2.5 2.5 4.5-5"/></svg>정기검사</li>
+              <li style="--d:3"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>자동차세</li>
+              <li style="--d:4"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>소모품</li>
+            </ul>
+          </div>
+          <div class="mgr-phone" aria-hidden="true">
+            <div class="mgr-ph-top"><span class="mgr-ph-av">S</span><b>슬림더카</b><small>알림 예시</small></div>
+            <div class="mgr-bub b1"><b>리스 만기 D-30</b>만기 전에 지금 조건으로 다시 진단해볼까요?</div>
+            <div class="mgr-bub b2"><b>정기검사 기간 시작</b>검사 기간 안에 받으면 과태료 걱정 없어요.</div>
+            <div class="mgr-typing"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <a class="k-start" id="mgrKakao" href="https://slimthecar.com/mycar.html?start=kakao&amp;utm_source=score&amp;utm_medium=result&amp;utm_campaign=manager" onclick="if(window.gtag)gtag('event','manager_start',{source:'score_result'})">
+          <span class="k-halo" aria-hidden="true"></span><svg class="k-sym" viewBox="0 0 24 24" aria-hidden="true"><path fill="#000" d="M12 3.2C6.6 3.2 2.2 6.66 2.2 10.93c0 2.76 1.83 5.18 4.6 6.55l-1.17 4.28c-.1.38.33.68.66.46l5.1-3.37c.2.01.4.02.61.02 5.4 0 9.8-3.46 9.8-7.94S17.4 3.2 12 3.2z"/></svg><span class="k-label">카카오로 <strong>3초</strong> 만에 시작하기</span>
+        </a>
+        <div class="mgr-foot"><span>무료 · 언제든 탈퇴 가능</span><a href="https://slimthecar.com/mycar.html?utm_source=score&amp;utm_medium=result_more">먼저 둘러보기 →</a></div>
+      </section>
+
 
       <div class="methodology" id="methToggle">이 진단은 어떻게 계산되나요? ▾</div>
       <div class="methodology-body" id="methBody">
@@ -1334,6 +1134,11 @@
     let lastFit = null, lastRanked = null;
 
     function refreshResults(){
+      if (!ENGINE_CACHE.has(engineKey())){ const h = root.querySelector('#resultHeadline'); if (h) h.innerHTML = '<span class="calc-dot"></span>결과를 계산하고 있어요…'; }
+      ensureScore(refreshResultsNow);
+    }
+    window.__refreshResults = refreshResults;
+    function refreshResultsNow(){
       const fit = computeFit();
       const ranked = PRODUCTS.slice().sort((a,b)=>fit[b]-fit[a]);
       const top = ranked[0];
@@ -1390,6 +1195,7 @@
       const riskWrap = root.querySelector('#riskWrap');
       riskWrap.innerHTML = riskHtml;
       riskWrap.classList.toggle('has-notes', anyNotes);
+      if (root.__flipReady) syncFlipPanel();
     }
 
     function buildReviewPanel(){
@@ -1423,6 +1229,181 @@
     refreshResults();
     buildReviewPanel();
 
+    // ===== (1) 역전 슬라이더 =====
+    const FLIP_DIMS = {
+      months:      { key:'months',      el:'fpMonths', valEl:'fpMonthsVal', label:'이용기간', vals:[24,36,48,60,84,96], names:['2년 이하','3년','4년','5년','5년 이상','8년 이상'] },
+      km:          { key:'km',          el:'fpKm',     valEl:'fpKmVal',     label:'주행거리', vals:[5000,12500,17500,22500,27500,40000], names:['1만km 미만','1.5만km','2만km','2.5만km','3만km','4만km 이상'] },
+      initialCash: { key:'initialCash', el:'fpCash',   valEl:'fpCashVal',   label:'초기자금', vals:[0,400,750,1500,2500,'unlimited'], names:['0원','500만 이하','500~1천만','1~2천만','2천만 이상','제한없음'] },
+    };
+    const flipOrigin = { months: state.months, km: state.km, initialCash: state.initialCash };
+    let flipSyncing = false;
+
+    function topOf(){ return ENGINE.res ? ENGINE.res.top : PRODUCTS.slice().sort((a,b)=>computeFit()[b]-computeFit()[a])[0]; }
+    // 받침 유무로 조사 선택 (숫자·영문으로 끝나면 받침 있는 쪽으로 처리)
+    function josa(word, withBatchim, without){
+      const ch = String(word).replace(/[\s()]+$/,'').slice(-1); const code = ch.charCodeAt(0);
+      if (code < 0xAC00 || code > 0xD7A3){
+        if (!/[0-9]/.test(ch)) return without;                       // km 등 영문: 킬로미터'로'
+        if (withBatchim === '으로' && '178'.indexOf(ch) >= 0) return without;   // 일·칠·팔 = ㄹ 받침
+        return '013678'.indexOf(ch) >= 0 ? withBatchim : without;
+      }
+      const jong = (code - 0xAC00) % 28;
+      if (jong === 0) return without;
+      if (withBatchim === '으로' && jong === 8) return without;   // ㄹ 받침 + 로
+      return withBatchim;
+    }
+    function idxOf(dim, v){ const i = dim.vals.indexOf(v); return i < 0 ? 2 : i; }
+
+    // 다른 조건은 그대로 두고 이 축만 움직였을 때 1위가 바뀌는 가장 가까운 지점을 찾는다
+    function findFlip(dim, curTop){ const f = ENGINE.res && ENGINE.res.flips; return f ? (f[dim.key] || null) : null; }
+
+    function syncFlipPanel(){
+      if (flipSyncing) return;
+      const curTop = topOf();
+      const lines = [];
+      Object.values(FLIP_DIMS).forEach(dim=>{
+        const slider = root.querySelector('#'+dim.el);
+        const i = idxOf(dim, state[dim.key]);
+        if (slider){ slider.value = i; root.querySelector('#'+dim.valEl).textContent = dim.names[i]; }
+        const f = findFlip(dim, curTop);
+        if (f){
+          const word = f.dir > 0 ? '늘리면' : '줄이면';
+          const verb = dim.key==='initialCash' ? (f.dir>0 ? '더 넣을 수 있으면' : '줄이면') : word;
+          lines.push(`<div class="fp-line"><i>↔</i><span><b>${dim.label}</b>${josa(dim.label,'을','를')} <b>${dim.names[f.idx]}</b>${josa(dim.names[f.idx],'으로','로')} ${verb} <b>${LABEL[f.to]}</b>${josa(LABEL[f.to],'이','가')} 1위로 바뀝니다.</span></div>`);
+        }
+      });
+      const wrap = root.querySelector('#fpFlip');
+      if (!wrap) return;
+      wrap.innerHTML = lines.length
+        ? lines.join('')
+        : `<div class="fp-line stable"><i>✓</i><span>이용기간·주행거리·초기자금을 어떻게 바꿔도 <b>${LABEL[curTop]}</b> 1위가 유지됩니다. 꽤 뚜렷한 결과예요.</span></div>`;
+      const changed = Object.values(FLIP_DIMS).some(dim=> state[dim.key] !== flipOrigin[dim.key]);
+      root.querySelector('#fpReset').hidden = !changed;
+    }
+
+    Object.values(FLIP_DIMS).forEach(dim=>{
+      const slider = root.querySelector('#'+dim.el);
+      slider.addEventListener('input', ()=>{
+        flipSyncing = true;
+        state[dim.key] = dim.vals[Number(slider.value)];
+        root.querySelector('#'+dim.valEl).textContent = dim.names[Number(slider.value)];
+        buildReviewPanel();      // 조건 수정 모달의 선택값도 같이 맞춤
+        refreshResults();
+        flipSyncing = false;
+        syncFlipPanel();
+        if (typeof gtag === 'function') gtag('event', 'flip_slider', { dim: dim.key });
+      });
+    });
+    root.querySelector('#fpReset').addEventListener('click', ()=>{
+      Object.assign(state, flipOrigin);
+      buildReviewPanel(); refreshResults();
+    });
+    root.__flipReady = true;
+    syncFlipPanel();
+
+    // ===== (2) 결과 공유 =====
+    const SHARE_KEYS = ['biz','purpose','vehicleType','budget','km','months','initialCash','priority','ownPref','dispBurden','mgmtPref','driver','insHistory','accident','bizPriority','vatRefund','plateSensitivity','debtBurden','futureFundingPlan'];
+    function shareUrl(){
+      const o = {}; SHARE_KEYS.forEach(k=>{ if (state[k]!=null) o[k] = state[k]; });
+      const json = JSON.stringify(o);
+      const b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+      return 'https://slimthecar.com/score.html?r=' + b64;
+    }
+    function toast(msg){
+      let t = document.getElementById('shareToast');
+      if (!t){ t = document.createElement('div'); t.id = 'shareToast'; t.className = 'share-toast'; document.body.appendChild(t); }
+      t.textContent = msg; t.classList.add('on');
+      clearTimeout(t._tm); t._tm = setTimeout(()=> t.classList.remove('on'), 2200);
+    }
+    async function copyText(s){
+      try { await navigator.clipboard.writeText(s); return true; }
+      catch(e){
+        const ta = document.createElement('textarea'); ta.value = s; ta.style.cssText='position:fixed;left:-9999px'; document.body.appendChild(ta); ta.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch(_){}
+        document.body.removeChild(ta); return ok;
+      }
+    }
+    // 공유 카드(1080×1350) — 개인 조건은 넣지 않고 1위·점수·4개 막대·사이트 주소만
+    async function drawShareCard(){
+      const fit = lastFit, ranked = lastRanked, top = ranked[0];
+      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+      const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+      const x = c.getContext('2d');
+      const g = x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#071D3C'); g.addColorStop(1,'#0B2545');
+      x.fillStyle = g; x.fillRect(0,0,W,H);
+      const glow = x.createRadialGradient(W*0.8, H*0.15, 10, W*0.8, H*0.15, 520); glow.addColorStop(0,'rgba(0,170,190,.45)'); glow.addColorStop(1,'rgba(0,170,190,0)');
+      x.fillStyle = glow; x.fillRect(0,0,W,H);
+      const F = "'Pretendard', -apple-system, 'Malgun Gothic', sans-serif";
+      x.fillStyle = '#5EE0F5'; x.font = `800 30px ${F}`; x.fillText('CHAIDE SCORE', 80, 120);
+      x.fillStyle = 'rgba(255,255,255,.7)'; x.font = `500 28px ${F}`; x.fillText('나에게 맞는 자동차 이용 방식 진단', 80, 168);
+      x.fillStyle = '#fff'; x.font = `800 86px ${F}`; x.fillText(`저는 ${LABEL[top]}형`, 80, 330);
+      x.font = `800 150px ${F}`; x.fillStyle = '#5EE0F5'; x.fillText(String(fmt(fit[top])), 80, 500);
+      const wNum = x.measureText(String(fmt(fit[top]))).width;
+      x.fillStyle = '#fff'; x.font = `700 48px ${F}`; x.fillText('점', 80 + wNum + 14, 500);
+      let y = 620;
+      ranked.forEach((p,i)=>{
+        x.fillStyle = i===0 ? '#fff' : 'rgba(255,255,255,.75)'; x.font = `${i===0?800:600} 34px ${F}`;
+        x.fillText(`${i+1}위  ${LABEL[p]}`, 80, y);
+        x.textAlign = 'right'; x.fillText(`${fmt(fit[p])}점`, W-80, y); x.textAlign = 'left';
+        x.fillStyle = 'rgba(255,255,255,.14)'; roundRect(x, 80, y+22, W-160, 18, 9, true);
+        x.fillStyle = i===0 ? '#5EE0F5' : 'rgba(255,255,255,.55)'; roundRect(x, 80, y+22, (W-160)*Math.max(0.02, fit[p]/100), 18, 9, true);
+        y += 118;
+      });
+      x.fillStyle = 'rgba(255,255,255,.08)'; roundRect(x, 80, 1120, W-160, 150, 24, true);
+      x.fillStyle = '#fff'; x.font = `800 38px ${F}`; x.fillText('나도 1분 진단해 보기', 112, 1182);
+      x.fillStyle = '#5EE0F5'; x.font = `700 34px ${F}`; x.fillText('slimthecar.com/score', 112, 1236);
+      x.fillStyle = 'rgba(255,255,255,.45)'; x.font = `500 22px ${F}`; x.fillText('이용성향(FIT) 기준 1차 진단 · 실제 조건에 따라 달라질 수 있습니다 · SLIM THE CAR', 80, 1312);
+      return c;
+    }
+    function roundRect(x, px, py, w, h, r, fill){ x.beginPath(); x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); if (fill) x.fill(); }
+    function canvasBlob(c){ return new Promise(res=> c.toBlob(res, 'image/png')); }
+
+    const shareNative = root.querySelector('#shareNative');
+    if (navigator.share) shareNative.hidden = false;
+    shareNative.addEventListener('click', async ()=>{
+      const url = shareUrl();
+      const text = `차이드 스코어 결과: 저는 ${LABEL[lastRanked[0]]}형 ${fmt(lastFit[lastRanked[0]])}점 — 너도 1분 진단해 봐`;
+      try {
+        const blob = await canvasBlob(await drawShareCard());
+        const file = blob ? new File([blob], 'chaide_score.png', {type:'image/png'}) : null;
+        if (file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({ title:'차이드 스코어', text, url, files:[file] });
+        else await navigator.share({ title:'차이드 스코어', text, url });
+        if (typeof gtag === 'function') gtag('event', 'share', { method:'native', top_product: LABEL[lastRanked[0]] });
+      } catch(e){ /* 사용자가 취소한 경우 포함 — 조용히 */ }
+    });
+    root.querySelector('#shareImg').addEventListener('click', async (e)=>{
+      const btn = e.currentTarget; stBusy(btn, true, '카드 만드는 중…');
+      try {
+        const blob = await canvasBlob(await drawShareCard());
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CHAIDE_SCORE_공유카드.png';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
+        toast('공유용 결과 카드를 저장했어요'); stDone(btn, '저장했어요 · 인스타·카톡에 올려보세요');
+        if (typeof gtag === 'function') gtag('event', 'share', { method:'image', top_product: LABEL[lastRanked[0]] });
+      } catch(err){ toast('이미지 생성에 실패했어요'); }
+      finally { stBusy(btn, false); }
+    });
+    root.querySelector('#shareLink').addEventListener('click', async (e)=>{
+      const btn = e.currentTarget;
+      const ok = await copyText(shareUrl());
+      if (ok) stDone(btn, '복사했어요 · 카톡에 붙여넣기');
+      toast(ok ? '링크를 복사했어요 — 카톡에 붙여넣기 하세요' : '복사가 안 됐어요. 주소창의 링크를 직접 복사해주세요');
+      if (ok && typeof gtag === 'function') gtag('event', 'share', { method:'link', top_product: LABEL[(lastRanked||[])[0]] });
+    });
+
+    // 공유 링크로 들어온 경우: 안내 배너 + "내 결과도 확인하기"
+    if (window.__sharedResult){
+      root.querySelector('#sharedBanner').innerHTML = `<div class="shared-banner"><span>친구가 공유한 <b>차이드 스코어</b> 결과예요. 조건을 바꿔보거나, 내 상황으로 새로 진단해 보세요.</span><button type="button" id="sharedStart">내 결과도 확인하기 →</button></div>`;
+      root.querySelector('#sharedStart').addEventListener('click', ()=>{
+        Object.keys(state).forEach(k=>{ state[k] = (k==='bizPriority') ? 3 : null; });
+        history.replaceState(null, '', location.pathname);
+        window.__sharedResult = false;
+        if (typeof gtag === 'function') gtag('event', 'wizard_start', { from:'shared' });
+        cursor = 1; render();
+      });
+      if (typeof gtag === 'function') ensureScore(j => gtag('event', 'shared_open', { top_product: LABEL[j.top] }));
+    }
+
+
     const backdrop = root.querySelector('#reviewBackdrop');
     root.querySelector('#toggleReview').addEventListener('click', ()=>{
       backdrop.classList.add('open');
@@ -1450,6 +1431,7 @@
 
   // ================= CONTACT STEP =================
   function contactStep(root){
+    if (!ENGINE.res || ENGINE.key !== engineKey()){ ensureScore(()=>contactStep(root)); return; }
     const fit = computeFit();
     const ranked = PRODUCTS.slice().sort((a,b)=>fit[b]-fit[a]);
     const top = ranked[0];
@@ -1605,7 +1587,45 @@
     });
   }
 
+  // 공유 링크(?r=...)로 들어온 경우: 답변을 복원해 결과 화면부터 보여준다.
+  // 값은 QUESTIONS의 선택지와 대조해서 유효한 것만 받아들인다(임의 문자열 주입 방지).
+  (function restoreShared(){
+    const r = new URLSearchParams(location.search).get('r');
+    if (!r) return;
+    try {
+      const json = decodeURIComponent(escape(atob(r.replace(/-/g,'+').replace(/_/g,'/'))));
+      const o = JSON.parse(json);
+      if (!o || typeof o !== 'object') return;
+      // biz를 먼저 넣어야 의존 선택지(purpose/driver 등)가 올바르게 풀린다
+      const order = ['biz', ...QUESTIONS.map(q=>q.key).filter(k=>k!=='biz')];
+      let applied = 0;
+      order.forEach(k=>{
+        const q = QUESTIONS.find(qq=>qq.key===k); if (!q || !(k in o)) return;
+        const opts = resolveOptions(q);
+        const v = o[k];
+        if (opts.some(op=> !op.custom && op.value===v)){ state[k] = v; applied++; }
+        else if (k==='vehicleType' && typeof v==='string' && v.length<=30){ state[k] = v.replace(/[<>"'&]/g,''); applied++; }
+      });
+      if (applied < 8) return;   // 너무 불완전하면 일반 진입으로
+      window.__sharedResult = true;
+      cursor = steps.findIndex(s=>s.id==='result');
+    } catch(e){ /* 잘못된 링크면 그냥 처음부터 */ }
+  })();
+
   render();
+})();
+</script>
+<script>
+(function(){
+  // 결과 화면은 JS로 다시 그려지므로, 카드가 새로 생길 때마다 등장 모션을 연결
+  function arm(){
+    var c = document.getElementById('mgrCard'); if (!c || c.__armed) return; c.__armed = true;
+    if (!('IntersectionObserver' in window)){ c.classList.add('in'); return; }
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ c.classList.add('in'); io.disconnect(); } }); }, { threshold:.25 });
+    io.observe(c);
+  }
+  new MutationObserver(arm).observe(document.body, { childList:true, subtree:true });
+  arm();
 })();
 </script>
 </body>
