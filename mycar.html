@@ -435,7 +435,19 @@
   .recall{display:flex; gap:12px; align-items:center; padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:var(--panel); margin-bottom:16px; font-size:13.5px; color:var(--text-dim);}
   .recall.has{border-color:rgba(255,138,138,.5); background:rgba(255,138,138,.08); color:var(--text);}
   .recall .dot{width:10px; height:10px; border-radius:50%; background:var(--text-dimmer); flex:0 0 auto;} .recall.has .dot{background:#FF8A8A; box-shadow:0 0 0 0 rgba(255,138,138,.6); animation:livep 1.6s ease-out infinite;}
-  .settings{padding:18px 20px;}
+  .settings{padding:18px 20px; scroll-margin-top:90px;}
+  .wa{margin-top:6px; padding:14px 0 4px; border-top:1px solid var(--line);}
+  .wa-h{display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  .wa-h b{font-size:14px; font-weight:600;} .wa-h em{font-style:normal; font-size:11px; font-weight:700; color:var(--text-dimmer); border:1px solid var(--line); border-radius:99px; padding:2px 8px; margin-left:6px; white-space:nowrap;}
+  .wa-h .sw{border:0; padding:0;}
+  .wa-body{margin-top:12px; padding:14px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid var(--line);} .wa-body[hidden]{display:none;}
+  .wa-row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .wa-row label{font-size:13px; color:var(--text-dim); min-width:52px;}
+  .wa-row select{font:inherit; font-size:14px; color:var(--text); background:#0f141b; border:1px solid var(--line); border-radius:10px; padding:9px 12px;}
+  .wa-note{margin:12px 0 0; font-size:12.5px; line-height:1.65; color:var(--text-dimmer);} .wa-note b{color:var(--text-dim);}
+  .wa-ch{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
+  .wa-ch span{font-size:12.5px; color:var(--text-dim);} .wa-ch span b{color:#FEE500;}
+  .wa-ch a{display:inline-flex; align-items:center; gap:6px; background:#FEE500; color:#191600; font-weight:700; font-size:13.5px; border-radius:99px; padding:9px 16px; text-decoration:none;}
   .settings h3{margin:0 0 10px; font-size:15px;}
   .sw{display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:1px solid var(--line); font-size:14px;}
   .sw:first-of-type{border-top:none;}
@@ -597,7 +609,7 @@
       <a class="btn btn-ghost btn-lg" href="contact.html?utm_source=mycar">상담 요청하기</a>
     </div>
     </div>
-    <div class="glass settings reveal">
+    <div class="glass settings reveal" id="settings">
       <h3>알림 설정</h3>
       <div class="sw"><span>계약 만기 (3개월 전)</span><input type="checkbox" data-n="contract" checked></div>
       <div class="sw"><span>보험 만기 (30일 전)</span><input type="checkbox" data-n="insurance" checked></div>
@@ -605,6 +617,14 @@
       <div class="sw"><span>자동차세 납부 시기</span><input type="checkbox" data-n="tax" checked></div>
       <div class="sw"><span>소모품 점검</span><input type="checkbox" data-n="maint" checked></div>
       <div class="sw"><span>리콜</span><input type="checkbox" data-n="recall" checked></div>
+      <div class="wa" id="washAlert">
+        <div class="wa-h"><div><b>세차하기 좋은 날 알림</b><em>선택 · 광고성</em></div><div class="sw"><input type="checkbox" id="waOn" aria-label="세차하기 좋은 날 알림"></div></div>
+        <div class="wa-body" id="waBody" hidden>
+          <div class="wa-row"><label for="waSido">내 동네</label><select id="waSido"></select><select id="waGu" aria-label="구·시·군"></select></div>
+          <p class="wa-note">내 동네 <b>세차 지수 80점 이상</b>이고 <b>3일간 비 소식이 없을 때만</b> 카카오톡으로 알려드려요. <b>평일 오전 11시 · 주말·공휴일 오전 9시</b>, 주 2번까지만 보내요. 언제든 여기서 끌 수 있어요.</p>
+          <div class="wa-ch"><span>카카오톡 <b>슬림더카 채널</b>을 추가해야 받을 수 있어요</span><a href="https://pf.kakao.com/_AxelFX/friend" target="_blank" rel="noopener">채널 추가하기</a></div>
+        </div>
+      </div>
       <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;"><button class="inline-skip" id="logout">로그아웃</button><button class="danger" id="deleteAll">회원 탈퇴 (모든 정보 삭제)</button></div>
     </div>
   </div>
@@ -1408,8 +1428,34 @@ var CFG = {
     tiles.forEach(function(t){ if (t.na) return; var d = t.days!=null ? t.days : (t.kmLeft!=null && t.kmLeft<=1000 ? 0 : null); if (d==null || d < -60) return; if (!best || d < best.days) best = { label:t.label, days:d, km: t.days==null }; });
     return best;
   }
+  // ---- 세차하기 좋은 날 알림 (광고성 · 선택) ----
+  var WA_REG = {"서울": "강남구 강동구 강북구 강서구 관악구 광진구 구로구 금천구 노원구 도봉구 동대문구 동작구 마포구 서대문구 서초구 성동구 성북구 송파구 양천구 영등포구 용산구 은평구 종로구 중구 중랑구", "부산": "강서구 금정구 기장군 남구 동구 동래구 부산진구 북구 사상구 사하구 서구 수영구 연제구 영도구 중구 해운대구", "대구": "군위군 남구 달서구 달성군 동구 북구 서구 수성구 중구", "인천": "강화군 검단구 계양구 남동구 미추홀구 부평구 서구 연수구 영종구 옹진군 제물포구", "광주": "광산구 남구 동구 북구 서구", "대전": "대덕구 동구 서구 유성구 중구", "울산": "남구 동구 북구 울주군 중구", "세종": "세종시", "경기": "가평군 고양시 과천시 광명시 광주시 구리시 군포시 김포시 남양주시 동두천시 부천시 성남시 수원시 시흥시 안산시 안성시 안양시 양주시 양평군 여주시 연천군 오산시 용인시 의왕시 의정부시 이천시 파주시 평택시 포천시 하남시 화성시", "강원": "강릉시 고성군 동해시 삼척시 속초시 양구군 양양군 영월군 원주시 인제군 정선군 철원군 춘천시 태백시 평창군 홍천군 화천군 횡성군", "충북": "괴산군 단양군 보은군 영동군 옥천군 음성군 제천시 증평군 진천군 청주시 충주시", "충남": "계룡시 공주시 금산군 논산시 당진시 보령시 부여군 서산시 서천군 아산시 예산군 천안시 청양군 태안군 홍성군", "전북": "고창군 군산시 김제시 남원시 무주군 부안군 순창군 완주군 익산시 임실군 장수군 전주시 정읍시 진안군", "전남": "강진군 고흥군 곡성군 광양시 구례군 나주시 담양군 목포시 무안군 보성군 순천시 신안군 여수시 영광군 영암군 완도군 장성군 장흥군 진도군 함평군 해남군 화순군", "경북": "경산시 경주시 고령군 구미시 김천시 문경시 봉화군 상주시 성주군 안동시 영덕군 영양군 영주시 영천시 예천군 울릉군 울진군 의성군 청도군 청송군 칠곡군 포항시", "경남": "거제시 거창군 고성군 김해시 남해군 밀양시 사천시 산청군 양산시 의령군 진주시 창녕군 창원시 통영시 하동군 함안군 함양군 합천군", "제주": "서귀포시 제주시"};
+  function renderWashAlert(){
+    var p = store.profile||{}, on = !!p.wash_alert && !!p.marketing_agreed_at;
+    var cur = String(p.wash_region||'').split(' '), sido = WA_REG[cur[0]] ? cur[0] : '서울', gu = cur[1]||'';
+    $('#waOn').checked = on; $('#waBody').hidden = !on;
+    $('#waSido').innerHTML = Object.keys(WA_REG).map(function(k){ return '<option'+(k===sido?' selected':'')+'>'+k+'</option>'; }).join('');
+    var fillGu = function(sd, sel){ $('#waGu').innerHTML = '<option value="">구·시·군 선택</option>'+WA_REG[sd].split(' ').map(function(g){ return '<option'+(g===sel?' selected':'')+'>'+g+'</option>'; }).join(''); };
+    fillGu(sido, gu);
+    var saveRegion = function(){ var g=$('#waGu').value; if(!g) return; var r=$('#waSido').value+' '+g; api.saveProfile({ wash_region:r }).then(function(){ toast(r+' 기준으로 알려드릴게요'); }).catch(function(){ toast('저장에 실패했어요'); }); };
+    $('#waSido').onchange = function(){ fillGu(this.value, ''); if (WA_REG[this.value].split(' ').length===1){ $('#waGu').selectedIndex=1; saveRegion(); } };
+    $('#waGu').onchange = saveRegion;
+    $('#waOn').onchange = async function(){
+      var c = this;
+      if (c.checked){
+        if (!confirm('세차하기 좋은 날 알림은 광고성 정보(카카오 브랜드메시지)예요.\n수신에 동의하고 켤까요? 언제든 여기서 끌 수 있어요.')){ c.checked=false; return; }
+        try { await api.saveProfile({ wash_alert:true, marketing_agreed_at: (store.profile&&store.profile.marketing_agreed_at) || new Date().toISOString() }); } catch(e){ c.checked=false; toast('저장에 실패했어요'); return; }
+        $('#waBody').hidden = false;
+        toast($('#waGu').value ? '세차 알림을 켰어요' : '세차 알림을 켰어요. 내 동네를 골라 주세요');
+      } else {
+        try { await api.saveProfile({ wash_alert:false, marketing_agreed_at:null }); } catch(e){ c.checked=true; toast('저장에 실패했어요'); return; }
+        $('#waBody').hidden = true; toast('세차 알림을 껐어요 (광고성 정보 수신 거부)');
+      }
+    };
+  }
   function renderDash(){
     var fleet = isFleet();
+    renderWashAlert();
     $('#fleetToggle').setAttribute('aria-pressed', fleet ? 'true' : 'false'); $('#fleetState').textContent = fleet ? 'ON' : 'OFF';
     $('#addCar').hidden = fleet; $('#delCar').hidden = fleet && !dashDetail; $('#editCar').hidden = fleet && !dashDetail;
     $('#mgrBar .seg').hidden = fleet && !dashDetail;
@@ -1460,7 +1506,7 @@ var CFG = {
     $('#fQ').addEventListener('input', function(e){ fleetQ=e.target.value; draw(); });
     $('#fAdd').onclick = addCar; $('#fUp').onclick = function(){ $('#bulkFile').value=''; $('#bulkFile').click(); }; $('#fTpl').onclick = downloadTemplate;
     var p=store.profile||{};
-    $$('.settings .sw input').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
+    $$('.settings .sw input[data-n]').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
     revealNow();
   }
   function renderSingle(){
@@ -1485,7 +1531,7 @@ var CFG = {
     }).join('');
     $$('#tiles .tile').forEach(function(el,i){ setTimeout(function(){ el.classList.add('in'); var fg=el.querySelector('.fg'); if(fg){ var pct=Number(el.dataset.pct||0); fg.style.strokeDashoffset = 201*(1-pct); } }, reduce?0:120+i*110); });
     renderFuel(); renderWash();
-    $$('.settings .sw input').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
+    $$('.settings .sw input[data-n]').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
     revealNow();
   }
   $('#odoCancel').addEventListener('click', function(){ $('#odoModal').classList.remove('on'); });
@@ -1686,6 +1732,7 @@ var CFG = {
     if (!store.vehicles.length){ startReg('new'); show('#vReg'); return; }
     dashDetail = !isFleet();
     renderDash(); show('#vDash');
+    if (location.hash==='#settings') setTimeout(function(){ var el=$('#settings'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 400);
   }
   if (DEMO || !sb) route();
   else sb.auth.onAuthStateChange(function(ev){ if (ev==='SIGNED_IN' || ev==='INITIAL_SESSION' || ev==='SIGNED_OUT') route(); });
