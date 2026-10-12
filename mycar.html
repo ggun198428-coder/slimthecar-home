@@ -1667,13 +1667,16 @@ var CFG = {
     var t=Date.now(); location.href=b.dataset.url; setTimeout(function(){ if(Date.now()-t<2000 && !document.hidden) window.open(b.dataset.web,'_blank'); },1500); });
   var loc=null;
   function getLoc(cb){ if(!navigator.geolocation){ toast('이 브라우저는 위치를 지원하지 않아요'); return; } navigator.geolocation.getCurrentPosition(function(pos){ loc={lat:pos.coords.latitude, lng:pos.coords.longitude}; cb(); }, function(){ toast('위치 권한이 필요해요'); }, {timeout:8000, maximumAge:300000}); }
-  var TODAY=null, TODAY_LOC=null;
+  var TODAY=null, TODAY_LOC=null, TODAY_FUEL=null;
+  // 등록 차량 연료 → 오피넷 유종 코드 (EV = 전기·수소: 주유소 목록 대신 안내)
+  function fuelCode(v){ var f=String((v&&v.fuel)||''); if(/디젤|경유/.test(f)) return 'D047'; if(/LPG/i.test(f)) return 'K015'; if(/전기|수소/.test(f) && !/하이브리드/.test(f)) return 'EV'; return 'B027'; }
   function loadToday(cb){
     if (!CFG.API){ cb(null); return; }
     var saved=null; try{ saved=JSON.parse(localStorage.getItem('stc_loc')||'null'); }catch(e){}
     var l = loc || saved || null; var lat = l? l.lat : 37.5665, lng = l? l.lng : 126.9780;
-    if (TODAY && TODAY_LOC && TODAY_LOC.lat===lat && TODAY_LOC.lng===lng){ cb(TODAY); return; }
-    fetch(CFG.API+'?action=today&lat='+lat+'&lng='+lng,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ TODAY=d; TODAY_LOC={lat:lat,lng:lng}; TODAY.__label = l ? '내 위치 기준' : '서울 기준'; cb(d); }).catch(function(){ cb(null); });
+    var fc = fuelCode(store.vehicle);
+    if (TODAY && TODAY_LOC && TODAY_LOC.lat===lat && TODAY_LOC.lng===lng && TODAY_FUEL===fc){ cb(TODAY); return; }
+    fetch(CFG.API+'?action=today&lat='+lat+'&lng='+lng+(fc!=='EV'?'&fuel='+fc:''),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ TODAY=d; TODAY_LOC={lat:lat,lng:lng}; TODAY_FUEL=fc; TODAY.__label = l ? '내 위치 기준' : '서울 기준'; cb(d); }).catch(function(){ cb(null); });
   }
   function renderFuel(){
     var P=$('#fuelPanel');
@@ -1683,6 +1686,7 @@ var CFG = {
       var f = demo ? {gasoline:1648, diesel:1521, gasolineDiff:-3, dieselDiff:2} : d.fuel;
       var g=f.gasolineDiff||0, q=f.dieselDiff||0;
       var fuelRow='<div class="fuel-row"><div class="fuel"><div class="n">휘발유</div><div class="p">'+num(f.gasoline)+'</div><div class="d '+(g>0?'up':'down')+'">'+(g>0?'▲ ':'▼ ')+Math.abs(g)+'원</div></div><div class="fuel"><div class="n">경유</div><div class="p">'+num(f.diesel)+'</div><div class="d '+(q>0?'up':'down')+'">'+(q>0?'▲ ':'▼ ')+Math.abs(q)+'원</div></div></div>';
+      if (fuelCode(store.vehicle)==='EV'){ P.innerHTML='<div class="panel-head"><h3>오늘의 유가'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">전국 평균</span></div>'+fuelRow+'<div class="place"><span>⚡ 전기·수소차는 주유소 대신 <b>충전소 안내</b>를 준비하고 있어요.</span></div>'; return; }
       if (!loc){
         P.innerHTML='<div class="panel-head"><h3>오늘의 유가'+(demo?'<span class="ex-tag">예시</span>':'')+'</h3><span class="mini">전국 평균'+(demo?'':' · '+esc(f.date||''))+'</span></div>'+fuelRow+'<button class="loc-btn" id="fuelLoc">📍 내 주변 최저가 주유소 보기</button>';
         $('#fuelLoc').addEventListener('click', function(){ getLoc(function(){ try{ localStorage.setItem('stc_loc', JSON.stringify({lat:+loc.lat.toFixed(3), lng:+loc.lng.toFixed(3)})); }catch(e){} renderFuel(); renderWash(); }); }); return;

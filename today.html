@@ -460,6 +460,8 @@
   .loc-note{font-size:12px; color:var(--text-dimmer); text-align:center; margin:10px 0 0;}
   .lists{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
   .list-pane{padding:24px 24px 18px;}
+  .ftabs{display:flex; gap:6px; margin:4px 0 10px;} .ftabs button{flex:1; font-family:inherit; font-size:14px; font-weight:700; color:var(--text-dim); background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; padding:10px 0; cursor:pointer; transition:all .2s;}
+  .ftabs button.on{color:#04121A; background:var(--accent); border-color:var(--accent);} .ftabs button:not(.on):hover{border-color:var(--accent); color:var(--text);}
   .list-pane .head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
   .list-pane .head h3{margin:0; font-size:17px; display:flex; align-items:center; gap:10px;} .list-pane .head .mini{font-size:12px; color:var(--text-dimmer);}
   .place{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:13px 0; border-top:1px solid var(--line); opacity:0; transform:translateY(10px); animation:pickIn .5s var(--ease) forwards;}
@@ -562,7 +564,7 @@
     </div>
 
     <div class="lists" id="lists" hidden>
-      <div class="pane list-pane" id="stations"><div class="head"><h3><div class="itile g-orange sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M4 21h12M7 7h6"/><path d="M15 10h2l2 2v5a1.5 1.5 0 0 0 3 0v-7l-2.5-2.5"/></svg></div>내 주변 최저가 주유소</h3><span class="mini" id="stMini">휘발유 · 가격순 · 3km</span></div><div id="stList"></div></div>
+      <div class="pane list-pane" id="stations"><div class="head"><h3><div class="itile g-orange sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M4 21h12M7 7h6"/><path d="M15 10h2l2 2v5a1.5 1.5 0 0 0 3 0v-7l-2.5-2.5"/></svg></div>내 주변 최저가 주유소</h3><span class="mini" id="stMini">휘발유 · 가격순 · 3km</span></div><div class="ftabs" id="fTabs" role="tablist" aria-label="유종 선택"><button type="button" data-f="B027">휘발유</button><button type="button" data-f="D047">경유</button><button type="button" data-f="K015">LPG</button></div><div id="stList"></div></div>
       <div class="pane list-pane" id="washes"><div class="head"><h3><div class="itile g-cyan sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 3s-5 6-5 10a5 5 0 0 0 10 0c0-4-5-10-5-10z"/><path d="M9.5 14a2.5 2.5 0 0 0 2 2.4"/></svg></div>내 주변 세차장</h3><span class="mini">거리순 · 2km</span></div><div id="wsList"></div></div>
     </div>
 
@@ -741,6 +743,18 @@ var CFG = { API: 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuH
   if (CFG.API) fetch(CFG.API+'?action=today&lat='+iLat+'&lng='+iLng,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ applyToday(d); if(d&&d.wash){ var m=document.querySelector('#wash .eyebrow'); if(m) m.textContent='세차 지수 · '+(saved&&saved.lat?'내 위치':'서울')+' 기준'+(d.wash.station?' · '+d.wash.station+' 측정소':''); } }).catch(function(){ washFail(); });
   // 세차 알림 카톡 버튼: ?near=wash(세차장) / ?near=fuel(주유소) → 바로 내 위치로 찾고 해당 목록으로 이동
   var GO = (location.search.match(/[?&]near=(wash|fuel)/)||[])[1] || '';
+  // 유종 선택 (휘발유·경유·LPG) — 마지막 선택 기억
+  var FUEL='B027'; try{ FUEL=localStorage.getItem('stc_fuel')||'B027'; }catch(e){}
+  var LAST_LOC=null, FBTN=[].slice.call(document.querySelectorAll('#fTabs button'));
+  function markFuel(){ FBTN.forEach(function(b){ b.classList.toggle('on', b.dataset.f===FUEL); b.setAttribute('aria-selected', b.dataset.f===FUEL?'true':'false'); }); }
+  markFuel();
+  FBTN.forEach(function(b){ b.addEventListener('click', function(){
+    if (FUEL===b.dataset.f) return; FUEL=b.dataset.f; try{ localStorage.setItem('stc_fuel', FUEL); }catch(e){} markFuel();
+    if (!LAST_LOC || !CFG.API) return;
+    $('#stList').innerHTML='<div class="empty">불러오는 중…</div>';
+    fetch(CFG.API+'?action=today&lat='+LAST_LOC.lat+'&lng='+LAST_LOC.lng+'&fuel='+FUEL,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.stations) renderStations(d.stations, d.fuelLabel); }).catch(function(){ $('#stList').innerHTML='<div class="empty">잠시 후 다시 시도해 주세요</div>'; });
+    if (window.gtag) gtag('event','today_fuel',{fuel:FUEL});
+  }); });
   $('#locBtn').addEventListener('click', function(){
     var btn=this; if(!navigator.geolocation){ alert('이 브라우저는 위치를 지원하지 않아요'); return; }
     btn.disabled=true; btn.textContent='위치 확인 중…';
@@ -749,7 +763,8 @@ var CFG = { API: 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuH
       try{ localStorage.setItem('stc_loc', JSON.stringify({lat:+lat.toFixed(3), lng:+lng.toFixed(3)})); }catch(e){}
       $('#lists').hidden=false;
       if (window.gtag) gtag('event','today_nearby');
-      if (CFG.API){ fetch(CFG.API+'?action=today&lat='+lat+'&lng='+lng,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ applyToday(d); if(d&&d.wash){ var m=document.querySelector('#wash .eyebrow'); if(m) m.textContent='세차 지수 · 내 위치 기준'+(d.wash.station?' · '+d.wash.station+' 측정소':''); } if(d&&d.stations) renderStations(d.stations, d.fuelLabel); else if(d&&d.stations===null) $('#stList').innerHTML='<div class="empty">'+ICON_PIN+'주유소 정보 연결 준비 중</div>'; if(d&&d.washes) renderWashes(d.washes); else if(d&&d.washes===null) $('#wsList').innerHTML='<div class="empty">'+ICON_PIN+'세차장 정보 연결 준비 중</div>'; }).catch(function(){ demoNearby(lat,lng); }); }
+      LAST_LOC={lat:lat, lng:lng};
+      if (CFG.API){ fetch(CFG.API+'?action=today&lat='+lat+'&lng='+lng+'&fuel='+FUEL,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){ applyToday(d); if(d&&d.wash){ var m=document.querySelector('#wash .eyebrow'); if(m) m.textContent='세차 지수 · 내 위치 기준'+(d.wash.station?' · '+d.wash.station+' 측정소':''); } if(d&&d.stations) renderStations(d.stations, d.fuelLabel); else if(d&&d.stations===null) $('#stList').innerHTML='<div class="empty">'+ICON_PIN+'주유소 정보 연결 준비 중</div>'; if(d&&d.washes) renderWashes(d.washes); else if(d&&d.washes===null) $('#wsList').innerHTML='<div class="empty">'+ICON_PIN+'세차장 정보 연결 준비 중</div>'; }).catch(function(){ demoNearby(lat,lng); }); }
       else demoNearby(lat,lng);
       btn.innerHTML=ICON_PIN+'내 위치 기준으로 다시 찾기'; btn.disabled=false;
       setTimeout(function(){ $(GO==='wash'?'#washes':(GO==='fuel'?'#stations':'#lists')).scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'}); }, GO?700:150);
