@@ -250,7 +250,7 @@
   .toast.on{opacity:1; transform:translateX(-50%) translateY(0);}
 
   /* ===== 랜딩 ===== */
-  .mc-hero{padding:clamp(56px, 8vw, 110px) 0 clamp(40px, 6vw, 80px);}
+  .mc-hero{padding-top:clamp(56px, 8vw, 110px); padding-bottom:clamp(40px, 6vw, 80px);}
   .mc-hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(28px, 5vw, 64px); align-items:center;}
   .mc-hero .display{font-size:clamp(34px, 5vw, 62px); letter-spacing:-0.04em; line-height:1.1; margin-bottom:20px;}
   .mc-hero .lead{margin-bottom:28px;}
@@ -359,7 +359,8 @@
   @keyframes pop{0%{opacity:1; transform:translate(0,0) scale(1)} 100%{opacity:0; transform:translate(var(--dx), var(--dy)) scale(.2)}}
 
   /* ===== 대시보드 ===== */
-  .dash{padding:clamp(28px,4vw,48px) 0 40px;}
+  .dash{padding-top:clamp(28px,4vw,48px); padding-bottom:40px;}
+  @media (max-width:640px){ .mc-wrap{padding:0 18px;} .dash-head .who{font-size:13px;} }
   .dash-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px;}
   .dash-head .h2{margin:0; font-size:clamp(26px,3.6vw,40px);}
   .dash-head .who{color:var(--text-dim); font-size:14px;}
@@ -459,7 +460,7 @@
   .chc{margin-top:14px;padding:18px;border-radius:18px;background:rgba(254,229,0,.06);border:1px solid rgba(254,229,0,.35)}
   .chc-top{display:flex;gap:14px;align-items:center}.chc-logo{width:58px;height:58px;border-radius:16px;background:#f2f6f7;flex:none;box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}
   .chc-top b{display:flex;align-items:center;gap:5px;font-size:17px;margin-bottom:3px}.vbadge{width:18px;height:18px;flex:none}.chc-top span{display:block;font-size:12.5px;line-height:1.55;color:var(--text-dim)}
-  .chc-msg{margin:14px 0 12px;font-size:15.5px;font-weight:600;line-height:1.5;white-space:nowrap;letter-spacing:-0.02em}@media (max-width:640px){.chc{padding:16px 14px}.chc-msg{font-size:clamp(9px,2.7vw,15px);letter-spacing:-0.05em}}
+  .chc-msg{margin:14px 0 12px;font-size:15.5px;font-weight:600;line-height:1.5;white-space:nowrap;letter-spacing:-0.02em}@media (max-width:640px){.wa-body{padding:12px}.chc{padding:14px 12px}.chc-msg{font-size:13px;letter-spacing:-0.05em}.chc-msg.wrap{white-space:normal}}
   .chc-btn{white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:10px;background:#FEE500;color:#191600;font-weight:800;font-size:16px;border-radius:14px;padding:14px;text-decoration:none}
   .chc-btn img{width:26px;height:26px;border-radius:7px}
   .chr{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
@@ -1454,10 +1455,17 @@ var CFG = {
   }
   // ---- 세차하기 좋은 날 알림 (광고성 · 선택) ----
   var WA_REG = {"서울": "강남구 강동구 강북구 강서구 관악구 광진구 구로구 금천구 노원구 도봉구 동대문구 동작구 마포구 서대문구 서초구 성동구 성북구 송파구 양천구 영등포구 용산구 은평구 종로구 중구 중랑구", "부산": "강서구 금정구 기장군 남구 동구 동래구 부산진구 북구 사상구 사하구 서구 수영구 연제구 영도구 중구 해운대구", "대구": "군위군 남구 달서구 달성군 동구 북구 서구 수성구 중구", "인천": "강화군 검단구 계양구 남동구 미추홀구 부평구 서구 연수구 영종구 옹진군 제물포구", "광주": "광산구 남구 동구 북구 서구", "대전": "대덕구 동구 서구 유성구 중구", "울산": "남구 동구 북구 울주군 중구", "세종": "세종시", "경기": "가평군 고양시 과천시 광명시 광주시 구리시 군포시 김포시 남양주시 동두천시 부천시 성남시 수원시 시흥시 안산시 안성시 안양시 양주시 양평군 여주시 연천군 오산시 용인시 의왕시 의정부시 이천시 파주시 평택시 포천시 하남시 화성시", "강원": "강릉시 고성군 동해시 삼척시 속초시 양구군 양양군 영월군 원주시 인제군 정선군 철원군 춘천시 태백시 평창군 홍천군 화천군 횡성군", "충북": "괴산군 단양군 보은군 영동군 옥천군 음성군 제천시 증평군 진천군 청주시 충주시", "충남": "계룡시 공주시 금산군 논산시 당진시 보령시 부여군 서산시 서천군 아산시 예산군 천안시 청양군 태안군 홍성군", "전북": "고창군 군산시 김제시 남원시 무주군 부안군 순창군 완주군 익산시 임실군 장수군 전주시 정읍시 진안군", "전남": "강진군 고흥군 곡성군 광양시 구례군 나주시 담양군 목포시 무안군 보성군 순천시 신안군 여수시 영광군 영암군 완도군 장성군 장흥군 진도군 함평군 해남군 화순군", "경북": "경산시 경주시 고령군 구미시 김천시 문경시 봉화군 상주시 성주군 안동시 영덕군 영양군 영주시 영천시 예천군 울릉군 울진군 의성군 청도군 청송군 칠곡군 포항시", "경남": "거제시 거창군 고성군 김해시 남해군 밀양시 사천시 산청군 양산시 의령군 진주시 창녕군 창원시 통영시 하동군 함안군 함양군 합천군", "제주": "서귀포시 제주시"};
+  // 채널 안내 문구: 한 줄에 맞게 글씨 크기 자동 조절 (9px 아래로는 줄이지 않고 두 줄로)
+  function fitChcMsg(){ var m=$('.chc-msg'); if(!m || m.offsetParent===null) return; m.classList.remove('wrap'); m.style.fontSize='';
+    if (innerWidth>640) return; var fs=parseFloat(getComputedStyle(m).fontSize);
+    while (m.scrollWidth>m.clientWidth+1 && fs>9){ fs-=0.25; m.style.fontSize=fs+'px'; }
+    if (m.scrollWidth>m.clientWidth+1){ m.style.fontSize='12.5px'; m.classList.add('wrap'); } }
+  window.addEventListener('resize', function(){ fitChcMsg(); });
   function renderWashAlert(){
     var p = store.profile||{}, on = !!p.wash_alert && !!p.marketing_agreed_at;
     var cur = String(p.wash_region||'').split(' '), sido = WA_REG[cur[0]] ? cur[0] : '서울', gu = cur[1]||'';
     $('#waOn').checked = on; $('#waBody').hidden = !on;
+    setTimeout(fitChcMsg, 0);
     $('#waSido').innerHTML = Object.keys(WA_REG).map(function(k){ return '<option'+(k===sido?' selected':'')+'>'+k+'</option>'; }).join('');
     var fillGu = function(sd, sel){ $('#waGu').innerHTML = '<option value="">구·시·군 선택</option>'+WA_REG[sd].split(' ').map(function(g){ return '<option'+(g===sel?' selected':'')+'>'+g+'</option>'; }).join(''); };
     fillGu(sido, gu);
@@ -1470,6 +1478,7 @@ var CFG = {
         if (!confirm('오!기세? 세차 알림은 광고성 정보(카카오 브랜드메시지)예요.\n수신에 동의하고 켤까요? 언제든 여기서 끌 수 있어요.')){ c.checked=false; return; }
         try { await api.saveProfile({ wash_alert:true, marketing_agreed_at: (store.profile&&store.profile.marketing_agreed_at) || new Date().toISOString() }); } catch(e){ c.checked=false; toast('저장에 실패했어요'); return; }
         $('#waBody').hidden = false;
+        fitChcMsg();
         toast($('#waGu').value ? '오!기세? 세차 알림을 켰어요' : '오!기세? 세차 알림을 켰어요. 내 동네를 골라 주세요');
       } else {
         try { await api.saveProfile({ wash_alert:false, marketing_agreed_at:null }); } catch(e){ c.checked=true; toast('저장에 실패했어요'); return; }
