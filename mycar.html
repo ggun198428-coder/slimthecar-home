@@ -327,6 +327,21 @@
   .usage{display:flex; flex-direction:column; gap:6px; padding:16px; border-radius:16px; border:1px solid var(--line); background:var(--panel); cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .25s, background .25s, transform .25s var(--ease);}
   .usage:hover{transform:translateY(-2px); border-color:var(--line-hi);} .usage.on{border-color:var(--accent); background:rgba(18,183,179,.12);}
   .usage b{display:flex; align-items:center; gap:8px; font-size:15px;} .usage span{font-size:12px; color:var(--text-dimmer); line-height:1.5;}
+  .agree-line{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--text-dimmer); line-height:1.55; margin:0 0 14px; cursor:pointer;} .agree-line input{margin-top:3px; accent-color:#2dd4bf; width:16px; height:16px; flex:none;} .agree-line em{display:block; font-style:normal; font-size:12px; color:var(--text-dimmer); opacity:.8;} .agree-line a{color:var(--accent);}
+  .auto-note{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--accent); background:rgba(45,212,191,.1); border:1px solid rgba(45,212,191,.35); padding:4px 10px; border-radius:999px;}
+  .plate-mini{display:inline-flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#0b1a24; background:#f4f7f8; border-radius:8px; padding:6px 12px; margin-bottom:16px;} .plate-mini i{width:10px; height:16px; border-radius:2px; background:#1f4fa8;}
+  .inline-skip.strong{color:var(--accent); font-weight:700; text-decoration:none;}
+  .spin{display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:spn .7s linear infinite; vertical-align:-2px;} @keyframes spn{to{transform:rotate(360deg)}}
+  .found{padding:18px 18px 8px; border-radius:18px; margin-bottom:6px; animation:fndIn .45s var(--ease) both;} @keyframes fndIn{from{opacity:0; transform:translateY(10px) scale(.98)} to{opacity:1; transform:none}}
+  .found-top{display:flex; justify-content:space-between; align-items:center;} .found-top .plate-mini{margin:0;}
+  .ok-chip{font-size:12px; font-weight:700; color:#04201f; background:var(--accent); padding:4px 10px; border-radius:999px;}
+  .found-name{font-size:16px; color:var(--text-dimmer); margin:14px 0 10px;} .found-name b{font-size:22px; color:var(--text); letter-spacing:-0.02em;}
+  .found dl{margin:0;} .found dl div{display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:14px;} .found dt{color:var(--text-dimmer);} .found dd{margin:0; font-weight:600; text-align:right;}
+  .seg{display:flex; gap:6px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:5px;} .seg button{flex:1; font-family:inherit; font-size:13.5px; font-weight:600; color:var(--text-dimmer); background:none; border:none; padding:10px 6px; border-radius:10px; cursor:pointer; transition:background .2s, color .2s;} .seg button.on{background:var(--accent); color:#04201f;}
+  .seg.months{flex-wrap:wrap;}
+  #cEnd[hidden], #cStart[hidden]{display:none !important;}
+  .calc{font-size:13px; color:var(--text-dimmer); padding:14px 16px; border-radius:14px; border:1px dashed var(--line); margin:-4px 0 16px;} .calc.on{border-style:solid; border-color:rgba(45,212,191,.45); background:rgba(45,212,191,.07); color:var(--text);} .calc b{display:block; font-family:'Space Grotesk',sans-serif; font-size:22px; color:var(--accent); margin:2px 0 2px;} .calc span{font-size:12px; color:var(--text-dimmer);}
+  .auto-box{padding:14px 16px; border-radius:14px; border:1px solid rgba(45,212,191,.3); background:rgba(45,212,191,.06); margin-bottom:16px;} .auto-box div{display:flex; gap:18px; margin:10px 0 6px; font-size:13.5px; color:var(--text-dimmer);} .auto-box b{color:var(--text); margin-left:4px;} .auto-box p{margin:0; font-size:12px; color:var(--text-dimmer);}
   .inline-skip{font-size:12.5px; color:var(--text-dimmer); text-decoration:underline; text-underline-offset:2px; cursor:pointer; background:none; border:none; font-family:inherit; padding:0;}
 
   /* 완료 애니메이션 */
@@ -510,7 +525,7 @@
 <!-- ===== 차 등록 4단계 ===== -->
 <section class="view" id="vReg">
   <div class="mc-wrap"><div class="glass flow" id="regCard">
-    <div class="stepper"><span><b id="stepNo">1</b> / 4</span><span id="stepName">차량번호</span></div>
+    <div class="stepper"><span><b id="stepNo">1</b> / 5</span><span id="stepName">차량번호</span></div>
     <div class="progress"><i id="regBar"></i></div>
     <div id="regBody"></div>
   </div></div>
@@ -940,6 +955,7 @@ var CFG = {
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1keXFvbWNneHltcnpoZmxzc2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNDMyNjcsImV4cCI6MjEwNjkxOTI2N30.6_Z4_oNuu0Zdhd2S_UIOlGHO4dY-zDnOWpPtHHMgIsU',
   API: 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec',   // Apps Script 웹앱 (action=today). 비어 있으면 예시 표시
   KAKAO_SCOPES: 'profile_nickname account_email',
+  CAR_LOOKUP: false,   // 소유자 이름 자동 조회(car-lookup 서버) — 서버 준비 후 true
 };
 
 // ---- 차이드 매니저용 데이터 병합: 구형·단종 모델 + 추가 브랜드 + 직접 입력 ----
@@ -1005,7 +1021,9 @@ var CFG = {
     saveVehicle: async function(v){
       store.vehicle = Object.assign({}, store.vehicle||{}, v);
       if (DEMO){ lsSave(); return; }
-      var row = Object.assign({ user_id: store.user.id }, store.vehicle); delete row.id_tmp;
+      // 테이블에 있는 칸만 보낸다 (화면용 임시 값 model_free·auto_filled 등이 섞이면 저장이 실패함)
+      var COLS=['id','plate','brand','model','fuel','model_year','usage_type','contract_end','insurance_end','first_reg_date','displacement_cc','is_business','odometer_km','odometer_updated_at','last_service','last_service_est'];
+      var row = { user_id: store.user.id }; COLS.forEach(function(k){ if (store.vehicle[k] !== undefined) row[k] = store.vehicle[k]; });
       var r = await sb.from('vehicles').upsert(row).select().single(); if (r.error) throw r.error; store.vehicle = r.data;
     },
     notifyReg: async function(){   // 등록 완료 알림톡(T1) 요청 — 같은 차량은 서버에서 1번만 발송
@@ -1013,6 +1031,14 @@ var CFG = {
       try { var ss=(await sb.auth.getSession()).data.session; if(!ss) return;
         fetch(CFG.SUPABASE_URL+'/functions/v1/notify', { method:'POST', keepalive:true, headers:{'Content-Type':'application/json','Authorization':'Bearer '+ss.access_token,'apikey':CFG.SUPABASE_ANON_KEY}, body: JSON.stringify({action:'reg_done'}) }).catch(function(){});
       } catch(e){}
+    },
+    carLookup: async function(plate, owner){   // 소유자 이름 + 차량번호 → 차량 정보 (서버 car-lookup에서 조회, 이름은 저장하지 않음)
+      if (DEMO){ await new Promise(function(r){ setTimeout(r, 900); });
+        if (owner.indexOf('없음')>=0) return { ok:false, reason:'not_found' };
+        return { ok:true, car:{ maker:'현대', model:'그랜저', sub_model:'디 올 뉴 그랜저 2.5 가솔린', year:2023, fuel:'휘발유', cc:2497, first_reg:'2023-03-15' } }; }
+      var ss=(await sb.auth.getSession()).data.session; if(!ss) return { ok:false, reason:'auth' };
+      var res = await fetch(CFG.SUPABASE_URL+'/functions/v1/car-lookup', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+ss.access_token,'apikey':CFG.SUPABASE_ANON_KEY}, body: JSON.stringify({ plate: plate, owner: owner }) });
+      return await res.json();
     },
     deleteAll: async function(){
       if (DEMO){ await api.logout(); return; }
@@ -1088,62 +1114,161 @@ var CFG = {
     startReg(); show('#vReg');
   });
 
-  /* ===================== 화면: 등록 4단계 ===================== */
+  /* ===================== 화면: 등록 5단계 (2026-10-12 개편) =====================
+     1 차량번호(하·허·호 → 렌트 자동) · 2 이용 방식 · 3 차량 정보(현금·할부=소유자 이름으로 자동 조회 / 리스·렌트=직접 선택)
+     4 일정(방식별) · 5 주행거리(직접 입력) */
   var reg = {}, step = 1, sub = 'brand';
-  var NAMES = {1:'차량번호', 2:'차종', 3:'이용 방식·만기', 4:'주행거리'};
+  var NAMES = {1:'차량번호', 2:'이용 방식', 3:'차량 정보', 4:'일정', 5:'주행거리'};
+  var TOTAL = 5;
   function startReg(){ reg = Object.assign({}, store.vehicle||{}); step = 1; sub='brand'; renderStep(); }
-  function setBar(){ $('#stepNo').textContent = step; $('#stepName').textContent = NAMES[step]; $('#regBar').style.width = (step/4*100)+'%'; }
+  function setBar(){ $('#stepNo').textContent = step; $('#stepName').textContent = NAMES[step]; $('#regBar').style.width = (step/TOTAL*100)+'%'; }
   function slideIn(html){ var b=$('#regBody'); b.style.opacity=0; b.style.transform='translateX(18px)'; b.innerHTML=html; requestAnimationFrame(function(){ b.style.transition='opacity .35s var(--ease), transform .35s var(--ease)'; b.style.opacity=1; b.style.transform='none'; }); }
   function navRow(backFn, nextLabel, nextFn, disabled){ return '<div class="flow-nav">'+(backFn?'<button class="btn btn-ghost" id="rBack">뒤로</button>':'')+'<button class="btn btn-primary" id="rNext"'+(disabled?' disabled':'')+'>'+nextLabel+' <span class="arrow">→</span></button></div>'; }
+  var RENT_LETTERS = ['하','허','호'];
+  function plateLetter(p){ var m=String(p||'').replace(/\s/g,'').match(/^\d{2,3}([가-힣])\d{4}$/); return m?m[1]:''; }
+  // 계약 만기일 = 시작일 + n개월 - 1일 (해당 날짜가 없는 달이면 그 달 말일)
+  function contractEnd(ymdStr, n){ var p=String(ymdStr).split('-').map(Number); var d=new Date(p[0], p[1]-1+n, p[2]); if (d.getDate()!==p[2]) d=new Date(p[0], p[1]+n, 1); d.setDate(d.getDate()-1); return ymd(d); }
+  function dot(s){ return s ? s.replace(/-/g,'.') : ''; }
 
   function renderStep(){
     setBar();
     if (step===1){
-      slideIn('<h2>차량번호를 알려주세요</h2><p class="sub">식별용으로만 써요. 번호판 그대로 입력하면 됩니다.</p><div class="plate-input" id="plateBox"><i></i><input id="plate" placeholder="12가 3456" maxlength="9" autocomplete="off" value="'+esc(reg.plate||'')+'"></div><p class="hint" style="font-size:12px;color:var(--text-dimmer);margin:0 0 6px;">예: 12가3456, 123가4567</p>'+navRow(null,'다음',null,true));
-      var inp=$('#plate'); var check=function(){ var v=inp.value.replace(/\s/g,''); var ok=/^\d{2,3}[가-힣]\d{4}$/.test(v); $('#rNext').disabled=!ok; $('#plateBox').classList.toggle('bad', v.length>=7 && !ok); if(ok) reg.plate=v.replace(/^(\d{2,3})([가-힣])(\d{4})$/,'$1$2 $3'); }; inp.addEventListener('input',check); check(); setTimeout(function(){inp.focus();},300);
-      $('#rNext').addEventListener('click', function(){ step=2; sub='brand'; renderStep(); });
+      slideIn('<h2>차량번호를 알려주세요</h2><p class="sub">식별용으로만 써요. 번호판 그대로 입력하면 됩니다.</p><div class="plate-input" id="plateBox"><i></i><input id="plate" placeholder="12가 3456" maxlength="9" autocomplete="off" value="'+esc(reg.plate||'')+'"></div><p class="hint" id="plateHint" style="font-size:12px;color:var(--text-dimmer);margin:0 0 6px;">예: 12가3456, 123가4567</p>'+navRow(null,'다음',null,true));
+      var inp=$('#plate'); var check=function(){ var v=inp.value.replace(/\s/g,''); var ok=/^\d{2,3}[가-힣]\d{4}$/.test(v); $('#rNext').disabled=!ok; $('#plateBox').classList.toggle('bad', v.length>=7 && !ok); if(ok) reg.plate=v.replace(/^(\d{2,3})([가-힣])(\d{4})$/,'$1$2 $3');
+        var rent = ok && RENT_LETTERS.indexOf(plateLetter(v))>=0; $('#plateHint').innerHTML = rent ? '<span class="auto-note">렌터카 번호예요 · 장기렌트로 선택해 둘게요</span>' : '예: 12가3456, 123가4567'; };
+      inp.addEventListener('input',check); check(); setTimeout(function(){inp.focus();},300);
+      $('#rNext').addEventListener('click', function(){ if (RENT_LETTERS.indexOf(plateLetter(reg.plate))>=0 && !reg.usage_type) reg.usage_type='rent'; step=2; renderStep(); });
     }
-    if (step===2) renderPick();
-    if (step===3){
-      var u = reg.usage_type||'';
-      slideIn('<h2>어떻게 타고 계세요?</h2><p class="sub">이용 방식에 따라 챙길 일정이 달라져요.</p><div class="usage-grid" id="usageGrid">'+
-        [['cash','현금구매','만기 없음 · 보험·세금·검사만 챙겨요'],['loan','할부','완납일 · 보험·세금·검사'],['lease','리스','계약 만기 · 보험 · 검사'],['rent','장기렌트','계약 만기 · 검사 (보험 포함)']].map(function(x){ return '<button type="button" class="usage'+(u===x[0]?' on':'')+'" data-u="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span></button>'; }).join('')+
-        '</div><div id="dates"></div>'+navRow(true,'다음',null,!u));
-      $$('#usageGrid .usage').forEach(function(b){ b.addEventListener('click', function(){ $$('#usageGrid .usage').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); reg.usage_type=b.dataset.u; renderDates(); $('#rNext').disabled=false; }); });
-      renderDates();
-      $('#rBack').addEventListener('click', function(){ step=2; sub='year'; renderStep(); });
-      $('#rNext').addEventListener('click', function(){ readDates(); step=4; renderStep(); });
+    if (step===2){
+      var u = reg.usage_type||''; var isRentPlate = RENT_LETTERS.indexOf(plateLetter(reg.plate))>=0;
+      slideIn('<h2>지금 어떻게 타고 계세요?</h2><p class="sub">'+(isRentPlate?'렌터카 번호라 장기렌트로 골라 뒀어요. 맞으면 다음을 눌러 주세요.':'이용 방식에 따라 챙길 일정이 달라져요.')+'</p><div class="usage-grid" id="usageGrid">'+
+        [['cash','현금구매',LOOKUP_ON?'내 명의 · 차량 정보 자동 조회':'만기 없음 · 보험·세금·검사'],['loan','할부',LOOKUP_ON?'내 명의 · 차량 정보 자동 조회':'완납일 · 보험·세금·검사'],['lease','리스','계약 만기 · 보험 · 검사'],['rent','장기렌트','계약 만기 (보험·검사 포함)']].map(function(x){ return '<button type="button" class="usage'+(u===x[0]?' on':'')+'" data-u="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span></button>'; }).join('')+
+        '</div>'+navRow(true,'다음',null,!u));
+      $$('#usageGrid .usage').forEach(function(b){ b.addEventListener('click', function(){ $$('#usageGrid .usage').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); if (reg.usage_type!==b.dataset.u){ reg.lookup=null; } reg.usage_type=b.dataset.u; $('#rNext').disabled=false; }); });
+      $('#rBack').addEventListener('click', function(){ step=1; renderStep(); });
+      $('#rNext').addEventListener('click', function(){ step=3; sub='brand'; if (useLookup()){ reg.manual=false; renderLookup(); } else { reg.manual=false; reg.lookup=null; setBar(); renderPick(); } });
+      return;
     }
-    if (step===4){
-      slideIn('<h2>지금 주행거리는요?</h2><p class="sub">계기판 숫자를 대략이라도. 엔진오일·타이어 교체 시기를 계산해요.</p><div class="field"><label>현재 주행거리 (km)</label><input type="number" id="odo" inputmode="numeric" placeholder="예: 42300" value="'+esc(reg.odometer_km||'')+'"></div><div class="field"><label>마지막 엔진오일 교체 때 주행거리 (선택)</label><input type="number" id="oilKm" inputmode="numeric" placeholder="모르면 비워두세요" value="'+esc((reg.last_service&&reg.last_service.oil)||'')+'"></div>'+navRow(true,'등록 완료',null,false));
-      $('#rBack').addEventListener('click', function(){ step=3; renderStep(); });
+    if (step===3){ if (useLookup() && !reg.manual) renderLookup(); else renderPick(); return; }
+    if (step===4) renderSchedule();
+    if (step===5){
+      slideIn('<h2>지금 주행거리는요?</h2><p class="sub">계기판 숫자를 그대로 입력해 주세요. 엔진오일·타이어 교체 시기를 계산해요.</p><div class="field"><label>현재 주행거리 (km)</label><input type="number" id="odo" inputmode="numeric" placeholder="예: 42300" value="'+esc(reg.odometer_km||'')+'"></div><div class="field"><label>마지막 엔진오일 교체 때 주행거리 (선택)</label><input type="number" id="oilKm" inputmode="numeric" placeholder="모르면 비워두세요" value="'+esc((reg.last_service&&reg.last_service.oil)||'')+'"></div>'+navRow(true,'등록 완료',null,false));
+      $('#rBack').addEventListener('click', function(){ step=4; renderStep(); });
       $('#rNext').addEventListener('click', async function(){
         var odo=Number($('#odo').value||0); reg.odometer_km = odo||null; reg.odometer_updated_at = odo? ymd(new Date()) : null;
         var oil=Number($('#oilKm').value||0); reg.last_service = Object.assign({}, reg.last_service||{}, oil? {oil:oil}:{});
         // 이력을 모르는 항목은 현재 주행거리 기준 주기에 맞춰 추정 기준점을 둔다 (등록 시점에 고정)
-        if (odo){ reg.last_service_est = reg.last_service_est||{}; MAINT.forEach(function(m){ if(!reg.last_service[m.k]){ reg.last_service[m.k] = Math.floor(odo/m.km)*m.km; reg.last_service_est[m.k]=true; } else if (reg.last_service[m.k] && !(reg.last_service_est&&reg.last_service_est[m.k]) ){ /* 사용자 입력값 유지 */ } }); if (oil) delete reg.last_service_est.oil; }
+        if (odo){ reg.last_service_est = reg.last_service_est||{}; MAINT.forEach(function(m){ if(!reg.last_service[m.k]){ reg.last_service[m.k] = Math.floor(odo/m.km)*m.km; reg.last_service_est[m.k]=true; } }); if (oil) delete reg.last_service_est.oil; }
         $('#rNext').disabled=true; $('#rNext').textContent='저장 중…';
-        try { await api.saveVehicle(reg); } catch(e){ toast('저장에 실패했어요. 다시 시도해 주세요'); $('#rNext').disabled=false; $('#rNext').textContent='등록 완료'; return; }
+        var save = Object.assign({}, reg); delete save.lookup; delete save.manual; delete save.contract_mode; delete save.contract_start; delete save.contract_months;
+        try { await api.saveVehicle(save); } catch(e){ toast('저장에 실패했어요. 다시 시도해 주세요'); $('#rNext').disabled=false; $('#rNext').textContent='등록 완료'; return; }
         api.notifyReg();
         $('#donePlate').textContent = reg.plate; burst(); show('#vDone');
       });
     }
   }
-  function renderDates(){
-    var u=reg.usage_type; if(!u){ $('#dates').innerHTML=''; return; }
-    var h='';
-    if (u!=='cash') h+='<div class="field"><label>'+(u==='loan'?'할부 완납 예정일':'계약 만기일')+'</label><input type="date" id="dContract" value="'+esc(reg.contract_end||'')+'"><span class="hint">계약서의 만기일 그대로. 날짜를 모르면 해당 월 1일로 넣고 나중에 수정해도 돼요.</span></div>';
-    if (u!=='rent') h+='<div class="field"><label>자동차보험 만기일</label><input type="date" id="dIns" value="'+esc(reg.insurance_end||'')+'"></div>';
-    h+='<div class="field"><label>최초 등록일 (정기검사 계산용 · 자동차등록증) <button class="inline-skip" id="skipReg" type="button">모르겠어요</button></label><input type="date" id="dReg" value="'+esc(reg.first_reg_date||'')+'"><span class="hint">모르면 연식 기준으로 추정해서 계산해요.</span></div>';
-    if (u==='cash'||u==='loan') h+='<div class="field"><label>배기량 cc (선택 · 자동차세 금액 계산)</label><input type="number" id="dCc" inputmode="numeric" placeholder="예: 1598" value="'+esc(reg.displacement_cc||'')+'"></div>';
-    $('#dates').innerHTML=h;
-    var s=$('#skipReg'); if(s) s.addEventListener('click', function(){ $('#dReg').value=''; reg.first_reg_date=null; toast('연식 기준으로 추정할게요'); });
+  function isOwned(){ return reg.usage_type==='cash' || reg.usage_type==='loan'; }
+  // 소유자 이름 자동 조회: 서버(car-lookup) 준비 전에는 꺼 둔다. CFG.CAR_LOOKUP = true 로 켬 (데모 모드는 항상 켜짐)
+  var LOOKUP_ON = DEMO || !!CFG.CAR_LOOKUP;
+  function useLookup(){ return isOwned() && LOOKUP_ON; }
+
+  /* ---- 3단계(현금·할부): 소유자 이름으로 차량 정보 자동 조회 ---- */
+  function renderLookup(){
+    setBar();
+    var L = reg.lookup;
+    if (!L){
+      slideIn('<h2>소유자 이름을 알려주세요</h2><p class="sub">자동차등록증의 소유자 이름으로 차종·연식·연료·배기량·최초등록일을 불러와요. 이름은 조회에만 쓰고 저장하지 않아요.</p>'
+        +'<div class="plate-mini"><i></i>'+esc(reg.plate||'')+'</div>'
+        +'<div class="field"><label>소유자 이름</label><input id="ownerName" placeholder="예: 홍길동" autocomplete="off" maxlength="20"></div>'
+        +'<p class="hint" style="font-size:12px;color:var(--text-dimmer);margin:-4px 0 14px;">공동명의면 대표 소유자 이름 · 법인 명의 차량은 조회되지 않아요</p>'
+        +'<label class="agree-line"><input type="checkbox" id="lkAgree"> <span>[필수] 소유자 이름을 차량 정보 조회에만 쓰는 데 동의해요 <em>저장 안 함 · 조회 대행 에이픽</em> <a href="privacy.html" target="_blank">보기</a></span></label>'
+        +'<button type="button" class="inline-skip" id="goManual">조회 말고 직접 고를게요</button>'
+        +navRow(true,'불러오기',null,true));
+      var nm=$('#ownerName'), ag=$('#lkAgree'); var chk=function(){ $('#rNext').disabled = nm.value.trim().length<2 || !ag.checked; }; nm.addEventListener('input', chk); ag.addEventListener('change', chk); setTimeout(function(){nm.focus();},300);
+      nm.addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('#rNext').disabled){ e.preventDefault(); $('#rNext').click(); } });
+      $('#goManual').addEventListener('click', function(){ reg.manual=true; sub='brand'; renderPick(); });
+      $('#rBack').addEventListener('click', function(){ step=2; renderStep(); });
+      $('#rNext').addEventListener('click', async function(){
+        var btn=$('#rNext'); btn.disabled=true; btn.innerHTML='<span class="spin"></span> 불러오는 중…';
+        try { var r = await api.carLookup(reg.plate, nm.value.trim()); }
+        catch(e){ r = { ok:false, reason: 'error' }; }
+        if (!r || !r.ok){
+          var why = r && r.reason==='not_found' ? '이름과 차량번호가 맞지 않거나, 법인·렌트·리스 명의 차량이라 조회되지 않았어요.' : r && r.reason==='limit' ? '오늘 조회 횟수를 다 썼어요. 직접 골라 주세요.' : '지금 조회가 원활하지 않아요.';
+          toast(why); btn.disabled=false; btn.innerHTML='불러오기 <span class="arrow">→</span>';
+          $('#goManual').textContent='직접 고르기로 진행할게요 →'; $('#goManual').classList.add('strong'); return; }
+        reg.lookup = r.car; renderLookup();
+      });
+      return;
+    }
+    // 조회 결과 확인
+    var m = mapLookup(L);
+    var rows = [['제조사', L.maker], ['모델', [L.model, L.sub_model].filter(Boolean).join(' · ')], ['연식', L.year ? L.year+'년식' : ''], ['연료', L.fuel], ['배기량', L.cc ? num(L.cc)+'cc' : ''], ['최초등록일', dot(L.first_reg)]];
+    slideIn('<h2>이 차 맞나요?</h2><p class="sub">자동차등록 정보로 불러왔어요.</p>'
+      +'<div class="found glass"><div class="found-top"><div class="plate-mini"><i></i>'+esc(reg.plate||'')+'</div><span class="ok-chip">조회 완료</span></div>'
+      +'<div class="found-name">'+esc(L.maker||'')+' <b>'+esc(L.model||'')+'</b></div>'
+      +'<dl>'+rows.filter(function(x){return x[1];}).map(function(x){ return '<div><dt>'+x[0]+'</dt><dd>'+esc(String(x[1]))+'</dd></div>'; }).join('')+'</dl></div>'
+      +'<div class="flow-nav"><button class="btn btn-ghost" id="notMine">아니에요</button><button class="btn btn-primary" id="rNext">맞아요, 다음 <span class="arrow">→</span></button></div>');
+    $('#notMine').addEventListener('click', function(){ reg.lookup=null; reg.manual=true; sub='brand'; renderPick(); });
+    $('#rNext').addEventListener('click', function(){
+      reg.brand = m.brand; reg.model = m.model; reg.model_free = m.free ? m.model : null; reg.fuel = m.fuel; reg.model_year = L.year ? Number(L.year) : reg.model_year;
+      reg.first_reg_date = L.first_reg || reg.first_reg_date || null; reg.displacement_cc = L.cc ? Number(L.cc) : (reg.displacement_cc||null);
+      reg.auto_filled = true; step=4; renderStep(); });
   }
-  function readDates(){
-    var c=$('#dContract'); reg.contract_end = c && c.value ? c.value : null;
-    var i=$('#dIns'); reg.insurance_end = i && i.value ? i.value : null;
-    var r=$('#dReg'); reg.first_reg_date = r && r.value ? r.value : null;
-    var cc=$('#dCc'); reg.displacement_cc = cc && cc.value ? Number(cc.value) : null;
+  // 조회 결과 → 우리 브랜드·차종·연료 목록에 맞추기 (못 맞추면 원문 그대로)
+  function mapLookup(L){
+    var norm=function(s){ return String(s||'').toLowerCase().replace(/[\s\-·()]/g,''); };
+    var b = DATA.brands.find(function(x){ var n=norm(x.name), mk=norm(L.maker); return n && mk && (mk.indexOf(n)>=0 || n.indexOf(mk)>=0); });
+    var brand = b ? b.id : null, model = L.model || '', free = true;
+    if (brand){ var full = norm((L.model||'')+(L.sub_model||'')); var best=null;
+      (DATA.models[brand]||[]).forEach(function(mm){ var k=norm(mm.name); if (k && full.indexOf(k)>=0 && (!best || k.length>norm(best.name).length)) best=mm; });
+      if (best){ model = best.name; free = false; } }
+    var F = {'휘발유':'가솔린','가솔린':'가솔린','경유':'디젤','디젤':'디젤','lpg':'LPG','엘피지':'LPG','하이브리드':'하이브리드','휘발유하이브리드':'하이브리드','플러그인하이브리드':'플러그인 하이브리드','전기':'전기','수소':'수소'};
+    var fuel = F[norm(L.fuel)] || (norm(L.fuel).indexOf('하이브리드')>=0 ? '하이브리드' : (L.fuel||null));
+    return { brand: brand, model: model, free: free, fuel: fuel };
+  }
+
+  /* ---- 4단계: 방식별 일정 ---- */
+  function renderSchedule(){
+    var u=reg.usage_type, h='';
+    var ttl = {cash:'보험 일정만 알려주세요', loan:'할부·보험 일정을 알려주세요', lease:'리스 계약 일정을 알려주세요', rent:'렌트 계약 일정을 알려주세요'}[u];
+    var subTxt = u==='rent' ? '렌트는 보험·검사·세금을 렌터카사가 챙겨요. 계약 만기만 있으면 돼요.' : '알림을 보낼 날짜를 계산하는 데 써요.';
+    if (u==='lease' || u==='rent'){
+      var mode = reg.contract_mode || 'end';
+      h+='<div class="field"><label>입력 방식</label><div class="seg" id="cMode"><button type="button" data-cm="end"'+(mode==='end'?' class="on"':'')+'>만기일로 입력</button><button type="button" data-cm="start"'+(mode==='start'?' class="on"':'')+'>시작일 + 기간</button></div></div>'
+        +'<div id="cEnd" class="field"'+(mode==='end'?'':' hidden')+'><label>계약 만기일</label><input type="date" id="dContract" value="'+esc(reg.contract_end||'')+'"><span class="hint">계약서의 만기일 그대로.</span></div>'
+        +'<div id="cStart"'+(mode==='start'?'':' hidden')+'><div class="field"><label>계약 시작일 (차량 인도일)</label><input type="date" id="dStart" value="'+esc(reg.contract_start||'')+'"></div>'
+        +'<div class="field"><label>계약 기간</label><div class="seg months" id="cMonths">'+[24,36,48,60].map(function(n){ return '<button type="button" data-mo="'+n+'"'+(Number(reg.contract_months)===n?' class="on"':'')+'>'+n+'개월</button>'; }).join('')+'</div></div>'
+        +'<div class="calc" id="calcEnd"></div></div>';
+    }
+    if (u==='loan') h+='<div class="field"><label>할부 완납 예정일</label><input type="date" id="dContract" value="'+esc(reg.contract_end||'')+'"><span class="hint">모르면 비워 두세요.</span></div>';
+    if (u!=='rent') h+='<div class="field"><label>자동차보험 만기일</label><input type="date" id="dIns" value="'+esc(reg.insurance_end||'')+'"></div>';
+    if (u==='lease') h+='<div class="field"><label>최초 등록일 (정기검사 계산용 · 자동차등록증) <button class="inline-skip" id="skipReg" type="button">모르겠어요</button></label><input type="date" id="dReg" value="'+esc(reg.first_reg_date||'')+'"><span class="hint">모르면 연식 기준으로 추정해서 계산해요.</span></div>';
+    if (isOwned()){
+      if (reg.auto_filled) h+='<div class="auto-box"><span class="auto-note">자동으로 채웠어요</span><div><span>최초등록일 <b>'+esc(dot(reg.first_reg_date)||'-')+'</b></span><span>배기량 <b>'+(reg.displacement_cc? num(reg.displacement_cc)+'cc':'-')+'</b></span></div><p>정기검사 일정과 자동차세 예상액을 이 정보로 계산해요.</p></div>';
+      else h+='<div class="field"><label>최초 등록일 (정기검사 계산용) <button class="inline-skip" id="skipReg" type="button">모르겠어요</button></label><input type="date" id="dReg" value="'+esc(reg.first_reg_date||'')+'"></div><div class="field"><label>배기량 cc (선택 · 자동차세 계산)</label><input type="number" id="dCc" inputmode="numeric" placeholder="예: 1598" value="'+esc(reg.displacement_cc||'')+'"></div>';
+    }
+    slideIn('<h2>'+ttl+'</h2><p class="sub">'+subTxt+'</p>'+h+navRow(true,'다음',null,false));
+    var sk=$('#skipReg'); if(sk) sk.addEventListener('click', function(){ $('#dReg').value=''; reg.first_reg_date=null; toast('연식 기준으로 추정할게요'); });
+    var calc=function(){ var s=$('#dStart'), box=$('#calcEnd'); if(!box) return; var mo=Number(reg.contract_months||0);
+      if (s && s.value && mo){ reg.contract_end = contractEnd(s.value, mo); box.innerHTML='계약 만기일 <b>'+dot(reg.contract_end)+'</b><span>시작일 '+dot(s.value)+' + '+mo+'개월</span>'; box.classList.add('on'); }
+      else { box.innerHTML='시작일과 기간을 고르면 만기일을 계산해요'; box.classList.remove('on'); } };
+    $$('#cMode button').forEach(function(b){ b.addEventListener('click', function(){ reg.contract_mode=b.dataset.cm; $$('#cMode button').forEach(function(x){x.classList.toggle('on', x===b);}); $('#cEnd').hidden = b.dataset.cm!=='end'; $('#cStart').hidden = b.dataset.cm!=='start'; calc(); }); });
+    $$('#cMonths button').forEach(function(b){ b.addEventListener('click', function(){ reg.contract_months=Number(b.dataset.mo); $$('#cMonths button').forEach(function(x){x.classList.toggle('on', x===b);}); calc(); }); });
+    var ds=$('#dStart'); if (ds) ds.addEventListener('input', function(){ reg.contract_start=ds.value; calc(); }); calc();
+    $('#rBack').addEventListener('click', function(){ readSchedule(); step=3; if (useLookup() && !reg.manual){ renderLookup(); } else { sub='year'; renderPick(); } });
+    $('#rNext').addEventListener('click', function(){
+      readSchedule();
+      if ((u==='lease'||u==='rent') && !reg.contract_end){ toast('계약 만기일을 입력하거나 시작일과 기간을 골라 주세요'); return; }
+      step=5; renderStep(); });
+  }
+  function readSchedule(){
+    var u=reg.usage_type;
+    if ((u==='lease'||u==='rent') && (reg.contract_mode||'end')==='end'){ var c=$('#dContract'); reg.contract_end = c && c.value ? c.value : null; }
+    if (u==='loan'){ var c2=$('#dContract'); reg.contract_end = c2 && c2.value ? c2.value : null; }
+    if (u==='cash') reg.contract_end = null;
+    var i=$('#dIns'); if (i) reg.insurance_end = i.value || null; if (u==='rent') reg.insurance_end = null;
+    var r=$('#dReg'); if (r) reg.first_reg_date = r.value || null;
+    var cc=$('#dCc'); if (cc) reg.displacement_cc = cc.value ? Number(cc.value) : null;
   }
   function renderPick(){
     var crumbs=''; if (reg.brand) crumbs+='<span class="crumb" data-go="brand">'+esc(brandName(reg.brand))+'</span>'; if (reg.model && sub!=='model') crumbs+='<span class="crumb" data-go="model">'+esc(reg.model)+'</span>'; if (reg.fuel && (sub==='year')) crumbs+='<span class="crumb" data-go="fuel">'+esc(reg.fuel)+'</span>';
@@ -1178,8 +1303,8 @@ var CFG = {
     var mf=$('#modelFreeGo'); if (mf){ var go=function(){ var v=($('#modelFree').value||'').trim(); if(!v){ toast('차종을 입력해 주세요'); return; } if(reg.model!==v) reg.fuel=null; reg.model=v; reg.model_free=v; sub='fuel'; renderPick(); }; mf.addEventListener('click', go); $('#modelFree').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } }); }
     $$('[data-f]').forEach(function(b){ b.addEventListener('click', function(){ reg.fuel=b.dataset.f; sub='year'; renderPick(); }); });
     var mfb=$('#moreFuel'); if (mfb) mfb.addEventListener('click', function(){ mfb.hidden=true; var rf=$('#restFuel'); if(rf) rf.hidden=false; });
-    $$('[data-y]').forEach(function(b){ b.addEventListener('click', function(){ reg.model_year=Number(b.dataset.y); step=3; renderStep(); }); });
-    var back=$('#rBack'); if(back) back.addEventListener('click', function(){ if(sub==='brand'){ step=1; renderStep(); } else if(sub==='model'){ sub='brand'; renderPick(); } else if(sub==='fuel'){ sub='model'; renderPick(); } else { sub='fuel'; renderPick(); } });
+    $$('[data-y]').forEach(function(b){ b.addEventListener('click', function(){ reg.model_year=Number(b.dataset.y); reg.auto_filled=false; step=4; renderStep(); }); });
+    var back=$('#rBack'); if(back) back.addEventListener('click', function(){ if(sub==='brand'){ if (useLookup()){ reg.manual=false; reg.lookup=null; renderLookup(); } else { step=2; renderStep(); } } else if(sub==='model'){ sub='brand'; renderPick(); } else if(sub==='fuel'){ sub='model'; renderPick(); } else { sub='fuel'; renderPick(); } });
   }
   function brandName(id){ var b=DATA.brands.find(function(x){return x.id===id;}); return b?b.name:''; }
   function burst(){ if (reduce) return; var p=$('#particles'); p.innerHTML=''; var n = (navigator.hardwareConcurrency||4) < 4 ? 14 : 28; for(var i=0;i<n;i++){ var el=document.createElement('i'); var a=Math.random()*Math.PI*2, r=90+Math.random()*140; el.style.left='50%'; el.style.top='38%'; el.style.setProperty('--dx', Math.cos(a)*r+'px'); el.style.setProperty('--dy', Math.sin(a)*r+'px'); el.style.animationDelay=(0.25+Math.random()*0.25)+'s'; el.style.background = i%3? 'var(--accent-3)' : '#FFD166'; p.appendChild(el); } }
