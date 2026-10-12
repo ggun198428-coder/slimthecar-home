@@ -112,6 +112,7 @@
   .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 18px;}
   .eyebrow::before{content:""; width:18px; height:1px; background:var(--accent);}
   .display{font-weight:800; letter-spacing:-0.035em; line-height:1.08; margin:0; font-size:clamp(38px, 7.2vw, 88px);}
+  .ogs-i{color:var(--accent); font-weight:800; font-style:normal;} .eyebrow .ogs-i{color:#fff;}
   .display .grad, .grad{background:linear-gradient(92deg, var(--accent-3) 0%, var(--accent) 45%, #7CC8FF 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
   .h2{font-weight:800; letter-spacing:-0.03em; line-height:1.14; margin:0 0 18px; font-size:clamp(28px, 4.6vw, 54px);}
   .h3{font-weight:700; letter-spacing:-0.02em; line-height:1.25; margin:0 0 10px; font-size:clamp(20px, 2.4vw, 26px);}
@@ -440,6 +441,7 @@
   .wa-h{display:flex; justify-content:space-between; align-items:center; gap:12px;}
   .wa-h b{font-size:14px; font-weight:600;} .wa-h em{font-style:normal; font-size:11px; font-weight:700; color:var(--text-dimmer); border:1px solid var(--line); border-radius:99px; padding:2px 8px; margin-left:6px; white-space:nowrap;}
   .wa-h .sw{border:0; padding:0;}
+  .wa-sub{display:block; margin-top:4px; font-size:13px; font-weight:600; color:var(--text-dim);}
   .wa-body{margin-top:12px; padding:14px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid var(--line);} .wa-body[hidden]{display:none;}
   .wa-row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
   .wa-row label{font-size:13px; color:var(--text-dim); min-width:52px;}
@@ -509,7 +511,7 @@
       <a href="products.html">이용 방식 비교</a>
       <a href="score.html">차이드 스코어</a>
       <a href="mycar.html" class="active">차이드 매니저</a>
-      <a href="today.html">주유·세차</a>
+      <a href="today.html">오!기세?</a>
       <a class="nav-cta" href="contact.html">상담 신청</a>
     </nav>
   </div>
@@ -542,7 +544,7 @@
     <div class="feat-grid reveal-stagger">
       <div class="card"><div class="itile g-violet" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 15h3"/></svg></div><h4>일정 5가지를 한 화면에</h4><p>계약·보험·검사·세금·소모품. 가까운 순으로 보여주고 30일 안이면 먼저 알려드려요.</p></div>
       <div class="card"><div class="itile g-pink" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div><h4>리콜이 뜨면 바로</h4><p>국토부 리콜 공고와 내 차종·연식을 대조해서, 해당되면 카카오톡으로 한 통.</p></div>
-      <div class="card"><div class="itile g-orange" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M4 21h12M7 7h6"/><path d="M15 10h2l2 2v5a1.5 1.5 0 0 0 3 0v-7l-2.5-2.5"/></svg></div><h4>오늘 기름 넣고 세차할까</h4><p>내 주변 최저가 주유소, 날씨·미세먼지로 계산한 세차 지수, 길안내까지.</p></div>
+      <div class="card"><div class="itile g-orange" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M4 21h12M7 7h6"/><path d="M15 10h2l2 2v5a1.5 1.5 0 0 0 3 0v-7l-2.5-2.5"/></svg></div><h4>오!기세? 오늘 기름 넣고 세차할까</h4><p>내 주변 최저가 주유소, 날씨·미세먼지로 계산한 세차 지수, 길안내까지.</p></div>
       <div class="card"><div class="itile g-teal" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></div><h4>차가 여러 대여도 한 화면에</h4><p>최대 50대를 한 목록으로. 엑셀로 한 번에 등록하고, 같은 날 일정은 알림 한 통으로 묶어 보내드려요.</p></div>
     </div>
   </div>
@@ -618,7 +620,7 @@
       <div class="sw"><span>소모품 점검</span><input type="checkbox" data-n="maint" checked></div>
       <div class="sw"><span>리콜</span><input type="checkbox" data-n="recall" checked></div>
       <div class="wa" id="washAlert">
-        <div class="wa-h"><div><b>세차하기 좋은 날 알림</b><em>선택 · 광고성</em></div><div class="sw"><input type="checkbox" id="waOn" aria-label="세차하기 좋은 날 알림"></div></div>
+        <div class="wa-h"><div><b>오!기세? 세차 알림</b><em>선택 · 광고성</em><small class="wa-sub"><i class="ogs-i">오</i>늘 <i class="ogs-i">기</i>름 넣고 <i class="ogs-i">세</i>차할까?</small></div><div class="sw"><input type="checkbox" id="waOn" aria-label="오!기세? 세차 알림"></div></div>
         <div class="wa-body" id="waBody" hidden>
           <div class="wa-row"><label for="waSido">내 동네</label><select id="waSido"></select><select id="waGu" aria-label="구·시·군"></select></div>
           <p class="wa-note">내 동네 <b>세차 지수 80점 이상</b>이고 <b>3일간 비 소식이 없을 때만</b> 카카오톡으로 알려드려요. <b>평일 오전 11시 · 주말·공휴일 오전 9시</b>, 주 2번까지만 보내요. 언제든 여기서 끌 수 있어요.</p>
@@ -651,7 +653,7 @@
         <a href="products.html">이용 방식 비교</a>
         <a href="score.html">차이드 스코어</a>
         <a href="mycar.html">차이드 매니저</a>
-        <a href="today.html">오늘의 주유·세차</a>
+        <a href="today.html">오!기세? 오늘의 주유·세차</a>
         <a href="contact.html">상담 신청</a>
       </div>
       <div class="foot-col">
@@ -1443,10 +1445,10 @@ var CFG = {
     $('#waOn').onchange = async function(){
       var c = this;
       if (c.checked){
-        if (!confirm('세차하기 좋은 날 알림은 광고성 정보(카카오 브랜드메시지)예요.\n수신에 동의하고 켤까요? 언제든 여기서 끌 수 있어요.')){ c.checked=false; return; }
+        if (!confirm('오!기세? 세차 알림은 광고성 정보(카카오 브랜드메시지)예요.\n수신에 동의하고 켤까요? 언제든 여기서 끌 수 있어요.')){ c.checked=false; return; }
         try { await api.saveProfile({ wash_alert:true, marketing_agreed_at: (store.profile&&store.profile.marketing_agreed_at) || new Date().toISOString() }); } catch(e){ c.checked=false; toast('저장에 실패했어요'); return; }
         $('#waBody').hidden = false;
-        toast($('#waGu').value ? '세차 알림을 켰어요' : '세차 알림을 켰어요. 내 동네를 골라 주세요');
+        toast($('#waGu').value ? '오!기세? 세차 알림을 켰어요' : '오!기세? 세차 알림을 켰어요. 내 동네를 골라 주세요');
       } else {
         try { await api.saveProfile({ wash_alert:false, marketing_agreed_at:null }); } catch(e){ c.checked=true; toast('저장에 실패했어요'); return; }
         $('#waBody').hidden = true; toast('세차 알림을 껐어요 (광고성 정보 수신 거부)');
