@@ -444,6 +444,15 @@
   @media (max-width:560px){ .action-row{grid-template-columns:1fr;} }
   .recall{display:flex; gap:12px; align-items:center; padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:var(--panel); margin-bottom:16px; font-size:13.5px; color:var(--text-dim);}
   .recall.has{border-color:rgba(255,138,138,.5); background:rgba(255,138,138,.08); color:var(--text);}
+  .recall{flex-wrap:wrap;} .recall .rc-body{flex:1 1 220px; min-width:0;} .recall .rc-body b{color:var(--text); font-weight:700;} .recall .rc-sub{display:block; font-size:12px; color:var(--text-dimmer); margin-top:2px;}
+  .recall .rc-link{font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none; white-space:nowrap;}
+  .recall.has{display:block;} .rc-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;} .rc-head b{font-size:15px;}
+  .rc-item{padding:10px 0; border-top:1px solid rgba(255,138,138,.25);} .rc-item .rc-d{font-size:12px; color:#FF8A8A; font-weight:700;} .rc-item .rc-n{font-size:12.5px; color:var(--text-dim); margin-top:2px;}
+  .rc-item p{margin:4px 0 0; font-size:13.5px; line-height:1.6; color:var(--text); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;} .rc-item.open p{-webkit-line-clamp:unset; display:block;}
+  .rc-item button{font-family:inherit; font-size:12px; color:var(--text-dimmer); background:none; border:0; padding:4px 0 0; cursor:pointer; text-decoration:underline;}
+  .rc-more{font-family:inherit; font-size:13px; font-weight:700; color:var(--text-dim); background:none; border:0; padding:8px 0 0; cursor:pointer;}
+  .rc-cta{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,138,138,.25);}
+  .rc-cta span{font-size:12.5px; color:var(--text-dim);} .rc-cta a{display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:800; color:#1a0606; background:#FF8A8A; border-radius:99px; padding:10px 16px; text-decoration:none;}
   .recall .dot{width:10px; height:10px; border-radius:50%; background:var(--text-dimmer); flex:0 0 auto;} .recall.has .dot{background:#FF8A8A; box-shadow:0 0 0 0 rgba(255,138,138,.6); animation:livep 1.6s ease-out infinite;}
   .settings{padding:18px 20px; scroll-margin-top:90px;}
   .wa{margin-top:6px; padding:14px 0 4px; border-top:1px solid var(--line);}
@@ -564,7 +573,7 @@
 
     <div class="feat-grid reveal-stagger">
       <div class="card"><div class="itile g-violet" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 15h3"/></svg></div><h4>일정 5가지를 한 화면에</h4><p>계약·보험·검사·세금·소모품. 가까운 순으로 보여주고 30일 안이면 먼저 알려드려요.</p></div>
-      <div class="card"><div class="itile g-pink" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div><h4>리콜이 뜨면 바로</h4><p>국토부 리콜 공고와 내 차종·연식을 대조해서, 해당되면 카카오톡으로 한 통.</p></div>
+      <div class="card"><div class="itile g-pink" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div><h4>놓친 리콜까지 확인</h4><p>공공 리콜 자료와 내 차종·연식을 대조해서, 해당 가능성이 있으면 내 차 화면과 카카오톡으로 알려드려요.</p></div>
       <div class="card"><div class="itile g-orange" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M4 21h12M7 7h6"/><path d="M15 10h2l2 2v5a1.5 1.5 0 0 0 3 0v-7l-2.5-2.5"/></svg></div><h4>오!기세? 오늘 기름 넣고 세차할까</h4><p>내 주변 최저가 주유소, 날씨·미세먼지로 계산한 세차 지수, 길안내까지.</p></div>
       <div class="card"><div class="itile g-teal" style="margin-bottom:18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></div><h4>차가 여러 대여도 한 화면에</h4><p>최대 50대를 한 목록으로. 엑셀로 한 번에 등록하고, 같은 날 일정은 알림 한 통으로 묶어 보내드려요.</p></div>
     </div>
@@ -622,7 +631,7 @@
     <div class="glass car-card reveal" id="carCard"></div>
     <div class="month-line reveal" id="monthLine"></div>
     <div class="tiles" id="tiles"></div>
-    <div class="recall reveal" id="recallBox"><span class="dot"></span><span>리콜 공고와 내 차종을 매일 대조하고 있어요. 해당 사항이 생기면 여기와 카카오톡으로 알려드려요.</span></div>
+    <div class="recall reveal" id="recallBox"><span class="dot"></span><span class="rc-body">리콜 자료와 내 차종·연식을 대조하는 중…</span></div>
     <div class="two-col">
       <div class="glass panel reveal" id="fuelPanel"></div>
       <div class="glass panel reveal" id="washPanel"></div>
@@ -1542,6 +1551,57 @@ var CFG = {
     $$('.settings .sw input[data-n]').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
     revealNow();
   }
+  // ---- 리콜: 공공데이터 리콜현황(한국교통안전공단)과 등록 차종·연식 대조 → '해당 가능성' 표시 ----
+  var RECALL_CACHE={}, RECALL_ASOF=null, RECALL_FROM='', RECALL_URL='https://www.car.go.kr';
+  function recallYearOk(v, r){
+    var df=r.date_from ? new Date(r.date_from) : null, dt=r.date_to ? new Date(r.date_to) : df; if(!df) return true;
+    var lo, hi, fr=v.first_reg_date ? new Date(v.first_reg_date) : null;
+    if (fr && !isNaN(fr)){ lo=new Date(fr.getTime()-365*864e5); hi=new Date(fr.getTime()+30*864e5); }
+    else if (v.model_year){ var y=Number(v.model_year); lo=new Date(Date.UTC(y-1,6,1)); hi=new Date(Date.UTC(y,11,31)); }
+    else return true;
+    return df<=hi && dt>=lo;
+  }
+  function fmtD(s){ return s ? String(s).slice(0,10).replace(/-/g,'.') : '-'; }
+  async function loadRecalls(v){
+    var key=(v.brand||'')+'|'+(v.model||'');
+    if (!RECALL_CACHE[key]){
+      if (DEMO || !sb) RECALL_CACHE[key] = window.STC_RECALL_DEMO || [];
+      else {
+        var q = await sb.from('recalls').select('id,maker,model_name,reason,start_date,date_from,date_to').eq('brand', v.brand).contains('model_match',[v.model]).order('start_date',{ascending:false}).limit(1000);
+        if (q.error) throw q.error; RECALL_CACHE[key]=q.data||[];
+      }
+    }
+    if (RECALL_ASOF===null){
+      if (DEMO || !sb) RECALL_ASOF = window.STC_RECALL_ASOF || '';
+      else { var a = await sb.from('recalls').select('start_date').order('start_date',{ascending:false}).limit(1); RECALL_ASOF = (a.data && a.data[0] && a.data[0].start_date) || '';
+              var b = await sb.from('recalls').select('start_date').order('start_date',{ascending:true}).limit(1); RECALL_FROM = (b.data && b.data[0] && b.data[0].start_date) || ''; }
+    }
+    // 같은 리콜(시작일·사유 동일)의 세부 모델은 한 건으로 묶음
+    var g={}, order=[];
+    RECALL_CACHE[key].filter(function(r){ return recallYearOk(v, r); }).forEach(function(r){
+      var k=r.start_date+'|'+r.reason; if(!g[k]){ g[k]={start_date:r.start_date, reason:r.reason, names:[], date_from:r.date_from, date_to:r.date_to}; order.push(k); }
+      var x=g[k]; if(x.names.indexOf(r.model_name)<0) x.names.push(r.model_name);
+      if (r.date_from && (!x.date_from || r.date_from<x.date_from)) x.date_from=r.date_from; if (r.date_to && (!x.date_to || r.date_to>x.date_to)) x.date_to=r.date_to; });
+    return order.map(function(k){ return g[k]; });
+  }
+  function renderRecall(){
+    var B=$('#recallBox'), v=store.vehicle; if(!B || !v) return;
+    var link='<a class="rc-link" href="'+RECALL_URL+'" target="_blank" rel="noopener">차량번호로 직접 조회 →</a>';
+    if (!v.brand || v.brand==='other' || !v.model || v.model_free){ B.className='recall'; B.innerHTML='<span class="dot"></span><span class="rc-body">목록에서 차종을 고르면 리콜 자료와 대조해 드려요.<span class="rc-sub">직접 입력한 차종은 자동 대조가 어려워요</span></span>'+link; return; }
+    var vid=v.id; B.className='recall'; B.innerHTML='<span class="dot"></span><span class="rc-body">리콜 자료와 내 차종·연식을 대조하는 중…</span>';
+    loadRecalls(v).then(function(list){
+      if (!store.vehicle || store.vehicle.id!==vid) return;
+      var asof = RECALL_ASOF ? '공공 리콜 자료 '+(RECALL_FROM ? fmtD(RECALL_FROM).slice(0,7)+'~' : '')+fmtD(RECALL_ASOF).slice(0,7)+' 시작분 기준' : '공공 리콜 자료 기준';
+      if (!list.length){ B.className='recall'; B.innerHTML='<span class="dot"></span><span class="rc-body"><b>확인된 리콜이 없어요</b><span class="rc-sub">등록하신 차종·연식 기준 · '+asof+'</span></span>'+link; return; }
+      var item=function(r){ return '<div class="rc-item"><div class="rc-d">리콜 시작 '+fmtD(r.start_date)+'</div><div class="rc-n">'+esc(r.names.slice(0,4).join(' · ')+(r.names.length>4?' 외 '+(r.names.length-4)+'개':''))+' · 생산 '+fmtD(r.date_from)+' ~ '+fmtD(r.date_to)+'</div><p>'+esc(r.reason||'')+'</p>'+((r.reason||'').length>70?'<button type="button" class="rc-toggle">자세히</button>':'')+'</div>'; };
+      B.className='recall has';
+      B.innerHTML='<div class="rc-head"><span class="dot"></span><b>리콜 해당 가능성 '+list.length+'건</b></div>'
+        + list.slice(0,3).map(item).join('') + (list.length>3 ? '<div id="rcMore" hidden>'+list.slice(3).map(item).join('')+'</div><button type="button" class="rc-more" id="rcMoreBtn">'+(list.length-3)+'건 더 보기 ▾</button>' : '')
+        + '<div class="rc-cta"><span>정확한 해당 여부는 차대번호로 확인돼요 · '+asof+'</span><a href="'+RECALL_URL+'" target="_blank" rel="noopener">자동차리콜센터에서 확인 →</a></div>';
+      $$('#recallBox .rc-toggle').forEach(function(b){ b.onclick=function(){ var it=b.parentNode; it.classList.toggle('open'); b.textContent=it.classList.contains('open')?'접기':'자세히'; }; });
+      var mb=$('#rcMoreBtn'); if(mb) mb.onclick=function(){ $('#rcMore').hidden=false; mb.remove(); };
+    }).catch(function(){ B.className='recall'; B.innerHTML='<span class="dot"></span><span class="rc-body">리콜 자료를 불러오지 못했어요. 잠시 후 다시 확인해 주세요.</span>'+link; });
+  }
   function renderSingle(){
     var v=store.vehicle, p=store.profile||{};
     $('#dashWho').textContent = (store.user.nickname||'회원')+'님';
@@ -1563,7 +1623,7 @@ var CFG = {
       return '<div class="tile'+cls+'" data-pct="'+pct+'"><div class="k">'+t.label+'</div><div class="ring"><svg viewBox="0 0 74 74"><circle class="bg" cx="37" cy="37" r="32"/><circle class="fg" cx="37" cy="37" r="32"/></svg><div class="num">'+big+'<small>'+small+'</small></div></div><div class="v">'+t.value+'</div></div>';
     }).join('');
     $$('#tiles .tile').forEach(function(el,i){ setTimeout(function(){ el.classList.add('in'); var fg=el.querySelector('.fg'); if(fg){ var pct=Number(el.dataset.pct||0); fg.style.strokeDashoffset = 201*(1-pct); } }, reduce?0:120+i*110); });
-    renderFuel(); renderWash();
+    renderFuel(); renderWash(); renderRecall();
     $$('.settings .sw input[data-n]').forEach(function(c){ var n=(p.notif||{}); c.checked = n[c.dataset.n]!==false; c.onchange=function(){ var nn=Object.assign({}, p.notif||{}); nn[c.dataset.n]=c.checked; api.saveProfile({notif:nn}).then(function(){ toast(c.checked?'알림을 켰어요':'알림을 껐어요'); }); }; });
     revealNow();
   }
