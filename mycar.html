@@ -466,6 +466,7 @@
   .wa-row select{font:inherit; font-size:14px; color:var(--text); background:#0f141b; border:1px solid var(--line); border-radius:10px; padding:9px 12px;}
   .wa-note{margin:12px 0 0; font-size:12.5px; line-height:1.65; color:var(--text-dimmer);} .wa-note b{color:var(--text-dim);}
   .y{color:#FEE500;font-style:normal;font-weight:800}.t{color:var(--accent);font-style:normal;font-weight:800}
+  .ch-added .chc{display:none}
   .chc{margin-top:14px;padding:18px;border-radius:18px;background:rgba(254,229,0,.06);border:1px solid rgba(254,229,0,.35)}
   .chc-top{display:flex;gap:14px;align-items:center}.chc-logo{width:58px;height:58px;border-radius:16px;background:#f2f6f7;flex:none;box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}
   .chc-top b{display:flex;align-items:center;gap:5px;font-size:17px;margin-bottom:3px}.vbadge{width:18px;height:18px;flex:none}.chc-top span{display:block;font-size:12.5px;line-height:1.55;color:var(--text-dim)}
@@ -1049,7 +1050,8 @@ var CFG = {
   SUPABASE_URL: 'https://mdyqomcgxymrzhflsscq.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1keXFvbWNneHltcnpoZmxzc2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzNDMyNjcsImV4cCI6MjEwNjkxOTI2N30.6_Z4_oNuu0Zdhd2S_UIOlGHO4dY-zDnOWpPtHHMgIsU',
   API: 'https://script.google.com/macros/s/AKfycbxVSgZ_dyUbGUoNY3U8wuHkrxc8i3xKmlklmKTKSRifngPo-aFXLMLfcbP21N5ryej0aA/exec',   // Apps Script 웹앱 (action=today). 비어 있으면 예시 표시
-  KAKAO_SCOPES: 'profile_nickname account_email',
+  KAKAO_SCOPES: 'profile_nickname account_email plusfriends',
+  KAKAO_CHANNEL: '_AxelFX',
   CAR_LOOKUP: false,   // 소유자 이름 자동 조회(car-lookup 서버) — 서버 준비 후 true
 };
 
@@ -1096,12 +1098,28 @@ var CFG = {
   function maxCars(){ return isFleet() ? FLEET_MAX : PERSONAL_MAX; }
   function lsSave(){ try{ localStorage.setItem(LS, JSON.stringify(store)); }catch(e){} }
 
+  // 카카오톡 채널 친구 여부: 로그인 직후(카카오 토큰이 있을 때만) 확인해 이 기기에 기억 → 이미 친구면 '채널 추가' 카드 숨김
+  var CH_KEY='stc_ch_rel';
+  function chRel(){ try{ return localStorage.getItem(CH_KEY)||''; }catch(e){ return ''; } }
+  function applyChannel(){ document.body.classList.toggle('ch-added', chRel()==='ADDED'); }
+  async function checkChannel(tok){
+    applyChannel(); if (!tok) return;
+    try{
+      var res = await fetch('https://kapi.kakao.com/v2/api/talk/channels', { headers:{ Authorization:'Bearer '+tok } });
+      if (!res.ok) return; var j = await res.json();
+      var c = (j.channels||[]).find(function(x){ return x.channel_public_id===CFG.KAKAO_CHANNEL; }) || (j.channels||[])[0];
+      try{ localStorage.setItem(CH_KEY, c ? c.relation : 'NONE'); }catch(e){}
+      applyChannel();
+    }catch(e){}
+  }
+
   var api = {
     session: async function(){
       if (DEMO){ var s=lsLoad(); if (s){ store=s; pickCur(); } return store.user; }
       if (!sb) return null;
       var r = await sb.auth.getSession(); var u = r.data.session && r.data.session.user;
       if (!u) return null;
+      checkChannel(r.data.session.provider_token);
       store.user = { id:u.id, nickname:(u.user_metadata&&(u.user_metadata.name||u.user_metadata.full_name||u.user_metadata.preferred_username))||'회원', email:u.email||'' };
       var p = await sb.from('profiles').select('*').eq('id',u.id).maybeSingle(); store.profile = p.data||null;
       var v = await sb.from('vehicles').select('*').eq('user_id',u.id).order('created_at',{ascending:true}); store.vehicles = v.data || []; pickCur();
@@ -1110,7 +1128,7 @@ var CFG = {
     login: async function(){
       if (DEMO){ store.user={id:'demo', nickname:'데모 회원', email:''}; lsSave(); return; }
       if (!sb) throw new Error('supabase-js not loaded');
-      var r = await sb.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.origin + location.pathname, scopes: CFG.KAKAO_SCOPES } });
+      var r = await sb.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.origin + location.pathname, scopes: CFG.KAKAO_SCOPES, queryParams:{ channel_public_id: CFG.KAKAO_CHANNEL } } });
       if (r.error) throw r.error;
     },
     logout: async function(){ if (DEMO){ store={user:null,profile:null,vehicle:null,vehicles:[]}; localStorage.removeItem(LS); return; } await sb.auth.signOut(); store={user:null,profile:null,vehicle:null,vehicles:[]}; },
