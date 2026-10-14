@@ -391,7 +391,7 @@
   .tile.hot .ring .fg{stroke:#FFB15C;}
   .tile .ring .num{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; letter-spacing:-0.02em; line-height:1;}
   .tile .ring .num small{font-family:inherit; font-size:9.5px; color:var(--text-dimmer); letter-spacing:.04em; margin-top:2px;}
-  .tile .v{font-size:12.5px; color:var(--text-dim); text-align:center; line-height:1.45;} .tile .v b{color:var(--text); font-weight:600;}
+  .tile .v{font-size:12.5px; color:var(--text-dim); text-align:center; line-height:1.45;} .tile .v b{color:var(--text); font-weight:600;} .tile .v .sub{display:inline-block; margin-top:4px; font-size:11.5px; color:var(--accent); font-weight:600;}
   .tile .na{font-size:12.5px; color:var(--text-dimmer); text-align:center; padding:22px 0;}
   @media (max-width:980px){ .tiles{grid-template-columns:repeat(3,1fr);} } @media (max-width:560px){ .tiles{grid-template-columns:repeat(2,1fr);} }
 
@@ -643,7 +643,7 @@
     </div>
     <div class="glass settings reveal" id="settings">
       <h3>알림 설정</h3>
-      <div class="sw"><span>계약 만기 (3개월 전)</span><input type="checkbox" data-n="contract" checked></div>
+      <div class="sw"><span>계약 만기 (7개월·3개월 전)</span><input type="checkbox" data-n="contract" checked></div>
       <div class="sw"><span>보험 만기 (30일 전)</span><input type="checkbox" data-n="insurance" checked></div>
       <div class="sw"><span>정기검사 (검사 기간 시작)</span><input type="checkbox" data-n="inspection" checked></div>
       <div class="sw"><span>자동차세 납부 시기</span><input type="checkbox" data-n="tax" checked></div>
@@ -1208,7 +1208,11 @@ var CFG = {
   }
   function buildTiles(v){
     var t = [];
-    if (v.usage_type!=='cash' && v.contract_end){ var d=daysTo(v.contract_end); t.push({k:'contract', label:'계약 만기', days:d, total:365, value:'<b>'+fmtDate(v.contract_end)+'</b><br>'+USAGE[v.usage_type]+' 만기'}); }
+    if (v.usage_type!=='cash' && v.contract_end){ var d=daysTo(v.contract_end);
+      // 리스·렌트: 승계(계약 넘기기)는 만기 몇 개월 전까지만 되는 경우가 많아 7개월 전 시점을 함께 표시
+      var sub = '';
+      if ((v.usage_type==='lease'||v.usage_type==='rent') && d>210){ var sd=new Date(new Date(v.contract_end+'T00:00:00').getTime()-210*864e5); sub='<br><span class="sub">승계 검토 '+fmtDate(sd.toISOString().slice(0,10))+'까지 권장</span>'; }
+      t.push({k:'contract', label:'계약 만기', days:d, total:365, value:'<b>'+fmtDate(v.contract_end)+'</b><br>'+USAGE[v.usage_type]+' 만기'+sub}); }
     else t.push({k:'contract', label:'계약 만기', na: v.usage_type==='cash' ? '현금구매는 만기가 없어요' : '만기일을 입력해 주세요'});
     if (v.usage_type!=='rent'){ if (v.insurance_end){ var d2=daysTo(v.insurance_end); t.push({k:'insurance', label:'보험 만기', days:d2, total:365, value:'<b>'+fmtDate(v.insurance_end)+'</b><br>30일 전부터 갱신 견적'}); } else t.push({k:'insurance', label:'보험 만기', na:'보험 만기일을 입력해 주세요'}); }
     else t.push({k:'insurance', label:'보험', na:'장기렌트는 보험이 포함돼 있어요'});
