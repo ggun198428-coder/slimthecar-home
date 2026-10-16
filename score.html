@@ -129,6 +129,7 @@
     cursor:pointer; transition:all .12s ease; text-align:left;
   }
   .opt-btn:hover{border-color:var(--teal); background:var(--teal-soft);}
+  .opt-btn:focus-visible{outline:3px solid var(--teal); outline-offset:2px;}
   .opt-btn.selected{border-color:var(--teal); background:var(--teal); color:#fff;}
   .opt-btn .sub{font-size:11.5px; color:var(--text-mute); font-weight:400; display:block; margin-top:2px;}
   .opt-btn.selected .sub{color:rgba(255,255,255,0.8);}
@@ -212,7 +213,7 @@
     background:var(--navy); color:#fff; border-radius:16px; padding:26px 24px; margin-bottom:16px;
   }
   .result-hero .kicker{font-size:19px; color:#5EE0F5; font-weight:800; margin-bottom:8px; letter-spacing:0.2px;}
-  .result-hero h2{font-size:20px; margin:0 0 20px; line-height:1.4; font-weight:800;}
+  .result-hero h2{font-size:20px; margin:0 0 20px; line-height:1.4; font-weight:800; word-break:keep-all;}
   .result-hero h2 em{color:#5EE0F5; font-style:normal;}
   .score-row{margin-bottom:16px;}
   .score-row:last-child{margin-bottom:0;}
@@ -745,6 +746,9 @@
         const b = document.createElement('div');
         const selected = opt.custom ? isCustomActive : (state[q.key]===opt.value);
         b.className = 'opt-btn' + (selected ? ' selected' : '');
+        b.setAttribute('role', 'button'); b.tabIndex = 0;
+        b.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        b.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); b.click(); } });
         b.innerHTML = `<span>${opt.label}${opt.sub?`<span class="sub">${opt.sub}</span>`:''}</span><span class="chk">${selected?'✓':''}</span>`;
         b.addEventListener('click', ()=>{
           if (opt.custom){
@@ -1144,8 +1148,13 @@
       const top = ranked[0];
       lastFit = fit; lastRanked = ranked;
 
-      root.querySelector('#resultHeadline').innerHTML =
-        '고객님에게는 <em>'+LABEL[top]+'</em>이(가) 잘 맞을 가능성이 높아요 · '+fmt(fit[top])+'점';
+      // 받침 유무로 조사 고르기 (현금구매가 / 할부와 …)
+      const jo = (w, a, b) => { const c = String(w).charCodeAt(String(w).length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? a : b; };
+      const second = ranked[1];
+      // 1·2위 차이가 5점 미만이면 "가능성이 높다"고 단정하지 않고 접전이라고 알려줍니다.
+      root.querySelector('#resultHeadline').innerHTML = (fit[top] - fit[second] >= 5)
+        ? '고객님에게는 <em>'+LABEL[top]+'</em>'+jo(LABEL[top],'이','가')+' 잘 맞을 가능성이 높아요 · '+fmt(fit[top])+'점'
+        : '<em>'+LABEL[top]+'</em>'+jo(LABEL[top],'이','가')+' 가장 가깝지만, '+LABEL[second]+jo(LABEL[second],'과','와')+' 큰 차이는 없어요 · '+fmt(fit[top])+'점 vs '+fmt(fit[second])+'점';
 
       if (!resultViewSent) {
         resultViewSent = true;
@@ -1161,7 +1170,7 @@
         barsHtml += `
           <div class="score-row">
             <div class="top">
-              <div class="name">${idx+1}위 ${LABEL[p]} ${idx===0?'<span class="rank-pill">가능성 높음</span>':''}</div>
+              <div class="name">${idx+1}위 ${LABEL[p]} ${idx===0?'<span class="rank-pill">'+(fit[top]-fit[second]>=5?'가능성 높음':'근소한 차이')+'</span>':''}</div>
               <div class="score-num">${fmt(fit[p])}점</div>
             </div>
             <div class="maintrack" style="margin-top:2px;"><div class="fill" style="width:${fit[p]}%; background:var(--teal);"></div></div>
