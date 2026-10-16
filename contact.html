@@ -319,7 +319,7 @@
     <label class="field"><b>이름</b>
       <input type="text" id="c_name" placeholder="홍길동"></label>
     <label class="field"><b>휴대폰번호</b>
-      <input type="tel" id="c_phone" placeholder="010-1234-5678" inputmode="numeric" autocomplete="tel" maxlength="13"><span class="phone-hint" id="c_phone_hint" role="alert" hidden>휴대폰 번호 10~11자리를 확인해 주세요.</span></label>
+      <input type="tel" id="c_phone" placeholder="010-1234-5678" inputmode="numeric" autocomplete="tel"><span class="phone-hint" id="c_phone_hint" role="alert" hidden>휴대폰 번호 10~11자리를 확인해 주세요.</span></label>
     <div class="hp-field" aria-hidden="true"><label>비워 두세요 <input type="text" id="c_hp" name="_hp" tabindex="-1" autocomplete="off"></label></div>
     <label class="field"><b>연락 가능 시간</b>
       <select id="c_time">
@@ -548,12 +548,23 @@
     if (d.length === 10) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6);
     return d.slice(0,3) + '-' + d.slice(3,7) + '-' + d.slice(7);
   }
+  const HINT_LEN = '휴대폰 번호 10~11자리를 확인해 주세요.';
+  const HINT_NUM = '숫자만 입력할 수 있어요.';
+  let hintTimer = null;
   phoneEl.addEventListener('input', () => {
+    const bad = /[^\d\s-]/.test(phoneEl.value);
     const f = fmtPhone(phoneDigits());
     if (phoneEl.value !== f) phoneEl.value = f;
-    if (phoneOk()) phoneHint.hidden = true;
+    if (bad){
+      phoneHint.textContent = HINT_NUM; phoneHint.hidden = false;
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => { if (phoneHint.textContent === HINT_NUM) phoneHint.hidden = true; }, 2500);
+    } else if (phoneOk()) phoneHint.hidden = true;
   });
-  phoneEl.addEventListener('blur', () => { phoneHint.hidden = phoneDigits().length === 0 || phoneOk(); });
+  phoneEl.addEventListener('blur', () => {
+    clearTimeout(hintTimer); phoneHint.textContent = HINT_LEN;
+    phoneHint.hidden = phoneDigits().length === 0 || phoneOk();
+  });
   function validate(){
     const ok = nameEl.value.trim().length>0
       && phoneOk()
