@@ -656,7 +656,7 @@
           <div class="bar" data-p="loan"><span class="n"><i class="bg-loan"></i>할부</span><span class="track"><span class="fill bg-loan"></span></span><span class="v">0</span></div>
         </div>
         <div class="sc-foot"><span><b>확인해야 할 점</b> <span id="scRisk">중도해지 정산 · 보험료 별도</span></span><span>가정 사례 · 실제 조건에 따라 달라집니다</span></div>
-        <div class="sc-dots" id="scDots" aria-label="예시 전환"><button type="button" class="on" data-i="0"></button><button type="button" data-i="1"></button><button type="button" data-i="2"></button><button type="button" data-i="3"></button></div>
+        <div class="sc-dots" id="scDots" aria-label="예시 전환"><button type="button" class="on" data-i="0" aria-label="예시 1" aria-current="true"></button><button type="button" data-i="1" aria-label="예시 2"></button><button type="button" data-i="2" aria-label="예시 3"></button><button type="button" data-i="3" aria-label="예시 4"></button></div>
       </div>
       <div class="float-tag ft-b"><i></i>13년 · 1,700대 현장 데이터</div>
     </div>
@@ -1072,7 +1072,7 @@
       });
       who.textContent = sc.who; cond.textContent = sc.cond; risk.textContent = sc.risk;
       countTo(sc.s[sc.win]);
-      dots.forEach(function(d, k){ d.classList.toggle('on', k === i); });
+      dots.forEach(function(d, k){ d.classList.toggle('on', k === i); if (k === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
     }
     function go(i){
       cur = (i + SCENES.length) % SCENES.length;
