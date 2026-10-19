@@ -1858,7 +1858,8 @@ var CFG = {
       }
       return;
     }
-    if (!store.profile || !store.profile.terms_agreed_at){ $('#phone').value = (store.profile&&store.profile.phone)||''; show('#vConsent'); return; }
+    // 차이드 계산기로 먼저 가입한 회원은 약관 동의는 했지만 휴대폰·알림톡 동의가 없음 → 내 차 관리 동의 화면을 거치게 한다
+    if (!store.profile || !store.profile.terms_agreed_at || !store.profile.phone){ $('#phone').value = (store.profile&&store.profile.phone)||''; show('#vConsent'); return; }
     if (!store.vehicles.length){ startReg('new'); show('#vReg'); return; }
     dashDetail = !isFleet();
     renderDash(); show('#vDash');
