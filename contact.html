@@ -610,6 +610,7 @@
 
     try {
       await submitLead(payload);
+      if (typeof gtag === 'function') gtag('event', 'contact_submit', { form: 'contact_page' });
 
       formArea.innerHTML = `
         <div class="check-badge">✓</div>

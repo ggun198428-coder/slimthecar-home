@@ -1327,6 +1327,7 @@ var CFG = {
         var saved;
         try { saved = await api.saveVehicle(save); } catch(e){ toast(e && e.dup ? '이미 등록된 차량번호예요' : '저장에 실패했어요. 다시 시도해 주세요'); $('#rNext').disabled=false; $('#rNext').textContent='등록 완료'; return; }
         api.notifyReg(saved && saved.id); dashDetail = !isFleet() ? true : false;
+        if (typeof gtag === 'function') gtag('event', 'mycar_register', { method: 'single', usage_type: reg.usage_type || '' });
         $('#donePlate').textContent = reg.plate; burst(); show('#vDone');
       });
     }
@@ -1758,6 +1759,7 @@ var CFG = {
     var rows = bulkRows.map(function(v){ var o=Object.assign({}, v); delete o._update; return o; });
     try { await api.bulkUpsert(rows); } catch(err){ toast('등록에 실패했어요. 잠시 후 다시 시도해 주세요'); go.disabled=false; go.textContent=rows.length+'대 등록하기'; return; }
     api.notifyBulk();
+    if (typeof gtag === 'function') gtag('event', 'mycar_register', { method: 'bulk', count: rows.length });
     $('#bulkModal').classList.remove('on'); toast(rows.length+'대 등록했어요'); pickCur(); dashDetail=false; renderDash();
   });
 
