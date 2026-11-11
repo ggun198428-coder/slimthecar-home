@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0e1b2e">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="슬림더카 CRM">
+<title>슬림더카 CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+<style>
+:root{--navy:#0e1b2e;--teal:#00aabe;--teal2:#e3f6f8;--bg:#f4f7f9;--line:#e3e8ee;--sub:#6b7785;--red:#e5484d;--amber:#f0a020;--green:#2fa36b}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--navy);font-size:14px}
+button,input,select,textarea{font-family:inherit}
+.app{display:flex;min-height:100vh}
+nav{width:220px;background:var(--navy);color:#cfd8e3;flex:none;padding:18px 12px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh}
+nav .brand{color:#fff;font-weight:900;font-size:18px;padding:4px 10px 18px}nav .brand b{color:var(--teal)}
+nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:#cfd8e3;font-weight:500}
+nav a:hover{background:rgba(255,255,255,.06)}nav a.on{background:var(--teal);color:#fff}
+nav a .cnt{margin-left:auto;background:rgba(255,255,255,.15);border-radius:20px;padding:1px 8px;font-size:12px}
+nav a .cnt.red{background:var(--red);color:#fff}
+nav .sp{flex:1}nav .me{font-size:12px;color:#8fa0b3;padding:10px;line-height:1.6}nav .me a{display:inline;padding:0;color:#8fa0b3;text-decoration:underline}
+main{flex:1;min-width:0;padding:22px 26px 60px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.hd h1{font-size:22px;font-weight:900}.hd .grow{flex:1}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13.5px;color:var(--navy);display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--teal);border-color:var(--teal);color:#fff}.btn.sm{padding:5px 10px;font-size:12.5px;border-radius:8px}
+.btn.danger{color:var(--red);border-color:#f6c4c6}
+.btn:disabled{opacity:.5;cursor:default}
+.in{border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%;font-size:14px;background:#fff}
+.srch{width:260px}
+.grid{display:grid;gap:14px}.k4{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.2fr 1fr}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3 .r{margin-left:auto;font-size:12px;color:var(--sub);font-weight:500}
+.kpi .l{color:var(--sub);font-size:12.5px}.kpi .v{font-size:26px;font-weight:900;margin-top:6px}.kpi .d{font-size:12px;margin-top:4px;color:var(--sub)}
+.kpi.alert{border-color:#f6c4c6;background:#fff7f7}.kpi.alert .v{color:var(--red)}
+.tag{display:inline-block;border-radius:6px;padding:2px 7px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.t-red{background:#fde8e8;color:var(--red)}.t-amb{background:#fff1d6;color:#a86a00}.t-teal{background:var(--teal2);color:#007f8f}.t-gray{background:#eef1f4;color:#5b6775}.t-green{background:#e2f5ec;color:#1d7a4d}.t-navy{background:#e6eaf2;color:#2b3c5c}
+.row1{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line);cursor:pointer}
+.row1:first-of-type{border-top:0}.row1:hover .nm{color:var(--teal)}
+.row1 .nm{font-weight:700}.row1 .ds{color:var(--sub);font-size:12.5px;margin-top:2px}
+.row1 .when{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap;text-align:right}
+.sec{border-left:4px solid var(--line);padding-left:12px}
+.sec.r{border-color:var(--red)}.sec.a{border-color:var(--amber)}.sec.t{border-color:var(--teal)}.sec.g{border-color:#9aa6b2}
+.empty{color:var(--sub);font-size:12.5px;padding:8px 0}
+.kb{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
+.col{background:#eaeef2;border-radius:14px;padding:10px;width:236px;flex:none;min-height:200px}
+.col h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;padding:2px 4px 10px}
+.col h4 .n{background:#fff;border-radius:20px;padding:0 8px;font-size:12px;color:var(--sub)}
+.col h4 .dot{width:8px;height:8px;border-radius:50%}
+.cc{background:#fff;border-radius:12px;padding:11px 12px;margin-bottom:8px;border:1px solid var(--line);cursor:grab}
+.cc:hover{border-color:var(--teal)}.cc.warn{border-left:4px solid var(--red)}
+.cc .t{font-weight:700;display:flex;align-items:center;gap:6px}.cc .c{color:var(--sub);font-size:12.5px;margin-top:4px}
+.cc .nx{margin-top:8px;font-size:12px;background:#f6f8fa;border-radius:8px;padding:6px 8px}
+.cc .nx.none{background:#fdeeee;color:var(--red);font-weight:700}
+.col.drop{outline:2px dashed var(--teal)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}
+th{background:#f8fafb;color:var(--sub);font-weight:700;font-size:12px}
+tr.cl{cursor:pointer}tr.cl:hover td{background:#f6fbfc}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-weight:500;user-select:none}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip.ck.on{background:var(--teal);border-color:var(--teal)}
+.prog{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
+.prog .pb{width:70px;height:6px;border-radius:4px;background:#eef1f4;overflow:hidden}.prog .pb i{display:block;height:100%;background:var(--teal)}
+.ov{position:fixed;inset:0;background:rgba(14,27,46,.35);display:none;z-index:50}.ov.on{display:block}
+.drawer{position:fixed;top:0;right:0;height:100vh;height:100dvh;width:min(880px,100vw);background:var(--bg);z-index:60;transform:translateX(100%);transition:.25s;overflow-y:auto}
+.drawer.on{transform:none}
+.dh{background:#fff;padding:16px 22px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.dh .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.dh h2{font-size:20px;font-weight:900}
+.dh .x{margin-left:auto;font-size:24px;cursor:pointer;color:var(--sub);padding:0 4px}
+.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.glance div{background:#f6f8fa;border-radius:10px;padding:8px 10px;font-size:12px;color:var(--sub)}
+.glance b{display:block;color:var(--navy);font-size:13.5px;margin-top:2px}
+.glance .nx{background:#e9f8fa}.glance .nx.late{background:#fdeeee}.glance .nx.late b{color:var(--red)}
+.stepper{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+.stepper div{flex:1;min-width:76px;text-align:center;font-size:11px;padding:7px 4px;border-radius:8px;background:#eef1f4;color:var(--sub);font-weight:700;cursor:pointer}
+.stepper div.done{background:var(--teal2);color:#007f8f}.stepper div.cur{background:var(--teal);color:#fff}
+.db{padding:16px 22px 40px;display:grid;gap:14px}
+.dcols{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:start}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:8px 12px;font-size:13px;align-items:center}.kv .k{color:var(--sub)}
+.logf{border:2px solid var(--teal)}
+.lbl{font-size:12px;color:var(--sub);font-weight:700;margin:12px 0 6px}
+textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;min-height:60px;resize:vertical;background:#fff}
+textarea.memo{min-height:150px;background:#fffdf3;border-color:#efe0a8;line-height:1.65}
+.memo-v{margin-top:6px;background:#fffdf3;border:1px solid #efe0a8;border-radius:8px;padding:8px 10px;font-size:12.5px;white-space:pre-wrap;color:#4a4636;line-height:1.55}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.must{color:var(--red);font-weight:700}
+.hist .ph{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--sub);margin:14px 0 4px}
+.hist .ph:first-child{margin-top:0}.hist .ph i{flex:1;height:1px;background:var(--line)}
+.ent{display:flex;gap:12px;padding:10px 0 12px;position:relative}
+.ent .ic{width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--teal2);z-index:1}
+.ent.auto .ic{background:#eef1f4}
+.ent:not(:last-child)::before{content:"";position:absolute;left:15px;top:40px;bottom:-4px;width:2px;background:#e6ebf0}
+.ent .bd{flex:1;min-width:0}.ent .hdr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--sub)}
+.ent .hdr b{color:var(--navy);font-size:13.5px}
+.ent .say{margin-top:6px;font-size:13px;line-height:1.55;white-space:pre-wrap}
+.ent .say .q{color:#4a5866}.ent .say .q:before{content:"고객  ";color:var(--teal);font-weight:700}
+.ent .say .a:before{content:"나  ";color:var(--navy);font-weight:700}
+.ent .cfm{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.ent .nxt{margin-top:7px;font-size:12.5px;border-radius:8px;padding:6px 9px;background:#e9f8fa}
+.ck2{display:grid;gap:4px}.ck2 .g{font-size:12px;font-weight:700;color:var(--sub);margin-top:8px}.ck2 .g:first-child{margin-top:0}
+.ck2 .it{display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0;cursor:pointer}
+.ck2 .bx{width:18px;height:18px;border-radius:5px;border:2px solid #c9d3db;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
+.ck2 .it.ok .bx{background:var(--teal);border-color:var(--teal)}.ck2 .it.ok span{color:var(--sub)}
+.ck2 .it.nextup{background:#fff7e0;border-radius:8px;padding:3px 6px;margin:0 -6px}
+.ck2 .it .dt{margin-left:auto;font-size:11px;color:var(--sub)}
+.note{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5}
+.tpl{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer}
+.tpl b{display:block;margin-bottom:6px}.tpl p{white-space:pre-wrap;font-size:13px;color:#33404f;line-height:1.55}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;opacity:0;transition:.2s;z-index:99;pointer-events:none;max-width:90vw}.toast.on{opacity:1}
+.mtab{display:none}
+.drop-zone{border:2px dashed #c9d3db;border-radius:16px;padding:34px;text-align:center;color:var(--sub);background:#fff;cursor:pointer}
+.drop-zone.over{border-color:var(--teal);background:var(--teal2)}
+.feed .day{font-weight:900;font-size:14px;margin:16px 0 8px}.feed .day:first-child{margin-top:0}
+.feed .fi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:grid;grid-template-columns:130px 1fr auto;gap:12px;align-items:start}
+.feed .fi:hover{border-color:var(--teal)}
+.gate{max-width:440px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 28px;text-align:center}
+.gate h1{font-size:22px;font-weight:900;margin-bottom:8px}.gate h1 b{color:var(--teal)}
+.gate p{color:var(--sub);line-height:1.6;margin-bottom:20px;font-size:14px}
+.kakao{background:#fee500;border:0;border-radius:12px;padding:14px;width:100%;font-weight:800;font-size:15px;cursor:pointer;color:#191919}
+.code{background:#0e1b2e;color:#d6f6fa;border-radius:10px;padding:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;text-align:left;word-break:break-all;margin:10px 0;line-height:1.5}
+.pv td,.pv th{font-size:12px;padding:7px 8px}
+.badge-demo{background:#fff4d6;color:#7a5a00;text-align:center;font-size:12.5px;padding:7px 10px}
+@media(max-width:900px){nav{display:none}.mtab{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:40;justify-content:space-around;padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
+ .mtab a{font-size:11px;text-align:center;color:var(--sub);cursor:pointer;min-width:56px}.mtab a.on{color:var(--teal);font-weight:700}.mtab a div{font-size:18px}
+ main{padding:16px 14px 90px}.k4{grid-template-columns:repeat(2,1fr)}.two,.dcols{grid-template-columns:1fr}.glance{grid-template-columns:repeat(2,1fr)}.srch{width:100%}.feed .fi{grid-template-columns:1fr}.two2{grid-template-columns:1fr}.db{padding:14px 14px 60px}.dh{padding:14px}}
+</style></head><body>
+<div id="demoBar" class="badge-demo" hidden>🔎 데모 모드 — 저장되지 않는 연습용 화면이에요 (주소 끝 ?demo=1)</div>
+<div id="gate"></div>
+<div class="app" id="app" hidden>
+<nav>
+ <div class="brand">슬림더카 <b>CRM</b></div>
+ <a data-v="dash" class="on">🏠 오늘 <span class="cnt red" id="nRisk"></span></a>
+ <a data-v="log">📝 상담일지</a>
+ <a data-v="pipe">🗂️ 진행 보드 <span class="cnt" id="nPipe"></span></a>
+ <a data-v="list">👥 고객 목록</a>
+ <a data-v="tpl">💬 카톡 문구</a>
+ <a data-v="import">📥 엑셀 등록</a>
+ <div class="sp"></div><div class="me" id="me"></div>
+</nav>
+<main id="main"></main></div>
+<div class="mtab" id="mtab" hidden><a data-v="dash" class="on"><div>🏠</div>오늘</a><a data-v="log"><div>📝</div>상담일지</a><a data-v="pipe"><div>🗂️</div>보드</a><a data-v="list"><div>👥</div>고객</a><a onclick="newC()"><div>➕</div>등록</a></div>
+<div class="ov" id="ov"></div><div class="drawer" id="drawer"></div><div class="toast" id="toast"></div>
+<datalist id="dlReg"></datalist><datalist id="dlCar"></datalist>
+<script>
+// ===== 설정 =====
+const SB_URL='https://mdyqomcgxymrzhflsscq.supabase.co';
+const SB_KEY='sb_publishable_6lTzsrtiv-c0GzqtfWZUfQ_eawuOxWs';
+const DEMO=new URLSearchParams(location.search).has('demo');
+const STAGES=[['new','신규 문의','#8b98a7'],['talk','상담 중','#3b82f6'],['quote','견적 발송','#00aabe'],['review','심사·서류','#a855f7'],['contract','계약 완료','#f0a020'],['ship','출고 대기','#f97316'],['done','출고·관리 중','#2fa36b'],['hold','보류·이탈','#c0c7cf']];
+const SRC=['홈페이지 상담','차이드 계산기','차이드 스코어','카톡 1:1','인스타 DM','블로그','소개','문자 캠페인','기존 고객','기타'];
+const CH={'카톡':'💬','전화':'📞','DM':'📩','문자':'✉️','방문':'🤝','메모':'📝','자동':'⚙️','단계':'🔀'};
+const TEMP={hot:'🔥 뜨거움',warm:'🙂 보통',cold:'🧊 차가움'};
+const TYPES=['개인','개인사업자','법인'];
+const WAYS=['장기렌트','리스','할부','현금','미정'];
+const CK=[['상담',['차종','이용 방식','기간','주행거리','보증·선납','명의(개인/사업자/법인)','운전자','출고 희망 시기']],['견적',['비교 견적 발송','고객 피드백']],['심사',['서류 안내','서류 접수','심사 결과']],['계약',['계약서 서명','발주']],['출고',['탁송일 확정','보험 확인','차량 인도','차이드 매니저 등록']]];
+const ALLCK=CK.flatMap(g=>g[1]);
+document.getElementById('dlReg').innerHTML=['서울','경기','인천','부산','대구','대전','광주','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주'].map(x=>`<option value="${x}">`).join('');
+document.getElementById('dlCar').innerHTML=['기아 카니발','기아 쏘렌토','기아 스포티지','기아 K5','기아 K8','기아 EV3','기아 EV9','현대 아반떼','현대 쏘나타','현대 그랜저','현대 싼타페','현대 팰리세이드','현대 아이오닉5','제네시스 G80','제네시스 GV70','제네시스 GV80','BMW 5시리즈','BMW X5','벤츠 E클래스','벤츠 GLE','테슬라 모델Y','볼보 XC60'].map(x=>`<option value="${x}">`).join('');
+const TPL=[['첫 응답','안녕하세요, 슬림더카입니다 🙂\n문의 주셔서 감사해요. 저희는 전화 드리지 않고 카톡으로 편하게 안내드려요.\n지금 보고 계신 차종과 생각하시는 이용 방식을 알려주시겠어요?'],['조건 확인','정확한 비교를 위해 몇 가지만 여쭤볼게요.\n① 이용 기간 ② 연간 주행거리 ③ 보증금·선납금 여부 ④ 개인 / 개인사업자 / 법인'],['견적 확인 (답장 없을 때)','{이름}님, 보내드린 {차종} 견적 확인해 보셨을까요?\n궁금한 점이나 바꾸고 싶은 조건 있으면 편하게 말씀 주세요 🙂'],['서류 안내','심사에 필요한 서류 안내드려요.\n금융사마다 조금씩 달라 확정되면 다시 정리해 드릴게요.'],['출고 전날','{이름}님, 내일 {차종} 출고 예정이에요 🚗\n탁송 시간과 받으실 장소 한 번만 확인 부탁드려요.'],['만기 6개월 전','{이름}님, {차종} 계약 만기가 6개월 남았어요.\n인수·반납·재계약 중 어떤 게 유리한지 미리 같이 비교해 드릴게요.']];
+
+// ===== 유틸 =====
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2000)}
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const TODAY=()=>ymd(new Date());
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return ymd(d)};
+const dayDiff=(a,b)=>Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/864e5); // a-b
+const md=s=>s?`${+s.slice(5,7)}/${+s.slice(8,10)}`:'';
+const dt=iso=>{if(!iso)return'';const d=new Date(iso);return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`};
+const dayOf=iso=>ymd(new Date(iso));
+const stg=k=>STAGES.find(s=>s[0]==k)||STAGES[0];
+const stTag=k=>{const s=stg(k);return `<span class="tag" style="background:${s[2]}22;color:${s[2]}">${s[1]}</span>`};
+const normPhone=p=>{let d=String(p||'').replace(/\D/g,'');if(d.length==10&&d.startsWith('10'))d='0'+d;if(d.length==9&&d.startsWith('2'))d='0'+d;if(d.startsWith('02')&&(d.length==9||d.length==10))return `02-${d.slice(2,d.length-4)}-${d.slice(-4)}`;if(d.length==11)return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`;if(d.length==10)return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;return p?String(p).trim():null};
+
+// ===== 데이터 계층 =====
+let sb=null,USER=null;
+const DB={
+ async customers(){if(DEMO)return DEMO_C;const r=await sb.from('crm_customers').select('*').order('updated_at',{ascending:false});if(r.error)throw r.error;return r.data},
+ async logs(){if(DEMO)return DEMO_L;const r=await sb.from('crm_logs').select('*').order('created_at',{ascending:false}).limit(3000);if(r.error)throw r.error;return r.data},
+ async addCustomer(o){if(DEMO){const c={id:'d'+Date.now()+Math.random(),stage:'new',temp:'warm',checklist:{},contract:{},created_at:new Date().toISOString(),updated_at:new Date().toISOString(),...o};DEMO_C.unshift(c);return c}
+  const r=await sb.from('crm_customers').insert(o).select().single();if(r.error)throw r.error;return r.data},
+ async addCustomers(arr){if(DEMO){return Promise.all(arr.map(o=>DB.addCustomer(o)))}const r=await sb.from('crm_customers').insert(arr).select();if(r.error)throw r.error;return r.data},
+ async upd(id,p){if(DEMO){const c=DEMO_C.find(x=>x.id==id);Object.assign(c,p,{updated_at:new Date().toISOString()});return c}
+  const r=await sb.from('crm_customers').update(p).eq('id',id).select().single();if(r.error)throw r.error;return r.data},
+ async del(id){if(DEMO){DEMO_C.splice(DEMO_C.findIndex(x=>x.id==id),1);return}const r=await sb.from('crm_customers').delete().eq('id',id);if(r.error)throw r.error},
+ async addLog(o){if(DEMO){const l={id:Date.now()+Math.random(),created_at:new Date().toISOString(),confirmed:[],...o};DEMO_L.unshift(l);return l}
+  const r=await sb.from('crm_logs').insert(o).select().single();if(r.error)throw r.error;return r.data},
+};
+let C=[],L=[];
+const logsOf=id=>L.filter(l=>l.customer_id==id);
+async function reload(){try{[C,L]=await Promise.all([DB.customers(),DB.logs()])}catch(e){console.error(e);toast('불러오기 실패: '+(e.message||e))}}
+
+// ===== 판정 =====
+const open=c=>!['done','hold'].includes(c.stage);
+const late=c=>c.next_due&&c.next_due<TODAY();
+const isToday=c=>c.next_due==TODAY();
+const noNext=c=>open(c)&&!c.next_task;
+const quiet=c=>{const t=c.last_contact_at||c.created_at;return dayDiff(TODAY(),dayOf(t))};
+const sleep=c=>open(c)&&quiet(c)>=7;
+const waitQ=c=>c.stage=='quote'&&quiet(c)>=2;
+const atRisk=c=>open(c)&&(late(c)||noNext(c)||sleep(c));
+const pct=c=>Math.round(Object.keys(c.checklist||{}).length/ALLCK.length*100);
+const dueTxt=d=>{if(!d)return'';const n=dayDiff(d,TODAY());return n<0?`${-n}일 지남`:n==0?'오늘':n==1?'내일':md(d)};
+const lastTxt=c=>{const n=quiet(c);return n==0?'오늘':n+'일 전'};
+
+// ===== 로그인 게이트 =====
+async function boot(){
+ if(DEMO){$('#demoBar').hidden=false;demoSeed();USER={id:'demo'};return start('데모 사용자')}
+ if(!window.supabase){$('#gate').innerHTML=`<div class="gate"><h1>불러오기 실패</h1><p>네트워크를 확인하고 새로고침해 주세요.</p></div>`;return}
+ sb=window.supabase.createClient(SB_URL,SB_KEY);
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session)return showLogin();
+ USER=session.user;
+ const r=await sb.rpc('is_crm_admin');
+ if(r.error){$('#gate').innerHTML=`<div class="gate"><h1>준비가 덜 됐어요</h1><p>Supabase에 CRM SQL을 먼저 실행해 주세요.<br><small>${esc(r.error.message)}</small></p><button class="btn" onclick="logout()">로그아웃</button></div>`;return}
+ if(!r.data){$('#gate').innerHTML=`<div class="gate"><h1>관리자 등록이 필요해요</h1><p>아래 줄을 복사해서 Supabase → SQL Editor에서 한 번만 실행한 뒤, 이 화면을 새로고침하세요.</p>
+  <div class="code" id="adm">insert into public.crm_admins(user_id) values ('${USER.id}') on conflict do nothing;</div>
+  <button class="btn pri" onclick="navigator.clipboard.writeText($('#adm').textContent).then(()=>toast('복사됐어요'))">복사하기</button> <button class="btn" onclick="location.reload()">새로고침</button>
+  <p style="margin-top:16px;font-size:12px">내 사용자 ID: ${USER.id}<br>대표님 계정이 아니라면 <a href="#" onclick="logout()">로그아웃</a></p></div>`;return}
+ const m=USER.user_metadata||{};start(m.name||m.full_name||m.preferred_username||'대표님')}
+function showLogin(){$('#gate').innerHTML=`<div class="gate"><h1>슬림더카 <b>CRM</b></h1><p>관리자 전용이에요.<br>차이드 매니저와 같은 카카오 계정으로 로그인하세요.</p><button class="kakao" id="kbtn">카카오로 로그인</button></div>`;
+ $('#kbtn').onclick=async()=>{$('#kbtn').disabled=true;$('#kbtn').textContent='카카오로 이동 중…';
+  const r=await sb.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:location.origin+location.pathname,scopes:'profile_nickname account_email plusfriends',queryParams:{channel_public_id:'_AxelFX'}}});
+  if(r.error){$('#kbtn').disabled=false;$('#kbtn').textContent='카카오로 로그인';toast('로그인을 시작하지 못했어요')}}}
+async function logout(){if(sb)await sb.auth.signOut();location.reload()}
+async function start(name){$('#gate').innerHTML='';$('#app').hidden=false;$('#mtab').hidden=false;
+ $('#me').innerHTML=`${esc(name)} · 관리자<br><a href="#" onclick="logout()">로그아웃</a> · <a href="#" onclick="refresh()">새로고침</a>`;
+ await reload();counts();go('dash')}
+async function refresh(){await reload();counts();R[view]();toast('최신 내용으로 불러왔어요')}
+
+// ===== 화면 전환 =====
+let view='dash';
+function go(v){view=v;document.querySelectorAll('[data-v]').forEach(a=>a.classList.toggle('on',a.dataset.v==v));R[v]();window.scrollTo(0,0);counts()}
+function counts(){const n=C.filter(atRisk).length;$('#nRisk').textContent=n||'';$('#nRisk').style.display=n?'':'none';$('#nPipe').textContent=C.filter(open).length}
+document.querySelectorAll('[data-v]').forEach(a=>a.onclick=()=>go(a.dataset.v));
+const R={};
+let Q='';
+const match=c=>!Q||[c.name,c.phone,c.car,c.region].some(x=>(x||'').toLowerCase().includes(Q.toLowerCase()));
+const srchBox=()=>`<input class="in srch" id="q" placeholder="이름·번호·차종·지역 검색" value="${esc(Q)}" oninput="Q=this.value;clearTimeout(window._q);window._q=setTimeout(()=>{const p=this.selectionStart;R[view]();const i=$('#q');if(i){i.focus();i.setSelectionRange(p,p)}},250)">`;
+function line(c,right,sub){return `<div class="row1" onclick="openC('${c.id}')"><span>${TEMP[c.temp].split(' ')[0]}</span><div><div class="nm">${esc(c.name)} <span style="font-weight:400;color:var(--sub)">· ${esc(c.car||'차종 미정')}</span> ${stTag(c.stage)}</div><div class="ds">${esc(sub)}</div></div><div class="when">${right}</div></div>`}
+const wd=['일','월','화','수','목','금','토'];
+
+R.dash=()=>{const cs=C.filter(match);
+ const Lt=cs.filter(c=>open(c)&&late(c)),T=cs.filter(c=>open(c)&&isToday(c)),N=cs.filter(noNext),S=cs.filter(c=>sleep(c)&&!late(c)&&!noNext(c)),W=cs.filter(waitQ);
+ const tl=L.filter(l=>dayOf(l.created_at)==TODAY()&&l.kind=='log');const d=new Date();
+ const monthNew=C.filter(c=>c.created_at&&c.created_at.slice(0,7)==TODAY().slice(0,7)).length;
+ $('#main').innerHTML=`<div class="hd"><h1>오늘 · ${d.getMonth()+1}월 ${d.getDate()}일 (${wd[d.getDay()]})</h1><div class="grow"></div>${srchBox()}<button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
+ <div class="grid k4">
+  <div class="card kpi alert"><div class="l">⚠️ 놓칠 위험 고객</div><div class="v">${C.filter(atRisk).length}명</div><div class="d">기한 지남 · 다음 할 일 없음 · 7일 연락 없음</div></div>
+  <div class="card kpi"><div class="l">✅ 오늘 할 일</div><div class="v">${C.filter(c=>open(c)&&isToday(c)).length}건</div><div class="d">처리하면 상담일지로 남아요</div></div>
+  <div class="card kpi"><div class="l">진행 중 고객</div><div class="v">${C.filter(open).length}명</div><div class="d">${STAGES.slice(0,6).map(s=>s[1].slice(0,2)+' '+C.filter(c=>c.stage==s[0]).length).join(' · ')}</div></div>
+  <div class="card kpi"><div class="l">이번 달 새 고객</div><div class="v">${monthNew}명</div><div class="d">전체 ${C.length}명</div></div>
+ </div>
+ ${C.length?'':`<div class="card" style="margin-top:14px;text-align:center;padding:30px"><b style="font-size:16px">아직 고객이 없어요</b><p class="note" style="margin:8px 0 16px">문의가 오면 '빠른 등록', 기존 고객은 '엑셀 등록'으로 한 번에 올려 주세요.</p><button class="btn pri" onclick="newC()">＋ 빠른 등록</button> <button class="btn" onclick="go('import')">📥 엑셀 등록</button></div>`}
+ <div class="grid two" style="margin-top:14px">
+  <div class="grid" style="gap:14px">
+   <div class="card"><h3>🚨 놓치면 안 되는 고객 <span class="r">위에서부터 처리하세요</span></h3>
+    <div class="sec r"><b style="font-size:12.5px;color:var(--red)">기한 지난 할 일 ${Lt.length}</b>${Lt.map(c=>line(c,`<span class="tag t-red">${dueTxt(c.next_due)}</span>`,'다음 할 일: '+c.next_task)).join('')||'<div class="empty">없음 👍</div>'}</div>
+    <div class="sec r" style="margin-top:12px"><b style="font-size:12.5px;color:var(--red)">다음 할 일이 없는 진행 고객 ${N.length}</b>${N.map(c=>line(c,`<button class="btn sm" onclick="event.stopPropagation();openC('${c.id}',true)">할 일 정하기</button>`,'마지막 연락 '+lastTxt(c))).join('')||'<div class="empty">없음 👍</div>'}</div>
+    <div class="sec a" style="margin-top:12px"><b style="font-size:12.5px;color:#a86a00">7일 넘게 연락 없음 ${S.length}</b>${S.map(c=>line(c,`<span class="tag t-amb">${quiet(c)}일째</span>`,c.next_task?'다음 할 일: '+c.next_task:'')).join('')||'<div class="empty">없음 👍</div>'}</div>
+   </div>
+   <div class="card"><h3>✅ 오늘 할 일</h3><div class="sec t">${T.map(c=>line(c,`<span class="tag t-teal">${CH[c.next_how]||''} ${esc(c.next_how||'')}</span>`,c.next_task)).join('')||'<div class="empty">없음</div>'}</div></div>
+  </div>
+  <div class="grid" style="gap:14px">
+   <div class="card"><h3>📨 견적 보내고 답을 기다리는 중</h3><div class="sec g">${W.map(c=>line(c,`<span class="tag t-gray">${quiet(c)}일째</span>`,'마지막 연락 '+lastTxt(c))).join('')||'<div class="empty">없음</div>'}</div>
+    <div class="note">'견적 발송' 단계에서 2일 넘게 연락이 없으면 여기에 떠요.</div></div>
+   <div class="card"><h3>📝 오늘 쓴 상담일지 <span class="r">${tl.length}건</span></h3>${tl.map(l=>{const c=C.find(x=>x.id==l.customer_id);return c?`<div class="row1" onclick="openC('${c.id}')"><span>${CH[l.channel]||'📝'}</span><div><div class="nm">${esc(c.name)}</div><div class="ds">${esc((l.said||l.did||l.memo||'').slice(0,60))}</div></div><div class="when">${dt(l.created_at).split(' ')[1]}</div></div>`:''}).join('')||'<div class="empty">아직 없어요</div>'}
+    <button class="btn" style="width:100%;margin-top:10px;justify-content:center" onclick="go('log')">상담일지 전체 보기</button></div>
+  </div>
+ </div>`};
+
+let fCh='all';
+R.log=()=>{const all=L.filter(l=>fCh=='all'||l.channel==fCh||(fCh=='자동'&&l.kind!='log')).filter(l=>{const c=C.find(x=>x.id==l.customer_id);if(!c)return false;if(!Q)return true;return match(c)||[l.said,l.did,l.memo].some(x=>(x||'').includes(Q))});
+ const days=[...new Set(all.map(l=>dayOf(l.created_at)))];
+ $('#main').innerHTML=`<div class="hd"><h1>상담일지</h1><div class="grow"></div>${srchBox()}<button class="btn pri" onclick="pickC()">＋ 상담일지 쓰기</button></div>
+ <div class="filters">${['all','카톡','전화','DM','방문','메모','자동'].map(k=>`<span class="chip ${fCh==k?'on':''}" onclick="fCh='${k}';R.log()">${k=='all'?'전체':(CH[k]||'')+' '+k}</span>`).join('')}</div>
+ <div class="feed">${days.map(d=>`<div class="day">${md(d)}${d==TODAY()?' · 오늘':''}</div>`+all.filter(l=>dayOf(l.created_at)==d).map(l=>{const c=C.find(x=>x.id==l.customer_id);return `<div class="fi" onclick="openC('${c.id}')"><div><b>${esc(c.name)}</b><div style="font-size:12px;color:var(--sub)">${esc(c.car||'')}</div>${l.stage?stTag(l.stage):''}</div>
+ <div>${l.kind!='log'?`<div style="color:var(--sub);font-size:13px">${esc(l.did||'')}</div>`:`<div style="font-size:13px;line-height:1.55;white-space:pre-wrap">${l.said?`<div style="color:#4a5866"><b style="color:var(--teal)">고객</b> ${esc(l.said)}</div>`:''}${l.did?`<div><b>나</b> ${esc(l.did)}</div>`:''}</div>${l.memo?`<div class="memo-v">📞 ${esc(l.memo)}</div>`:''}${(l.confirmed||[]).length?`<div style="margin-top:5px">${l.confirmed.map(x=>`<span class="tag t-teal" style="margin-right:4px">✓ ${esc(x)}</span>`).join('')}</div>`:''}${l.next_task?`<div class="note" style="margin-top:6px">➡️ 다음: ${esc(l.next_task)} · ${md(l.next_due)}</div>`:''}`}</div>
+ <div style="font-size:12px;color:var(--sub);text-align:right">${l.kind=='log'?(CH[l.channel]||'')+' '+esc(l.channel||''):'⚙️'}<br>${dt(l.created_at).split(' ')[1]}</div></div>`}).join('')).join('')||'<div class="empty">아직 기록이 없어요</div>'}</div>`};
+
+R.pipe=()=>{const cs=C.filter(match);$('#main').innerHTML=`<div class="hd"><h1>진행 보드</h1><div class="grow"></div>${srchBox()}<button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
+ <div class="kb">${STAGES.map(s=>`<div class="col" data-s="${s[0]}"><h4><span class="dot" style="background:${s[2]}"></span>${s[1]}<span class="n">${cs.filter(c=>c.stage==s[0]).length}</span></h4>
+ ${cs.filter(c=>c.stage==s[0]).map(c=>`<div class="cc ${open(c)&&(late(c)||noNext(c))?'warn':''}" draggable="true" data-id="${c.id}" onclick="openC('${c.id}')"><div class="t">${TEMP[c.temp].split(' ')[0]} ${esc(c.name)}<span class="tag t-gray" style="margin-left:auto">${esc(c.cust_type||'')}</span></div><div class="c">${esc(c.car||'차종 미정')}${c.region?' · '+esc(c.region):''}</div>
+ <div class="prog" style="margin-top:6px"><div class="pb"><i style="width:${pct(c)}%"></i></div>확인 ${Object.keys(c.checklist||{}).length}/${ALLCK.length}</div>
+ ${c.next_task?`<div class="nx">➡️ ${esc(c.next_task)}<br><b style="color:${late(c)?'var(--red)':'var(--sub)'}">${dueTxt(c.next_due)}</b></div>`:(open(c)?'<div class="nx none">⚠️ 다음 할 일 없음</div>':'')}</div>`).join('')}</div>`).join('')}</div>
+ <div class="note">빨간 줄 = 기한이 지났거나 다음 할 일이 없는 고객. 카드를 다른 칸에 놓으면 단계가 바뀌고 상담일지에 자동으로 남아요. (휴대폰은 고객을 눌러 위쪽 단계 칸을 누르세요)</div>`;
+ document.querySelectorAll('.cc').forEach(e=>e.ondragstart=ev=>ev.dataTransfer.setData('id',e.dataset.id));
+ document.querySelectorAll('.col').forEach(col=>{col.ondragover=e=>{e.preventDefault();col.classList.add('drop')};col.ondragleave=()=>col.classList.remove('drop');
+  col.ondrop=async e=>{e.preventDefault();col.classList.remove('drop');await setSt(e.dataTransfer.getData('id'),col.dataset.s,false)}})};
+
+let fSt='all';
+R.list=()=>{const rows=C.filter(match).filter(c=>fSt=='all'||(fSt=='risk'?atRisk(c):c.stage==fSt));
+ $('#main').innerHTML=`<div class="hd"><h1>고객 목록</h1><div class="grow"></div>${srchBox()}<button class="btn" onclick="exportX()">⬇ 엑셀로 내려받기</button><button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
+ <div class="filters"><span class="chip ${fSt=='all'?'on':''}" onclick="fSt='all';R.list()">전체 ${C.length}</span><span class="chip ${fSt=='risk'?'on':''}" style="${fSt=='risk'?'':'color:var(--red);border-color:#f6c4c6'}" onclick="fSt='risk';R.list()">⚠️ 놓칠 위험 ${C.filter(atRisk).length}</span>${STAGES.map(s=>`<span class="chip ${fSt==s[0]?'on':''}" onclick="fSt='${s[0]}';R.list()">${s[1]} ${C.filter(c=>c.stage==s[0]).length}</span>`).join('')}</div>
+ <div style="overflow-x:auto"><table><tr><th>고객</th><th>단계</th><th>온도</th><th>차종</th><th>지역</th><th>마지막 연락</th><th>다음 할 일</th><th>기한</th><th>확인</th><th>유입</th></tr>
+ ${rows.map(c=>`<tr class="cl" onclick="openC('${c.id}')"><td><b>${esc(c.name)}</b><br><span style="color:var(--sub);font-size:12px">${esc(c.cust_type||'')} · ${esc(c.phone||'-')}</span></td><td>${stTag(c.stage)}</td><td>${TEMP[c.temp]}</td><td>${esc(c.car||'-')}</td><td>${esc(c.region||'-')}</td><td>${lastTxt(c)}</td><td>${c.next_task?esc(c.next_task):(open(c)?'<span class="tag t-red">없음</span>':'-')}</td><td>${c.next_due?`<span class="tag ${late(c)?'t-red':isToday(c)?'t-teal':'t-gray'}">${dueTxt(c.next_due)}</span>`:''}</td><td><div class="prog"><div class="pb"><i style="width:${pct(c)}%"></i></div>${pct(c)}%</div></td><td>${esc(c.source||'-')}</td></tr>`).join('')}</table></div>
+ ${rows.length?'':'<div class="empty" style="padding:20px">해당하는 고객이 없어요</div>'}`};
+
+R.tpl=()=>{$('#main').innerHTML=`<div class="hd"><h1>카톡 문구</h1></div><div class="note" style="margin:-8px 0 12px">누르면 복사돼요. 고객 상세의 '💬 문구'에서 쓰면 {이름}·{차종}이 자동으로 채워져요.</div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${TPL.map(([t,p],i)=>`<div class="tpl" onclick="copyTpl(${i})"><b>${t}</b><p>${esc(p)}</p></div>`).join('')}</div>`};
+function copyTpl(i,c){let p=TPL[i][1];if(c)p=p.replace(/\{이름\}/g,c.name).replace(/\{차종\}/g,c.car||'차량');navigator.clipboard.writeText(p).then(()=>toast('복사됐어요 — 카톡에 붙여넣으세요'),()=>toast('복사 실패'))}
+
+// ===== 엑셀 등록 =====
+const COLS=['이름','휴대폰','고객유형','지역','차종','이용방식','단계','유입경로','메모'];
+let PREV=null;
+R.import=()=>{$('#main').innerHTML=`<div class="hd"><h1>엑셀로 고객 한 번에 등록</h1></div>
+ <div class="grid two"><div><div class="drop-zone" id="dz">📄<br><b>엑셀(xlsx)·CSV 파일을 끌어 놓거나 눌러서 고르세요</b><br><span style="font-size:12.5px">첫 줄은 칸 이름</span><input type="file" id="fx" accept=".xlsx,.xls,.csv" hidden></div>
+ <div style="margin-top:10px"><button class="btn" onclick="tplDown()">⬇ 양식 받기</button></div><div id="pv"></div></div>
+ <div class="card"><h3>양식 칸</h3><div style="font-size:13px;line-height:1.9">이름* · 휴대폰 · 고객유형(개인/개인사업자/법인) · 지역 · 차종 · 이용방식 · 단계 · 유입경로 · 메모</div>
+ <div class="note">• 단계를 비우면 '신규 문의'. 이미 출고한 고객은 '출고·관리 중' 또는 '관리'라고 쓰면 돼요.<br>• 같은 휴대폰 번호가 이미 있으면 새로 만들지 않고 '이미 있음'으로 건너뛰어요.<br>• 메모는 상담일지 첫 기록으로 남아요.<br>• 계약 정보(금융사·만기일)는 다음 단계에서 칸을 추가할게요.</div></div></div>`;
+ const dz=$('#dz'),fx=$('#fx');dz.onclick=()=>fx.click();fx.onchange=()=>fx.files[0]&&readFile(fx.files[0]);
+ dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');e.dataTransfer.files[0]&&readFile(e.dataTransfer.files[0])}};
+function tplDown(){const csv='﻿'+COLS.join(',')+'\n홍길동,010-1234-5678,개인,경기 수원,기아 카니발 하이리무진,장기렌트,출고·관리 중,소개,2025년 출고 고객\n';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='슬림더카_고객등록_양식.csv';a.click()}
+function stageOf(v){v=String(v||'').trim();if(!v)return'new';const s=STAGES.find(s=>s[1]==v||s[0]==v||s[1].includes(v)||v.includes(s[1].slice(0,2)));if(/관리|출고 ?완료/.test(v))return'done';return s?s[0]:'new'}
+async function readFile(f){if(!window.XLSX){toast('엑셀 읽기 도구를 불러오는 중이에요. 잠시 후 다시 해 주세요');return}
+ const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:'array',raw:true});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:'',raw:false});
+ const have=new Set(C.map(c=>(c.phone||'').replace(/\D/g,'')).filter(Boolean));
+ PREV=rows.map(r=>{const g=k=>String(r[k]??'').trim();const o={name:g('이름'),phone:normPhone(g('휴대폰')||g('휴대폰번호')||g('전화번호')),cust_type:TYPES.includes(g('고객유형'))?g('고객유형'):'개인',region:g('지역')||null,car:g('차종')||null,way:g('이용방식')||null,stage:stageOf(g('단계')),source:g('유입경로')||'기존 고객',_memo:g('메모')};
+  o._st=!o.name?'이름 없음':(o.phone&&have.has(o.phone.replace(/\D/g,''))?'이미 있음':'새로 등록');return o});
+ const n=PREV.filter(o=>o._st=='새로 등록').length;
+ $('#pv').innerHTML=`<div class="card" style="margin-top:12px"><h3>미리보기 <span class="r">새로 등록 ${n} · 건너뜀 ${PREV.length-n}</span></h3><div style="overflow:auto;max-height:360px"><table class="pv"><tr><th>상태</th><th>이름</th><th>휴대폰</th><th>유형</th><th>지역</th><th>차종</th><th>단계</th></tr>${PREV.map(o=>`<tr><td><span class="tag ${o._st=='새로 등록'?'t-teal':'t-gray'}">${o._st}</span></td><td>${esc(o.name)}</td><td>${esc(o.phone||'')}</td><td>${esc(o.cust_type)}</td><td>${esc(o.region||'')}</td><td>${esc(o.car||'')}</td><td>${stg(o.stage)[1]}</td></tr>`).join('')}</table></div>
+ <div style="margin-top:12px;text-align:right"><button class="btn pri" id="impBtn" ${n?'':'disabled'} onclick="doImport()">${n}명 등록하기</button></div></div>`}
+async function doImport(){const items=PREV.filter(o=>o._st=='새로 등록');$('#impBtn').disabled=true;$('#impBtn').textContent='등록 중…';
+ try{const rows=items.map(({_st,_memo,...o})=>({...o,next_task:o.stage=='done'||o.stage=='hold'?null:'첫 연락하기',next_due:o.stage=='done'||o.stage=='hold'?null:TODAY(),next_how:'카톡'}));
+  const made=await DB.addCustomers(rows);
+  for(let i=0;i<made.length;i++){await DB.addLog({customer_id:made[i].id,kind:'auto',stage:made[i].stage,did:'엑셀로 등록'+(items[i]._memo?' · 메모: '+items[i]._memo:'')})}
+  await reload();counts();toast(`${made.length}명 등록됐어요`);PREV=null;go('list')}catch(e){console.error(e);toast('등록 실패: '+(e.message||e));$('#impBtn').disabled=false;$('#impBtn').textContent='다시 시도'}}
+function exportX(){if(!window.XLSX)return toast('잠시 후 다시 눌러 주세요');const ws=XLSX.utils.json_to_sheet(C.map(c=>({이름:c.name,휴대폰:c.phone,고객유형:c.cust_type,지역:c.region,차종:c.car,이용방식:c.way,단계:stg(c.stage)[1],온도:TEMP[c.temp],다음할일:c.next_task,기한:c.next_due,마지막연락:c.last_contact_at?dayOf(c.last_contact_at):'',유입경로:c.source,등록일:dayOf(c.created_at)})));
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'고객');XLSX.writeFile(wb,`슬림더카_고객_${TODAY()}.xlsx`)}
+
+// ===== 고객 상세 =====
+let cur=null;
+const draftKey=id=>'crm_memo_'+id;
+function openC(id,focusNext){const c=C.find(x=>x.id==id);if(!c)return;cur=c;const si=STAGES.findIndex(s=>s[0]==c.stage);
+ const ck=c.checklist||{};const nextCk=ALLCK.find(k=>!ck[k]);const lg=logsOf(c.id);const phases=[...new Set(lg.map(l=>l.stage||'new'))];
+ let draft='';try{draft=localStorage.getItem(draftKey(c.id))||''}catch(e){}
+ $('#drawer').innerHTML=`<div class="dh"><div class="top"><h2>${esc(c.name)}</h2><span class="tag t-gray">${esc(c.cust_type||'')}</span>${stTag(c.stage)}<span class="tag t-gray">${TEMP[c.temp]}</span><span class="x" onclick="closeC()">✕</span></div>
+ <div style="color:var(--sub);margin-top:4px;font-size:12.5px">${c.phone?`<a href="tel:${esc(c.phone)}" style="color:inherit">${esc(c.phone)}</a>`:'연락처 없음'} · 📍 ${esc(c.region||'지역 미입력')} · ${esc(c.source||'')} · ${esc(c.car||'차종 미정')}${c.way?' · '+esc(c.way):''}</div>
+ <div class="glance"><div>현재 단계<b>${stg(c.stage)[1]}</b></div><div>마지막 연락<b>${lastTxt(c)}</b></div>
+  <div class="nx ${(c.next_task&&late(c))||noNext(c)?'late':''}">다음 할 일<b>${c.next_task?dueTxt(c.next_due)+' · '+esc(c.next_task):(open(c)?'⚠️ 없음 — 정해 주세요':'-')}</b></div>
+  <div>확인 진행<b>${Object.keys(ck).length}/${ALLCK.length} · 다음: ${nextCk||'완료'}</b></div></div>
+ <div class="stepper">${STAGES.slice(0,7).map((s,i)=>`<div class="${i<si&&si<7?'done':i==si?'cur':''}" onclick="setSt('${c.id}','${s[0]}',true)">${s[1]}</div>`).join('')}<div class="${c.stage=='hold'?'cur':''}" onclick="setSt('${c.id}','hold',true)" style="min-width:64px">보류</div></div></div>
+ <div class="db">
+  <div class="card logf" id="logf"><h3>📝 상담일지 쓰기 <span class="r">다음 할 일을 정해야 저장돼요</span></h3>
+   <div class="lbl" style="margin-top:0">📞 통화 메모 <span style="font-weight:500">— 통화하면서 자유롭게 (이 기기에 자동 임시저장, 아래 칸은 나중에 채워도 돼요)</span></div>
+   <textarea class="memo" id="memo" placeholder="예)&#10;- 와이프 차, 출퇴근 왕복 60km&#10;- 카니발 하이리무진 9인승, 흰색&#10;- 보증금 30% 가능, 12월 안에 받고 싶음">${esc(draft)}</textarea>
+   <div class="two2"><div><div class="lbl">📍 지역</div><input class="in" id="fReg" list="dlReg" value="${esc(c.region||'')}" placeholder="예: 경기 수원 영통"></div><div><div class="lbl">🚗 차종 (직접 입력)</div><input class="in" id="fCar" list="dlCar" value="${esc(c.car||'')}" placeholder="예: 카니발 하이리무진 9인승 · 흰색"></div></div>
+   <div class="lbl">어떻게 연락했나요</div><div class="filters" style="margin:0" id="fCh">${['카톡','전화','DM','문자','방문','메모'].map((k,i)=>`<span class="chip ${i==1?'on':''}" data-v="${k}" onclick="one(this)">${CH[k]} ${k}</span>`).join('')}</div>
+   <div class="two2" style="margin-top:4px"><div><div class="lbl">고객이 한 말</div><textarea id="fSaid" placeholder="예: 보증금 없이 가능하면 좋겠어요"></textarea></div><div><div class="lbl">내가 한 것 / 안내한 것</div><textarea id="fDid" placeholder="예: 무보증 가능 금융사 확인 후 안내하기로 함"></textarea></div></div>
+   <div class="lbl">이번에 확인된 것 <span style="font-weight:500">(누르면 체크리스트에 반영)</span></div><div class="filters" style="margin:0" id="fCk">${ALLCK.filter(k=>!ck[k]).map(k=>`<span class="chip ck" data-v="${k}" onclick="this.classList.toggle('on')">＋ ${k}</span>`).join('')||'<span class="note">모두 확인됨</span>'}</div>
+   <div class="two2" style="margin-top:4px"><div><div class="lbl">고객 온도</div><div class="filters" style="margin:0" id="fTemp">${Object.entries(TEMP).map(([k,v])=>`<span class="chip ${k==c.temp?'on':''}" data-v="${k}" onclick="one(this)">${v}</span>`).join('')}</div></div>
+    <div><div class="lbl">단계</div><div class="filters" style="margin:0" id="fSt"><span class="chip on" data-v="${c.stage}" onclick="one(this)">그대로 (${stg(c.stage)[1]})</span>${si<6?`<span class="chip" data-v="${STAGES[si+1][0]}" onclick="one(this)">→ ${STAGES[si+1][1]}</span>`:''}${c.stage!='hold'?`<span class="chip" data-v="hold" onclick="one(this)">보류·이탈</span>`:''}</div></div></div>
+   <div class="lbl">➡️ 다음 할 일 <span class="must">*필수</span> <span style="font-weight:500">(보류·관리 중이면 '없음' 가능)</span></div>
+   <input class="in" id="nxT" placeholder="예: 무보증 가능 금융사 3곳 정리해서 보내기" value="">
+   <div class="filters" style="margin:8px 0 0;align-items:center" id="fDue">${[['오늘',0],['내일',1],['3일 후',3],['1주 후',7]].map(([k,n],i)=>`<span class="chip ${i==1?'on':''}" data-v="${n}" onclick="one(this);$('#nxD').value=''">${k}</span>`).join('')}<input type="date" class="in" id="nxD" style="width:auto;padding:5px 8px" onchange="document.querySelectorAll('#fDue .chip').forEach(x=>x.classList.remove('on'))"></div>
+   <div class="filters" style="margin:8px 0 0" id="fHow">${['카톡','전화','DM'].map((k,i)=>`<span class="chip ${i==0?'on':''}" data-v="${k}" onclick="one(this)">${CH[k]} ${k}</span>`).join('')}<span class="chip" data-v="none" onclick="one(this);$('#nxT').value='';">다음 할 일 없음</span></div>
+   <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap"><select class="in" style="width:auto" onchange="if(this.value!=='')copyTpl(+this.value,cur);this.value=''"><option value="">💬 문구 복사</option>${TPL.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join('')}</select><div style="flex:1"></div><button class="btn pri" id="saveBtn" onclick="saveLog()">저장</button></div>
+  </div>
+  <div class="dcols">
+   <div class="card"><h3>🕒 상담 히스토리 <span class="r">최신이 위 · 단계별로 묶음</span></h3><div class="hist">
+    ${lg.length?phases.map(p=>`<div class="ph">${stTag(p)}<i></i></div>`+lg.filter(l=>(l.stage||'new')==p).map(l=>l.kind!='log'?`<div class="ent auto"><div class="ic">${l.kind=='stage'?'🔀':'⚙️'}</div><div class="bd"><div class="hdr"><b>${l.kind=='stage'?'단계 변경':'자동 기록'}</b>· ${dt(l.created_at)}</div><div class="say" style="color:var(--sub)">${esc(l.did||'')}</div></div></div>`:
+     `<div class="ent"><div class="ic">${CH[l.channel]||'📝'}</div><div class="bd"><div class="hdr"><b>${esc(l.channel||'메모')}</b>· ${dt(l.created_at)}${l.temp?' · '+TEMP[l.temp]:''}</div><div class="say">${l.said?`<div class="q">${esc(l.said)}</div>`:''}${l.did?`<div class="a">${esc(l.did)}</div>`:''}</div>${l.memo?`<div class="memo-v">📞 통화 메모\n${esc(l.memo)}</div>`:''}${(l.confirmed||[]).length?`<div class="cfm">${l.confirmed.map(x=>`<span class="tag t-teal">✓ ${esc(x)}</span>`).join('')}</div>`:''}${l.next_task?`<div class="nxt">➡️ ${esc(l.next_task)} · ${md(l.next_due)}</div>`:''}</div></div>`).join('')).join(''):'<div class="empty">아직 기록이 없어요</div>'}
+   </div></div>
+   <div class="grid" style="gap:14px">
+    <div class="card"><h3>☑️ 확인 체크리스트 <span class="r">${pct(c)}%</span></h3><div class="ck2">${CK.map(([g,its])=>`<div class="g">${g}</div>`+its.map(k=>`<div class="it ${ck[k]?'ok':''} ${k==nextCk?'nextup':''}" onclick="toggleCk('${c.id}','${k}')"><div class="bx">${ck[k]?'✓':''}</div><span>${k}</span>${k==nextCk?'<span class="tag t-amb" style="margin-left:auto">다음 확인</span>':ck[k]?`<span class="dt">${md(ck[k])}</span>`:''}</div>`).join('')).join('')}</div><div class="note">눌러서 바로 체크·해제할 수도 있어요.</div></div>
+    <div class="card"><h3>🧾 고객 정보</h3><div class="kv">
+     <div class="k">이름</div><input class="in" id="eName" value="${esc(c.name)}">
+     <div class="k">휴대폰</div><input class="in" id="ePhone" value="${esc(c.phone||'')}">
+     <div class="k">유형</div><select class="in" id="eType">${TYPES.map(t=>`<option ${t==c.cust_type?'selected':''}>${t}</option>`).join('')}</select>
+     <div class="k">이용 방식</div><select class="in" id="eWay"><option value="">-</option>${WAYS.map(t=>`<option ${t==c.way?'selected':''}>${t}</option>`).join('')}</select>
+     <div class="k">유입경로</div><select class="in" id="eSrc"><option value="">-</option>${SRC.map(t=>`<option ${t==c.source?'selected':''}>${t}</option>`).join('')}</select>
+     <div class="k">고정 메모</div><textarea id="eMemo" placeholder="계속 기억할 것 (예: 신용 관련, 가족 관계, 선호)">${esc(c.memo||'')}</textarea></div>
+     <div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm danger" onclick="delC('${c.id}')">삭제</button><div style="flex:1"></div><button class="btn sm pri" onclick="saveInfo('${c.id}')">정보 저장</button></div></div>
+   </div>
+  </div>
+ </div>`;
+ const mm=$('#memo');mm.oninput=()=>{try{localStorage.setItem(draftKey(c.id),mm.value)}catch(e){}};
+ $('#drawer').classList.add('on');$('#ov').classList.add('on');$('#drawer').scrollTop=0;if(focusNext)setTimeout(()=>{const e=$('#nxT');e&&e.focus()},300)}
+function one(el){[...el.parentNode.children].forEach(x=>x.classList&&x.classList.remove('on'));el.classList.add('on')}
+const pickVal=sel=>{const e=document.querySelector(sel+' .chip.on');return e?e.dataset.v:null};
+async function saveLog(){const c=cur;const how=pickVal('#fHow');const t=$('#nxT').value.trim();const stage=pickVal('#fSt')||c.stage;
+ const noneOk=how=='none'||['done','hold'].includes(stage);
+ if(!t&&!noneOk){$('#nxT').style.borderColor='var(--red)';$('#nxT').focus();toast('다음 할 일을 정해야 저장돼요 — 놓치는 고객이 없도록');return}
+ let due=null;if(t){const d=$('#nxD').value;due=d||addDays(+(pickVal('#fDue')??1))}
+ const memo=$('#memo').value.trim(),said=$('#fSaid').value.trim(),did=$('#fDid').value.trim();
+ const cfm=[...document.querySelectorAll('#fCk .chip.on')].map(x=>x.dataset.v);const temp=pickVal('#fTemp')||c.temp;const ch=pickVal('#fCh')||'메모';
+ if(!memo&&!said&&!did&&!cfm.length&&!t){toast('적은 내용이 없어요');return}
+ $('#saveBtn').disabled=true;
+ try{const ck={...(c.checklist||{})};cfm.forEach(k=>ck[k]=TODAY());
+  const reg=$('#fReg').value.trim(),car=$('#fCar').value.trim();
+  if(stage!=c.stage)await DB.addLog({customer_id:c.id,kind:'stage',stage,did:`${stg(c.stage)[1]} → ${stg(stage)[1]}`});
+  const log=await DB.addLog({customer_id:c.id,kind:'log',channel:ch,stage,said:said||null,did:did||null,memo:memo||null,confirmed:cfm,temp,next_task:t||null,next_due:due,next_how:t?(how=='none'?null:how):null});
+  const nc=await DB.upd(c.id,{region:reg||null,car:car||null,temp,stage,checklist:ck,next_task:t||null,next_due:due,next_how:t?(how=='none'?null:how):null,last_contact_at:new Date().toISOString()});
+  Object.assign(c,nc);if(!DEMO){L.unshift(log)}try{localStorage.removeItem(draftKey(c.id))}catch(e){}
+  if(!DEMO)await reload();toast(t?`저장됐어요 — ${dueTxt(due)} 할 일로 올라가요`:'저장됐어요');openC(c.id);R[view]();counts()}
+ catch(e){console.error(e);toast('저장 실패: '+(e.message||e));$('#saveBtn').disabled=false}}
+async function setSt(id,s,reopen){const c=C.find(x=>x.id==id);if(!c||c.stage==s)return;const f=stg(c.stage)[1];
+ try{await DB.addLog({customer_id:id,kind:'stage',stage:s,did:`${f} → ${stg(s)[1]}`});const nc=await DB.upd(id,{stage:s});Object.assign(c,nc);if(!DEMO)await reload();
+  toast(`${c.name} → ${stg(s)[1]} (상담일지에 기록)`);if(reopen)openC(id);R[view]();counts()}catch(e){toast('변경 실패: '+(e.message||e))}}
+async function toggleCk(id,k){const c=C.find(x=>x.id==id);const ck={...(c.checklist||{})};if(ck[k])delete ck[k];else ck[k]=TODAY();
+ try{const nc=await DB.upd(id,{checklist:ck});Object.assign(c,nc);openC(id);R[view]()}catch(e){toast('저장 실패')}}
+async function saveInfo(id){const c=C.find(x=>x.id==id);const name=$('#eName').value.trim();if(!name)return toast('이름을 넣어 주세요');
+ try{const nc=await DB.upd(id,{name,phone:normPhone($('#ePhone').value),cust_type:$('#eType').value,way:$('#eWay').value||null,source:$('#eSrc').value||null,memo:$('#eMemo').value.trim()||null});Object.assign(c,nc);toast('정보 저장됐어요');openC(id);R[view]()}catch(e){toast('저장 실패: '+(e.message||e))}}
+async function delC(id){const c=C.find(x=>x.id==id);if(!confirm(`${c.name} 고객과 상담일지를 모두 삭제할까요? 되돌릴 수 없어요.`))return;
+ try{await DB.del(id);if(!DEMO)await reload();else{L=L.filter(l=>l.customer_id!=id)}closeC();toast('삭제됐어요');R[view]();counts()}catch(e){toast('삭제 실패: '+(e.message||e))}}
+function closeC(){$('#drawer').classList.remove('on');$('#ov').classList.remove('on')}
+function pickC(){$('#drawer').innerHTML=`<div class="dh"><div class="top"><h2>누구의 상담일지인가요?</h2><span class="x" onclick="closeC()">✕</span></div></div><div class="db"><input class="in" placeholder="이름·번호 검색" oninput="const q=this.value;document.querySelectorAll('#pk .row1').forEach(r=>r.style.display=r.textContent.includes(q)?'':'none')"><div class="card" id="pk">${C.map(c=>line(c,dueTxt(c.next_due),c.phone||'')).join('')||'<div class="empty">고객이 없어요</div>'}</div><button class="btn" onclick="newC()">＋ 처음 온 고객이면 빠른 등록</button></div>`;$('#drawer').classList.add('on');$('#ov').classList.add('on')}
+function newC(){$('#drawer').innerHTML=`<div class="dh"><div class="top"><h2>빠른 등록</h2><span class="x" onclick="closeC()">✕</span></div><div style="color:var(--sub);margin-top:4px;font-size:13px">카톡·전화·인스타 문의를 바로 — 메모가 첫 상담일지가 돼요</div></div>
+ <div class="db"><div class="card logf">
+ <div class="two2"><div><div class="lbl" style="margin-top:0">이름 / 인스타 아이디 <span class="must">*</span></div><input class="in" id="nName" placeholder="예: 김민준"></div><div><div class="lbl" style="margin-top:0">연락처</div><input class="in" id="nPhone" inputmode="tel" placeholder="010-0000-0000 (없으면 비워도 돼요)"></div></div>
+ <div class="two2"><div><div class="lbl">📍 지역</div><input class="in" id="nReg" list="dlReg" placeholder="예: 경기 수원"></div><div><div class="lbl">🚗 차종 (직접 입력)</div><input class="in" id="nCar" list="dlCar" placeholder="모르면 비워도 돼요"></div></div>
+ <div class="lbl">들어온 곳</div><div class="filters" style="margin:0" id="nSrc">${SRC.map((v,i)=>`<span class="chip ${i==3?'on':''}" data-v="${v}" onclick="one(this)">${v}</span>`).join('')}</div>
+ <div class="two2"><div><div class="lbl">고객 유형</div><div class="filters" style="margin:0" id="nType">${TYPES.map((t,i)=>`<span class="chip ${i==0?'on':''}" data-v="${t}" onclick="one(this)">${t}</span>`).join('')}</div></div><div><div class="lbl">이용 방식</div><div class="filters" style="margin:0" id="nWay">${WAYS.map((t,i)=>`<span class="chip ${i==4?'on':''}" data-v="${t}" onclick="one(this)">${t}</span>`).join('')}</div></div></div>
+ <div class="lbl">받은 메시지 / 📞 통화 메모</div><textarea class="memo" id="nMemo" placeholder="받은 메시지를 붙여넣거나, 통화하면서 자유롭게 적어 두세요"></textarea>
+ <div class="lbl">➡️ 다음 할 일 <span class="must">*필수</span></div><input class="in" id="nNx" placeholder="예: 차종·기간 물어보기"><div class="filters" style="margin:8px 0 0" id="nDue"><span class="chip on" data-v="0" onclick="one(this)">오늘</span><span class="chip" data-v="1" onclick="one(this)">내일</span><span class="chip" data-v="3" onclick="one(this)">3일 후</span></div>
+ <div style="margin-top:14px;text-align:right"><button class="btn pri" id="nBtn" onclick="createC()">등록</button></div></div></div>`;
+ $('#drawer').classList.add('on');$('#ov').classList.add('on');setTimeout(()=>{const e=$('#nName');e&&e.focus()},300)}
+async function createC(){const name=$('#nName').value.trim(),nx=$('#nNx').value.trim();if(!name)return toast('이름을 넣어 주세요');if(!nx){$('#nNx').style.borderColor='var(--red)';return toast('다음 할 일을 정해 주세요')}
+ const phone=normPhone($('#nPhone').value);if(phone&&C.some(c=>(c.phone||'').replace(/\D/g,'')==phone.replace(/\D/g,''))&&!confirm('같은 번호의 고객이 이미 있어요. 그래도 새로 등록할까요?'))return;
+ $('#nBtn').disabled=true;const way=pickVal('#nWay');const memo=$('#nMemo').value.trim();
+ try{const c=await DB.addCustomer({name,phone,region:$('#nReg').value.trim()||null,car:$('#nCar').value.trim()||null,source:pickVal('#nSrc'),cust_type:pickVal('#nType'),way:way=='미정'?null:way,stage:'new',next_task:nx,next_due:addDays(+pickVal('#nDue')),next_how:'카톡',last_contact_at:new Date().toISOString()});
+  await DB.addLog({customer_id:c.id,kind:'log',channel:'메모',stage:'new',memo:memo||null,did:'신규 등록',next_task:nx,next_due:addDays(+pickVal('#nDue')),next_how:'카톡'});
+  await reload();counts();toast('등록됐어요');openC(c.id);R[view]()}catch(e){console.error(e);toast('등록 실패: '+(e.message||e));$('#nBtn').disabled=false}}
+$('#ov').onclick=closeC;
+document.addEventListener('keydown',e=>{if(e.key=='Escape')closeC()});
+
+// ===== 데모 데이터 =====
+let DEMO_C=[],DEMO_L=[];
+function demoSeed(){const now=Date.now(),iso=n=>new Date(now-n*864e5).toISOString();
+ DEMO_C=[{id:'a',name:'김민준(예시)',phone:'010-1111-2222',cust_type:'개인',region:'경기 수원',car:'기아 카니발 하이리무진',way:'장기렌트',source:'인스타 DM',stage:'talk',temp:'hot',checklist:{'차종':TODAY()},next_task:'기간·주행거리 물어보기',next_due:addDays(0),next_how:'카톡',last_contact_at:iso(1),created_at:iso(2),updated_at:iso(1),contract:{}},
+  {id:'b',name:'(주)예시상사',phone:'010-3333-4444',cust_type:'법인',region:'서울 강남',car:'제네시스 G80',way:'장기렌트',source:'카톡 1:1',stage:'quote',temp:'warm',checklist:{'차종':addDays(-5),'이용 방식':addDays(-5),'비교 견적 발송':addDays(-3)},next_task:'견적 확인 연락',next_due:addDays(-1),next_how:'카톡',last_contact_at:iso(3),created_at:iso(6),updated_at:iso(3),contract:{}},
+  {id:'c',name:'이서연(예시)',phone:null,cust_type:'개인',region:null,car:null,way:null,source:'홈페이지 상담',stage:'new',temp:'warm',checklist:{},next_task:null,next_due:null,next_how:null,last_contact_at:iso(0),created_at:iso(0),updated_at:iso(0),contract:{}}];
+ DEMO_L=[{id:1,customer_id:'a',kind:'log',channel:'전화',stage:'talk',said:'출퇴근용이고 와이프도 같이 타요',did:'운전자 범위 확인',memo:'- 카니발 9인승 하이리무진\n- 흰색\n- 12월 안 출고 희망',confirmed:['차종'],temp:'hot',next_task:'기간·주행거리 물어보기',next_due:addDays(0),next_how:'카톡',created_at:iso(1)},
+  {id:2,customer_id:'b',kind:'log',channel:'카톡',stage:'quote',said:'',did:'비교 견적 3곳 발송',memo:null,confirmed:['비교 견적 발송'],temp:'warm',next_task:'견적 확인 연락',next_due:addDays(-1),next_how:'카톡',created_at:iso(3)},
+  {id:3,customer_id:'c',kind:'auto',stage:'new',did:'홈페이지 상담 신청으로 등록',confirmed:[],created_at:iso(0)}]}
+boot();
+</script></body></html>
