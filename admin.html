@@ -174,6 +174,13 @@ const dayDiff=(a,b)=>Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00')
 const md=s=>s?`${+s.slice(5,7)}/${+s.slice(8,10)}`:'';
 const dt=iso=>{if(!iso)return'';const d=new Date(iso);return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`};
 const dayOf=iso=>ymd(new Date(iso));
+const addMonths=(d,n)=>{if(!d)return null;const x=new Date(d+'T00:00:00');const day=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n);const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(day,last));return ymd(x)};
+function parseDate(v){if(v==null||v==='')return null;if(typeof v=='number'){const d=new Date(Math.round((v-25569)*864e5));return ymd(d)}
+ v=String(v).trim();let m=v.match(/^(\d{4})[-./\s]*(\d{1,2})[-./\s]*(\d{1,2})/);if(m)return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+ m=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){const y=m[3].length==2?'20'+m[3]:m[3];return `${y}-${pad(m[1])}-${pad(m[2])}`}
+ if(/^\d{5}$/.test(v))return parseDate(+v);return null}
+const won=v=>{const n=String(v||'').replace(/[^\d]/g,'');return n?(+n).toLocaleString():''};
+const expDue=end=>end?addMonths(end,-6):null;
 const stg=k=>STAGES.find(s=>s[0]==k)||STAGES[0];
 const stTag=k=>{const s=stg(k);return `<span class="tag" style="background:${s[2]}22;color:${s[2]}">${s[1]}</span>`};
 const normPhone=p=>{let d=String(p||'').replace(/\D/g,'');if(d.length==10&&d.startsWith('10'))d='0'+d;if(d.length==9&&d.startsWith('2'))d='0'+d;if(d.startsWith('02')&&(d.length==9||d.length==10))return `02-${d.slice(2,d.length-4)}-${d.slice(-4)}`;if(d.length==11)return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7)}`;if(d.length==10)return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;return p?String(p).trim():null};
@@ -204,9 +211,11 @@ const noNext=c=>open(c)&&!c.next_task;
 const quiet=c=>{const t=c.last_contact_at||c.created_at;return dayDiff(TODAY(),dayOf(t))};
 const sleep=c=>open(c)&&quiet(c)>=7;
 const waitQ=c=>c.stage=='quote'&&quiet(c)>=2;
-const atRisk=c=>open(c)&&(late(c)||noNext(c)||sleep(c));
+const atRisk=c=>c.stage!='hold'&&late(c)||open(c)&&(noNext(c)||sleep(c));
 const pct=c=>Math.round(Object.keys(c.checklist||{}).length/ALLCK.length*100);
-const dueTxt=d=>{if(!d)return'';const n=dayDiff(d,TODAY());return n<0?`${-n}일 지남`:n==0?'오늘':n==1?'내일':md(d)};
+const dueTxt=d=>{if(!d)return'';const n=dayDiff(d,TODAY());return n<0?`${-n}일 지남`:n==0?'오늘':n==1?'내일':d.slice(0,4)!=TODAY().slice(0,4)?d:md(d)};
+function expTag(c){const e=(c.contract||{}).end_date;if(!e)return'-';const n=dayDiff(e,TODAY());const mo=Math.round(n/30.4);
+ const cls=n<0?'t-gray':n<=93?'t-red':n<=186?'t-amb':'t-navy';return `<span class="tag ${cls}">${n<0?'만기 지남':mo>=1?mo+'개월 남음':n+'일 남음'}</span> <span style="font-size:12px;color:var(--sub)">${e}</span>`}
 const lastTxt=c=>{const n=quiet(c);return n==0?'오늘':n+'일 전'};
 
 // ===== 로그인 게이트 =====
@@ -247,17 +256,17 @@ function line(c,right,sub){return `<div class="row1" onclick="openC('${c.id}')">
 const wd=['일','월','화','수','목','금','토'];
 
 R.dash=()=>{const cs=C.filter(match);
- const Lt=cs.filter(c=>open(c)&&late(c)),T=cs.filter(c=>open(c)&&isToday(c)),N=cs.filter(noNext),S=cs.filter(c=>sleep(c)&&!late(c)&&!noNext(c)),W=cs.filter(waitQ);
+ const Lt=cs.filter(c=>c.stage!='hold'&&late(c)),T=cs.filter(c=>c.stage!='hold'&&isToday(c)),N=cs.filter(noNext),S=cs.filter(c=>sleep(c)&&!late(c)&&!noNext(c)),W=cs.filter(waitQ);
  const tl=L.filter(l=>dayOf(l.created_at)==TODAY()&&l.kind=='log');const d=new Date();
  const monthNew=C.filter(c=>c.created_at&&c.created_at.slice(0,7)==TODAY().slice(0,7)).length;
  $('#main').innerHTML=`<div class="hd"><h1>오늘 · ${d.getMonth()+1}월 ${d.getDate()}일 (${wd[d.getDay()]})</h1><div class="grow"></div>${srchBox()}<button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
  <div class="grid k4">
   <div class="card kpi alert"><div class="l">⚠️ 놓칠 위험 고객</div><div class="v">${C.filter(atRisk).length}명</div><div class="d">기한 지남 · 다음 할 일 없음 · 7일 연락 없음</div></div>
-  <div class="card kpi"><div class="l">✅ 오늘 할 일</div><div class="v">${C.filter(c=>open(c)&&isToday(c)).length}건</div><div class="d">처리하면 상담일지로 남아요</div></div>
+  <div class="card kpi"><div class="l">✅ 오늘 할 일</div><div class="v">${C.filter(c=>c.stage!='hold'&&isToday(c)).length}건</div><div class="d">처리하면 상담일지로 남아요</div></div>
   <div class="card kpi"><div class="l">진행 중 고객</div><div class="v">${C.filter(open).length}명</div><div class="d">${STAGES.slice(0,6).map(s=>s[1].slice(0,2)+' '+C.filter(c=>c.stage==s[0]).length).join(' · ')}</div></div>
-  <div class="card kpi"><div class="l">이번 달 새 고객</div><div class="v">${monthNew}명</div><div class="d">전체 ${C.length}명</div></div>
+  <div class="card kpi"><div class="l">관리 중 고객</div><div class="v">${C.filter(c=>c.stage=='done').length}명</div><div class="d">이번 달 새 고객 ${monthNew}명 · 전체 ${C.length}명</div></div>
  </div>
- ${C.length?'':`<div class="card" style="margin-top:14px;text-align:center;padding:30px"><b style="font-size:16px">아직 고객이 없어요</b><p class="note" style="margin:8px 0 16px">문의가 오면 '빠른 등록', 기존 고객은 '엑셀 등록'으로 한 번에 올려 주세요.</p><button class="btn pri" onclick="newC()">＋ 빠른 등록</button> <button class="btn" onclick="go('import')">📥 엑셀 등록</button></div>`}
+ ${C.length?'':`<div class="card" style="margin-top:14px;text-align:center;padding:30px"><b style="font-size:16px">아직 고객이 없어요</b><p class="note" style="margin:8px 0 16px">새 문의는 '빠른 등록', 이미 출고한 고객은 '기존 고객 등록'(한 명씩) 또는 '엑셀 등록'(한 번에)으로 올려 주세요.</p><button class="btn pri" onclick="newC()">＋ 빠른 등록 (새 문의)</button> <button class="btn" onclick="oldC()">🚗 기존 고객 등록</button> <button class="btn" onclick="go('import')">📥 엑셀 등록</button></div>`}
  <div class="grid two" style="margin-top:14px">
   <div class="grid" style="gap:14px">
    <div class="card"><h3>🚨 놓치면 안 되는 고객 <span class="r">위에서부터 처리하세요</span></h3>
@@ -296,10 +305,10 @@ R.pipe=()=>{const cs=C.filter(match);$('#main').innerHTML=`<div class="hd"><h1>�
 
 let fSt='all';
 R.list=()=>{const rows=C.filter(match).filter(c=>fSt=='all'||(fSt=='risk'?atRisk(c):c.stage==fSt));
- $('#main').innerHTML=`<div class="hd"><h1>고객 목록</h1><div class="grow"></div>${srchBox()}<button class="btn" onclick="exportX()">⬇ 엑셀로 내려받기</button><button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
+ $('#main').innerHTML=`<div class="hd"><h1>고객 목록</h1><div class="grow"></div>${srchBox()}<button class="btn" onclick="exportX()">⬇ 엑셀로 내려받기</button><button class="btn" onclick="oldC()">🚗 기존 고객 등록</button><button class="btn pri" onclick="newC()">＋ 빠른 등록</button></div>
  <div class="filters"><span class="chip ${fSt=='all'?'on':''}" onclick="fSt='all';R.list()">전체 ${C.length}</span><span class="chip ${fSt=='risk'?'on':''}" style="${fSt=='risk'?'':'color:var(--red);border-color:#f6c4c6'}" onclick="fSt='risk';R.list()">⚠️ 놓칠 위험 ${C.filter(atRisk).length}</span>${STAGES.map(s=>`<span class="chip ${fSt==s[0]?'on':''}" onclick="fSt='${s[0]}';R.list()">${s[1]} ${C.filter(c=>c.stage==s[0]).length}</span>`).join('')}</div>
- <div style="overflow-x:auto"><table><tr><th>고객</th><th>단계</th><th>온도</th><th>차종</th><th>지역</th><th>마지막 연락</th><th>다음 할 일</th><th>기한</th><th>확인</th><th>유입</th></tr>
- ${rows.map(c=>`<tr class="cl" onclick="openC('${c.id}')"><td><b>${esc(c.name)}</b><br><span style="color:var(--sub);font-size:12px">${esc(c.cust_type||'')} · ${esc(c.phone||'-')}</span></td><td>${stTag(c.stage)}</td><td>${TEMP[c.temp]}</td><td>${esc(c.car||'-')}</td><td>${esc(c.region||'-')}</td><td>${lastTxt(c)}</td><td>${c.next_task?esc(c.next_task):(open(c)?'<span class="tag t-red">없음</span>':'-')}</td><td>${c.next_due?`<span class="tag ${late(c)?'t-red':isToday(c)?'t-teal':'t-gray'}">${dueTxt(c.next_due)}</span>`:''}</td><td><div class="prog"><div class="pb"><i style="width:${pct(c)}%"></i></div>${pct(c)}%</div></td><td>${esc(c.source||'-')}</td></tr>`).join('')}</table></div>
+ <div style="overflow-x:auto"><table><tr><th>고객</th><th>단계</th><th>온도</th><th>차종</th><th>지역</th><th>마지막 연락</th><th>다음 할 일</th><th>기한</th><th>만기</th><th>확인</th><th>유입</th></tr>
+ ${rows.map(c=>`<tr class="cl" onclick="openC('${c.id}')"><td><b>${esc(c.name)}</b><br><span style="color:var(--sub);font-size:12px">${esc(c.cust_type||'')} · ${esc(c.phone||'-')}</span></td><td>${stTag(c.stage)}</td><td>${TEMP[c.temp]}</td><td>${esc(c.car||'-')}</td><td>${esc(c.region||'-')}</td><td>${lastTxt(c)}</td><td>${c.next_task?esc(c.next_task):(open(c)?'<span class="tag t-red">없음</span>':'-')}</td><td>${c.next_due?`<span class="tag ${late(c)?'t-red':isToday(c)?'t-teal':'t-gray'}">${dueTxt(c.next_due)}</span>`:''}</td><td>${expTag(c)}</td><td><div class="prog"><div class="pb"><i style="width:${pct(c)}%"></i></div>${pct(c)}%</div></td><td>${esc(c.source||'-')}</td></tr>`).join('')}</table></div>
  ${rows.length?'':'<div class="empty" style="padding:20px">해당하는 고객이 없어요</div>'}`};
 
 R.tpl=()=>{$('#main').innerHTML=`<div class="hd"><h1>카톡 문구</h1></div><div class="note" style="margin:-8px 0 12px">누르면 복사돼요. 고객 상세의 '💬 문구'에서 쓰면 {이름}·{차종}이 자동으로 채워져요.</div>
@@ -307,27 +316,31 @@ R.tpl=()=>{$('#main').innerHTML=`<div class="hd"><h1>카톡 문구</h1></div><di
 function copyTpl(i,c){let p=TPL[i][1];if(c)p=p.replace(/\{이름\}/g,c.name).replace(/\{차종\}/g,c.car||'차량');navigator.clipboard.writeText(p).then(()=>toast('복사됐어요 — 카톡에 붙여넣으세요'),()=>toast('복사 실패'))}
 
 // ===== 엑셀 등록 =====
-const COLS=['이름','휴대폰','고객유형','지역','차종','이용방식','단계','유입경로','메모'];
+const COLS=['이름','휴대폰','고객유형','지역','차종','차량번호','이용방식','금융사','상품','계약일','출고일','계약기간','만기일','약정거리','월납입금','단계','유입경로','메모'];
 let PREV=null;
 R.import=()=>{$('#main').innerHTML=`<div class="hd"><h1>엑셀로 고객 한 번에 등록</h1></div>
  <div class="grid two"><div><div class="drop-zone" id="dz">📄<br><b>엑셀(xlsx)·CSV 파일을 끌어 놓거나 눌러서 고르세요</b><br><span style="font-size:12.5px">첫 줄은 칸 이름</span><input type="file" id="fx" accept=".xlsx,.xls,.csv" hidden></div>
  <div style="margin-top:10px"><button class="btn" onclick="tplDown()">⬇ 양식 받기</button></div><div id="pv"></div></div>
- <div class="card"><h3>양식 칸</h3><div style="font-size:13px;line-height:1.9">이름* · 휴대폰 · 고객유형(개인/개인사업자/법인) · 지역 · 차종 · 이용방식 · 단계 · 유입경로 · 메모</div>
- <div class="note">• 단계를 비우면 '신규 문의'. 이미 출고한 고객은 '출고·관리 중' 또는 '관리'라고 쓰면 돼요.<br>• 같은 휴대폰 번호가 이미 있으면 새로 만들지 않고 '이미 있음'으로 건너뛰어요.<br>• 메모는 상담일지 첫 기록으로 남아요.<br>• 계약 정보(금융사·만기일)는 다음 단계에서 칸을 추가할게요.</div></div></div>`;
+ <div class="card"><h3>양식 칸</h3><div style="font-size:13px;line-height:1.9">이름* · 휴대폰 · 고객유형(개인/개인사업자/법인) · 지역 · 차종 · 차량번호 · 이용방식 · 금융사 · 상품 · 계약일 · 출고일 · 계약기간(개월) · 만기일 · 약정거리(km) · 월납입금 · 단계 · 유입경로 · 메모</div>
+ <div class="note">• 단계를 비우면 '신규 문의'. 이미 출고한 고객은 '출고·관리 중' 또는 '관리'라고 쓰면 돼요.<br>• 같은 휴대폰 번호가 이미 있으면 새로 만들지 않고 '이미 있음'으로 건너뛰어요.<br>• 메모는 상담일지 첫 기록으로 남아요.<br>• 계약 칸(금융사·만기일 등)이 있고 단계를 비우면 '출고·관리 중'으로 들어가요.<br>• 만기일이 비어 있으면 출고일 + 계약기간으로 계산해요. 날짜는 2027-05-31 / 2027.05.31 / 20270531 / 엑셀 날짜 모두 돼요.<br>• 만기일이 있으면 '만기 6개월 전 연락'이 다음 할 일로 자동으로 잡혀요.</div></div></div>`;
  const dz=$('#dz'),fx=$('#fx');dz.onclick=()=>fx.click();fx.onchange=()=>fx.files[0]&&readFile(fx.files[0]);
  dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');e.dataTransfer.files[0]&&readFile(e.dataTransfer.files[0])}};
-function tplDown(){const csv='﻿'+COLS.join(',')+'\n홍길동,010-1234-5678,개인,경기 수원,기아 카니발 하이리무진,장기렌트,출고·관리 중,소개,2025년 출고 고객\n';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='슬림더카_고객등록_양식.csv';a.click()}
+function tplDown(){const csv='﻿'+COLS.join(',')+'\n홍길동,010-1234-5678,개인,경기 수원,기아 카니발 하이리무진,123가4567,장기렌트,A캐피탈,장기렌트 48개월,2025-03-02,2025-03-20,48,2029-03-19,20000,850000,출고·관리 중,소개,보증금 30%\n';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='슬림더카_고객등록_양식.csv';a.click()}
 function stageOf(v){v=String(v||'').trim();if(!v)return'new';const s=STAGES.find(s=>s[1]==v||s[0]==v||s[1].includes(v)||v.includes(s[1].slice(0,2)));if(/관리|출고 ?완료/.test(v))return'done';return s?s[0]:'new'}
 async function readFile(f){if(!window.XLSX){toast('엑셀 읽기 도구를 불러오는 중이에요. 잠시 후 다시 해 주세요');return}
  const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:'array',raw:true});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:'',raw:false});
  const have=new Set(C.map(c=>(c.phone||'').replace(/\D/g,'')).filter(Boolean));
- PREV=rows.map(r=>{const g=k=>String(r[k]??'').trim();const o={name:g('이름'),phone:normPhone(g('휴대폰')||g('휴대폰번호')||g('전화번호')),cust_type:TYPES.includes(g('고객유형'))?g('고객유형'):'개인',region:g('지역')||null,car:g('차종')||null,way:g('이용방식')||null,stage:stageOf(g('단계')),source:g('유입경로')||'기존 고객',_memo:g('메모')};
+ PREV=rows.map(r=>{const g=k=>String(r[k]??'').trim();const ct={plate:g('차량번호'),finance:g('금융사'),product:g('상품'),contract_date:parseDate(g('계약일')),delivery_date:parseDate(g('출고일')),term:g('계약기간').replace(/[^\d]/g,''),end_date:parseDate(g('만기일')),km:g('약정거리').replace(/[^\d]/g,''),monthly:g('월납입금').replace(/[^\d]/g,'')};
+  if(!ct.end_date&&ct.delivery_date&&ct.term)ct.end_date=addMonths(ct.delivery_date,+ct.term);Object.keys(ct).forEach(k=>{if(!ct[k])delete ct[k]});
+  const hasCt=Object.keys(ct).length>0;
+  const o={name:g('이름'),phone:normPhone(g('휴대폰')||g('휴대폰번호')||g('전화번호')),cust_type:TYPES.includes(g('고객유형'))?g('고객유형'):'개인',region:g('지역')||null,car:g('차종')||null,way:g('이용방식')||null,stage:g('단계')?stageOf(g('단계')):(hasCt?'done':'new'),source:g('유입경로')||'기존 고객',contract:ct,_memo:g('메모')};
   o._st=!o.name?'이름 없음':(o.phone&&have.has(o.phone.replace(/\D/g,''))?'이미 있음':'새로 등록');return o});
  const n=PREV.filter(o=>o._st=='새로 등록').length;
- $('#pv').innerHTML=`<div class="card" style="margin-top:12px"><h3>미리보기 <span class="r">새로 등록 ${n} · 건너뜀 ${PREV.length-n}</span></h3><div style="overflow:auto;max-height:360px"><table class="pv"><tr><th>상태</th><th>이름</th><th>휴대폰</th><th>유형</th><th>지역</th><th>차종</th><th>단계</th></tr>${PREV.map(o=>`<tr><td><span class="tag ${o._st=='새로 등록'?'t-teal':'t-gray'}">${o._st}</span></td><td>${esc(o.name)}</td><td>${esc(o.phone||'')}</td><td>${esc(o.cust_type)}</td><td>${esc(o.region||'')}</td><td>${esc(o.car||'')}</td><td>${stg(o.stage)[1]}</td></tr>`).join('')}</table></div>
+ $('#pv').innerHTML=`<div class="card" style="margin-top:12px"><h3>미리보기 <span class="r">새로 등록 ${n} · 건너뜀 ${PREV.length-n}</span></h3><div style="overflow:auto;max-height:360px"><table class="pv"><tr><th>상태</th><th>이름</th><th>휴대폰</th><th>유형</th><th>지역</th><th>차종</th><th>금융사</th><th>만기일</th><th>단계</th></tr>${PREV.map(o=>`<tr><td><span class="tag ${o._st=='새로 등록'?'t-teal':'t-gray'}">${o._st}</span></td><td>${esc(o.name)}</td><td>${esc(o.phone||'')}</td><td>${esc(o.cust_type)}</td><td>${esc(o.region||'')}</td><td>${esc(o.car||'')}</td><td>${esc(o.contract.finance||'')}</td><td>${esc(o.contract.end_date||'')}</td><td>${stg(o.stage)[1]}</td></tr>`).join('')}</table></div>
  <div style="margin-top:12px;text-align:right"><button class="btn pri" id="impBtn" ${n?'':'disabled'} onclick="doImport()">${n}명 등록하기</button></div></div>`}
 async function doImport(){const items=PREV.filter(o=>o._st=='새로 등록');$('#impBtn').disabled=true;$('#impBtn').textContent='등록 중…';
- try{const rows=items.map(({_st,_memo,...o})=>({...o,next_task:o.stage=='done'||o.stage=='hold'?null:'첫 연락하기',next_due:o.stage=='done'||o.stage=='hold'?null:TODAY(),next_how:'카톡'}));
+ try{const rows=items.map(({_st,_memo,...o})=>{const closed=o.stage=='done'||o.stage=='hold';const ed=o.contract.end_date;const due=ed?expDue(ed):null;
+   return {...o,checklist:o.stage=='done'?DONE_CK():{},memo:_memo||null,next_task:closed?(ed?'만기 6개월 전 연락 (인수·반납·재계약 안내)':null):'첫 연락하기',next_due:closed?(ed?(due<TODAY()?TODAY():due):null):TODAY(),next_how:'카톡'}});
   const made=await DB.addCustomers(rows);
   for(let i=0;i<made.length;i++){await DB.addLog({customer_id:made[i].id,kind:'auto',stage:made[i].stage,did:'엑셀로 등록'+(items[i]._memo?' · 메모: '+items[i]._memo:'')})}
   await reload();counts();toast(`${made.length}명 등록됐어요`);PREV=null;go('list')}catch(e){console.error(e);toast('등록 실패: '+(e.message||e));$('#impBtn').disabled=false;$('#impBtn').textContent='다시 시도'}}
@@ -369,6 +382,7 @@ function openC(id,focusNext){const c=C.find(x=>x.id==id);if(!c)return;cur=c;cons
    </div></div>
    <div class="grid" style="gap:14px">
     <div class="card"><h3>☑️ 확인 체크리스트 <span class="r">${pct(c)}%</span></h3><div class="ck2">${CK.map(([g,its])=>`<div class="g">${g}</div>`+its.map(k=>`<div class="it ${ck[k]?'ok':''} ${k==nextCk?'nextup':''}" onclick="toggleCk('${c.id}','${k}')"><div class="bx">${ck[k]?'✓':''}</div><span>${k}</span>${k==nextCk?'<span class="tag t-amb" style="margin-left:auto">다음 확인</span>':ck[k]?`<span class="dt">${md(ck[k])}</span>`:''}</div>`).join('')).join('')}</div><div class="note">눌러서 바로 체크·해제할 수도 있어요.</div></div>
+    ${ctCard(c)}
     <div class="card"><h3>🧾 고객 정보</h3><div class="kv">
      <div class="k">이름</div><input class="in" id="eName" value="${esc(c.name)}">
      <div class="k">휴대폰</div><input class="in" id="ePhone" value="${esc(c.phone||'')}">
@@ -427,6 +441,39 @@ async function createC(){const name=$('#nName').value.trim(),nx=$('#nNx').value.
  try{const c=await DB.addCustomer({name,phone,region:$('#nReg').value.trim()||null,car:$('#nCar').value.trim()||null,source:pickVal('#nSrc'),cust_type:pickVal('#nType'),way:way=='미정'?null:way,stage:'new',next_task:nx,next_due:addDays(+pickVal('#nDue')),next_how:'카톡',last_contact_at:new Date().toISOString()});
   await DB.addLog({customer_id:c.id,kind:'log',channel:'메모',stage:'new',memo:memo||null,did:'신규 등록',next_task:nx,next_due:addDays(+pickVal('#nDue')),next_how:'카톡'});
   await reload();counts();toast('등록됐어요');openC(c.id);R[view]()}catch(e){console.error(e);toast('등록 실패: '+(e.message||e));$('#nBtn').disabled=false}}
+const DONE_CK=()=>Object.fromEntries(ALLCK.filter(k=>k!='차이드 매니저 등록').map(k=>[k,TODAY()]));
+const CT_F=[['plate','차량번호','text','예: 123가4567'],['finance','금융사','text','예: A캐피탈'],['product','상품','text','예: 장기렌트 48개월'],['contract_date','계약일','date',''],['delivery_date','출고일','date',''],['term','계약기간(개월)','number','48'],['end_date','만기일','date',''],['km','약정거리(km/년)','number','20000'],['monthly','월 납입금(원)','number','']];
+function ctInputs(ct,pre){return `<div class="kv">${CT_F.map(([k,l,t,ph])=>`<div class="k">${l}</div><input class="in" id="${pre}${k}" type="${t}" value="${esc(ct[k]||'')}" placeholder="${ph}" ${k=='term'||k=='delivery_date'?`oninput="autoEnd('${pre}')"`:''}${k=='end_date'?` oninput="this.dataset.manual=1"`:''}>`).join('')}</div>`}
+function autoEnd(pre){const d=$('#'+pre+'delivery_date').value,t=+$('#'+pre+'term').value,e=$('#'+pre+'end_date');if(d&&t&&!e.dataset.manual)e.value=addMonths(d,t)}
+function readCt(pre){const o={};CT_F.forEach(([k])=>{const v=$('#'+pre+k).value.trim();if(v)o[k]=v});return o}
+function ctCard(c){const ct=c.contract||{};const has=Object.keys(ct).length;if(!has&&!['contract','ship','done'].includes(c.stage))return '';
+ return `<div class="card"><h3>📄 계약 정보 <span class="r">${ct.end_date?expTag(c):''}</span></h3>${ctInputs(ct,'ec_')}
+ ${ct.monthly?`<div class="note">월 ${won(ct.monthly)}원</div>`:''}<div style="display:flex;gap:8px;margin-top:10px;align-items:center"><div style="flex:1"></div><button class="btn sm pri" onclick="saveCt('${c.id}')">계약 정보 저장</button></div></div>`}
+async function saveCt(id){const c=C.find(x=>x.id==id);const ct=readCt('ec_');const old=(c.contract||{}).end_date;const p={contract:ct};
+ if(ct.end_date&&ct.end_date!=old&&confirm('만기 6개월 전 연락을 다음 할 일로 다시 잡을까요?')){const d=expDue(ct.end_date);p.next_task='만기 6개월 전 연락 (인수·반납·재계약 안내)';p.next_due=d<TODAY()?TODAY():d;p.next_how='카톡'}
+ try{const nc=await DB.upd(id,p);Object.assign(c,nc);toast('계약 정보 저장됐어요');openC(id);R[view]()}catch(e){toast('저장 실패: '+(e.message||e))}}
+function oldC(){$('#drawer').innerHTML=`<div class="dh"><div class="top"><h2>🚗 기존 고객 등록</h2><span class="x" onclick="closeC()">✕</span></div><div style="color:var(--sub);margin-top:4px;font-size:13px">이미 출고했거나 관리 중인 고객 — '출고·관리 중'으로 바로 들어가고, 만기 6개월 전에 연락할 일이 자동으로 잡혀요</div></div>
+ <div class="db"><div class="card" style="border:2px solid var(--green)">
+ <div class="two2"><div><div class="lbl" style="margin-top:0">이름 <span class="must">*</span></div><input class="in" id="oName" placeholder="예: 홍길동 / (주)OO상사"></div><div><div class="lbl" style="margin-top:0">휴대폰</div><input class="in" id="oPhone" inputmode="tel" placeholder="010-0000-0000"></div></div>
+ <div class="two2"><div><div class="lbl">📍 지역</div><input class="in" id="oReg" list="dlReg" placeholder="예: 경기 수원"></div><div><div class="lbl">🚗 차종 (직접 입력)</div><input class="in" id="oCar" list="dlCar" placeholder="예: 카니발 하이리무진 9인승 · 흰색"></div></div>
+ <div class="two2"><div><div class="lbl">고객 유형</div><div class="filters" style="margin:0" id="oType">${TYPES.map((t,i)=>`<span class="chip ${i==0?'on':''}" data-v="${t}" onclick="one(this)">${t}</span>`).join('')}</div></div><div><div class="lbl">이용 방식</div><div class="filters" style="margin:0" id="oWay">${WAYS.slice(0,4).map((t,i)=>`<span class="chip ${i==0?'on':''}" data-v="${t}" onclick="one(this)">${t}</span>`).join('')}</div></div></div>
+ <div class="lbl">📄 계약 정보 <span style="font-weight:500">(아는 것만 — 출고일과 계약기간을 넣으면 만기일이 자동 계산돼요)</span></div>${ctInputs({},'oc_')}
+ <div class="two2"><div><div class="lbl">단계</div><div class="filters" style="margin:0" id="oSt"><span class="chip on" data-v="done" onclick="one(this)">출고·관리 중</span><span class="chip" data-v="ship" onclick="one(this)">출고 대기</span><span class="chip" data-v="contract" onclick="one(this)">계약 완료</span></div></div>
+  <div><div class="lbl">유입경로</div><select class="in" id="oSrc">${SRC.map(t=>`<option ${t=='기존 고객'?'selected':''}>${t}</option>`).join('')}</select></div></div>
+ <div class="lbl">고정 메모</div><textarea id="oMemo" placeholder="계속 기억할 것 (예: 보증금 30%, 와이프 명의, 소개해 준 분)"></textarea>
+ <div class="lbl">➡️ 다음 연락 <span style="font-weight:500">(비우면 만기 6개월 전으로 자동)</span></div><input class="in" id="oNx" placeholder="예: 보험 갱신 전 연락 / 비워 두기"><input type="date" class="in" id="oNxD" style="width:auto;margin-top:6px">
+ <div style="margin-top:14px;text-align:right"><button class="btn pri" id="oBtn" onclick="createOld()">등록</button></div></div></div>`;
+ $('#drawer').classList.add('on');$('#ov').classList.add('on');setTimeout(()=>{const e=$('#oName');e&&e.focus()},300)}
+async function createOld(){const name=$('#oName').value.trim();if(!name)return toast('이름을 넣어 주세요');
+ const phone=normPhone($('#oPhone').value);if(phone&&C.some(c=>(c.phone||'').replace(/\D/g,'')==phone.replace(/\D/g,''))&&!confirm('같은 번호의 고객이 이미 있어요. 그래도 새로 등록할까요?'))return;
+ const ct=readCt('oc_');const stage=pickVal('#oSt')||'done';let nx=$('#oNx').value.trim(),due=$('#oNxD').value||null;
+ if(!nx&&ct.end_date){nx='만기 6개월 전 연락 (인수·반납·재계약 안내)';due=expDue(ct.end_date);if(due<TODAY())due=TODAY()}
+ if(nx&&!due)due=addDays(7);
+ $('#oBtn').disabled=true;
+ try{const c=await DB.addCustomer({name,phone,region:$('#oReg').value.trim()||null,car:$('#oCar').value.trim()||null,cust_type:pickVal('#oType'),way:pickVal('#oWay'),source:$('#oSrc').value,stage,temp:'warm',contract:ct,checklist:stage=='done'?DONE_CK():{},memo:$('#oMemo').value.trim()||null,next_task:nx||null,next_due:nx?due:null,next_how:nx?'카톡':null});
+  await DB.addLog({customer_id:c.id,kind:'auto',stage,did:'기존 고객으로 등록'+(ct.finance?' · '+ct.finance:'')+(ct.end_date?' · 만기 '+ct.end_date:'')});
+  await reload();counts();toast(nx?`등록됐어요 — ${dueTxt(due)} 할 일: ${nx}`:'등록됐어요');openC(c.id);R[view]()}catch(e){console.error(e);toast('등록 실패: '+(e.message||e));$('#oBtn').disabled=false}}
+
 $('#ov').onclick=closeC;
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeC()});
 
@@ -435,6 +482,7 @@ let DEMO_C=[],DEMO_L=[];
 function demoSeed(){const now=Date.now(),iso=n=>new Date(now-n*864e5).toISOString();
  DEMO_C=[{id:'a',name:'김민준(예시)',phone:'010-1111-2222',cust_type:'개인',region:'경기 수원',car:'기아 카니발 하이리무진',way:'장기렌트',source:'인스타 DM',stage:'talk',temp:'hot',checklist:{'차종':TODAY()},next_task:'기간·주행거리 물어보기',next_due:addDays(0),next_how:'카톡',last_contact_at:iso(1),created_at:iso(2),updated_at:iso(1),contract:{}},
   {id:'b',name:'(주)예시상사',phone:'010-3333-4444',cust_type:'법인',region:'서울 강남',car:'제네시스 G80',way:'장기렌트',source:'카톡 1:1',stage:'quote',temp:'warm',checklist:{'차종':addDays(-5),'이용 방식':addDays(-5),'비교 견적 발송':addDays(-3)},next_task:'견적 확인 연락',next_due:addDays(-1),next_how:'카톡',last_contact_at:iso(3),created_at:iso(6),updated_at:iso(3),contract:{}},
+  {id:'d',name:'박지훈(예시)',phone:'010-5555-6666',cust_type:'개인',region:'서울 송파',car:'현대 그랜저 하이브리드',way:'장기렌트',source:'기존 고객',stage:'done',temp:'warm',checklist:{},next_task:'만기 6개월 전 연락 (인수·반납·재계약 안내)',next_due:addMonths(TODAY(),5),next_how:'카톡',last_contact_at:iso(200),created_at:iso(1),updated_at:iso(1),contract:{plate:'12가3456',finance:'A캐피탈',product:'장기렌트 48개월',delivery_date:addMonths(TODAY(),-37),term:'48',end_date:addMonths(TODAY(),11),km:'20000',monthly:'790000'}},
   {id:'c',name:'이서연(예시)',phone:null,cust_type:'개인',region:null,car:null,way:null,source:'홈페이지 상담',stage:'new',temp:'warm',checklist:{},next_task:null,next_due:null,next_how:null,last_contact_at:iso(0),created_at:iso(0),updated_at:iso(0),contract:{}}];
  DEMO_L=[{id:1,customer_id:'a',kind:'log',channel:'전화',stage:'talk',said:'출퇴근용이고 와이프도 같이 타요',did:'운전자 범위 확인',memo:'- 카니발 9인승 하이리무진\n- 흰색\n- 12월 안 출고 희망',confirmed:['차종'],temp:'hot',next_task:'기간·주행거리 물어보기',next_due:addDays(0),next_how:'카톡',created_at:iso(1)},
   {id:2,customer_id:'b',kind:'log',channel:'카톡',stage:'quote',said:'',did:'비교 견적 3곳 발송',memo:null,confirmed:['비교 견적 발송'],temp:'warm',next_task:'견적 확인 연락',next_due:addDays(-1),next_how:'카톡',created_at:iso(3)},
