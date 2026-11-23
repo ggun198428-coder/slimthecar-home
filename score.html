@@ -497,7 +497,7 @@
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <div class="stage" id="stage"></div>
-  <div class="disclaimer" id="disclaimer">이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않으며, 서비스 개선을 위해 방문·진행 단계 등 익명 통계만 수집됩니다.</div>
+  <div class="disclaimer" id="disclaimer">점수는 슬림더카 계산 서버에서 계산합니다. 계산을 위해 답변 내용만 서버로 전송되며(이름·연락처 없음), 상담 신청 등을 직접 하지 않는 한 저장되지 않습니다. 서비스 개선을 위해 방문·진행 단계 등 익명 통계가 함께 수집됩니다.</div>
 
 <script>
 (function(){
@@ -858,11 +858,11 @@
     const disclaimerEl = document.getElementById('disclaimer');
     if (disclaimerEl){
       if (step.id === 'contact'){
-        disclaimerEl.textContent = '상담 신청 시 입력하신 이름·연락처 등은 상담 목적으로 Google LLC(미국) 등을 통해 전송·저장됩니다. 앞서 답변하신 진단 내용 자체는 별도로 저장되지 않으며, 서비스 개선을 위한 익명 통계만 함께 수집됩니다.';
+        disclaimerEl.textContent = '상담 신청 시 입력하신 이름·연락처와 앞서 답변하신 진단 내용·결과는 상담 목적으로 Google LLC(미국) 등을 통해 전송·저장됩니다. 서비스 개선을 위한 익명 통계도 함께 수집됩니다.';
       } else if (step.id === 'result'){
-        disclaimerEl.textContent = '이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않습니다. 공유 링크에는 답변 내용만 담기며 개인정보는 포함되지 않습니다.';
+        disclaimerEl.textContent = '점수는 슬림더카 계산 서버에서 계산합니다. 계산을 위해 답변 내용만 서버로 전송되며(이름·연락처 없음), 상담 신청 등을 직접 하지 않는 한 저장되지 않습니다. 공유 링크에는 답변 내용만 담기며 개인정보는 포함되지 않습니다.';
       } else {
-        disclaimerEl.textContent = '이 페이지의 모든 계산은 브라우저 안에서만 이루어집니다. 답변하신 내용 자체는 저장되거나 외부로 전송되지 않으며, 서비스 개선을 위해 방문·진행 단계 등 익명 통계만 수집됩니다.';
+        disclaimerEl.textContent = '점수는 슬림더카 계산 서버에서 계산합니다. 계산을 위해 답변 내용만 서버로 전송되며(이름·연락처 없음), 상담 신청 등을 직접 하지 않는 한 저장되지 않습니다. 서비스 개선을 위해 방문·진행 단계 등 익명 통계가 함께 수집됩니다.';
       }
     }
 
