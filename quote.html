@@ -840,11 +840,11 @@ body{background:#fff; color:var(--text);}
   function won(n){ return Math.round(n).toLocaleString('ko-KR'); }
   function man(n){ return Math.round(n / 10000).toLocaleString('ko-KR') + '만원'; }
   var PER = [36, 48, 60], MIL = [['10000', '1만km'], ['15000', '1.5만km'], ['20000', '2만km'], ['30000', '3만km']], PCT = [0, 0.1, 0.2, 0.3];
-  var st = { brand: '현대', veh: null, per: 1, mil: '20000', dep: 0, pre: 0 };
-  try { var s = JSON.parse(localStorage.getItem('chaide-quote-state') || 'null'); if (s) for (var k in s) st[k] = s[k]; } catch (e) {}
+  var st = { brand: '현대', veh: null, per: 2, mil: '10000', dep: 0, pre: 0 };   /* 처음 조건: 60개월 · 연 1만km (홈 배너·이달의 견적과 같은 조건, 2026-11-23 대표 결정) */
+  try { var s = JSON.parse(localStorage.getItem('chaide-quote-state-v2') || 'null'); if (s) for (var k in s) st[k] = s[k]; } catch (e) {}
   var DATA = null, cache = {}, pending = {};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function save(){ try { localStorage.setItem('chaide-quote-state', JSON.stringify(st)); } catch (e) {} }
+  function save(){ try { localStorage.setItem('chaide-quote-state-v2', JSON.stringify(st)); } catch (e) {} }
   function showToast(m){ toast.textContent = m; toast.classList.add('on'); clearTimeout(showToast.t); showToast.t = setTimeout(function(){ toast.classList.remove('on'); }, 2600); }
   function milLabel(){ for (var i = 0; i < MIL.length; i++) if (MIL[i][0] === st.mil) return MIL[i][1]; return ''; }
   function veh(){ for (var i = 0; i < DATA.vehicles.length; i++) if (DATA.vehicles[i].id === st.veh) return DATA.vehicles[i]; return DATA.vehicles[0]; }
@@ -999,7 +999,7 @@ body{background:#fff; color:var(--text);}
     DATA = { meta: d.meta || { built: d.built }, vehicles: d.vehicles };
     if (!DATA.vehicles.some(function(v){ return v.id === st.veh; })) st.veh = DATA.vehicles[0].id;
     st.brand = veh().brand;
-    if (PER[st.per] === undefined) st.per = 1; if (!MIL.some(function(m){ return m[0] === st.mil; })) st.mil = '20000';
+    if (PER[st.per] === undefined) st.per = 2; if (!MIL.some(function(m){ return m[0] === st.mil; })) st.mil = '10000';
     if (PCT.indexOf(st.dep) < 0) st.dep = 0; if (PCT.indexOf(st.pre) < 0) st.pre = 0; if (st.dep + st.pre > 0.5){ st.dep = 0; st.pre = 0; }
     render();
   }
