@@ -1300,7 +1300,7 @@ body{background:#fff; color:var(--text);}
 .ph-isl{position:absolute; z-index:6; left:50%; top:calc(var(--phw) * .031); width:calc(var(--phw) * .278); height:calc(var(--phw) * .081); margin-left:calc(var(--phw) * -.139); border-radius:100px; background:#000;}
 .ph-home{position:absolute; z-index:6; left:50%; bottom:calc(var(--phw) * .02); width:calc(var(--phw) * .3); height:max(2.5px, calc(var(--phw) * .012)); margin-left:calc(var(--phw) * -.15); border-radius:100px; background:#111;}
 .ph-body{position:relative; flex:1 1 auto; min-height:0; overflow:hidden; display:flex; flex-direction:column;}
-.ph-note{margin:10px 40px 0 0; text-align:right; font-size:11.5px; color:var(--text-dimmer);}
+.ph-note{display:flex; justify-content:center; width:calc(var(--phw) * 1.06); margin:10px 40px 0 auto; white-space:nowrap; font-size:11.5px; color:var(--text-dimmer);}   /* 휴대폰 바로 아래 가운데 */
 /* 화면이 천천히 내려가며 보이는 그림(매니저·오!기세?): 위쪽 메뉴 줄은 실제 페이지처럼 제자리에 있고 본문만 움직인다 */
 .ph-hd{flex:0 0 auto; display:block; width:100%; height:auto; position:relative; z-index:2; box-shadow:0 1px 0 rgba(11,22,55,.08);}
 .ph-pan{position:relative; flex:1 1 auto; min-height:0; overflow:hidden; --vis:calc(var(--phw) * 1.741);}
@@ -1349,7 +1349,7 @@ body{background:#fff; color:var(--text);}
 @media (max-width:980px){
   .lb-v-ph{--phw:214px; width:100%;}
   .ph-box{justify-content:center; padding:0;}
-  .ph-note{margin:10px 0 0; text-align:center;}
+  .ph-note{margin:10px auto 0;}
   .ph-pop{right:auto; left:calc(50% - var(--phw) / 2 - 200px); top:auto; bottom:24%;} .ph-pop.hi{top:auto; bottom:24%;}
 }
 @media (max-width:640px){
