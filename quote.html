@@ -651,6 +651,13 @@
 .qp-var .vn small{display:block; margin-top:2px; font-weight:500; font-size:12px; color:var(--text-dim);}
 .qp-var .vp{flex:0 0 auto; font-size:13.5px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
 .qp-var[aria-pressed="true"]{border-color:var(--accent); background:rgba(18,183,179,.13); box-shadow:0 0 0 1px var(--accent) inset;}
+.qp-trims{display:grid; grid-template-columns:1fr 1fr; gap:7px;}
+.qp-trim{font:inherit; color:var(--text); text-align:left; background:var(--panel); border:1.5px solid var(--line); border-radius:12px; padding:9px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; cursor:pointer; transition:border-color .2s, background .2s;}
+.qp-trim:hover{border-color:var(--line-hi);}
+.qp-trim .tn{min-width:0; font-weight:600; font-size:13.5px; letter-spacing:-.01em; line-height:1.35; word-break:keep-all;}
+.qp-trim .tp{flex:0 0 auto; font-size:13px; font-weight:600; color:var(--text-dim); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.qp-trim[aria-pressed="true"]{border-color:var(--accent); background:rgba(18,183,179,.13); box-shadow:0 0 0 1px var(--accent) inset;} .qp-trim[aria-pressed="true"] .tp{color:var(--text);}
+.qp-opt{margin:10px 0 0; font-size:12.5px; color:var(--text-dim);}
 .qp-car[aria-pressed="true"]{border-color:var(--accent); background:rgba(18,183,179,.13); box-shadow:0 0 0 1px var(--accent) inset;}
 .qp-cond{display:grid; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;}
 .qp-row{display:flex; align-items:center; gap:12px; min-width:0;}
@@ -660,7 +667,7 @@
 .qp-chip:hover{border-color:var(--accent-3);} .qp-chip:active{transform:scale(.95);}
 .qp-chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
 .qp-chip[disabled]{opacity:.32; cursor:not-allowed;}
-.qp-tab:focus-visible,.qp-car:focus-visible,.qp-var:focus-visible,.qp-chip:focus-visible,.qp-pd:focus-visible,.qp-btn:focus-visible{outline:2px solid var(--accent-3); outline-offset:2px;}
+.qp-tab:focus-visible,.qp-car:focus-visible,.qp-var:focus-visible,.qp-trim:focus-visible,.qp-chip:focus-visible,.qp-pd:focus-visible,.qp-btn:focus-visible{outline:2px solid var(--accent-3); outline-offset:2px;}
 
 .qp-right{position:sticky; top:86px;}
 .qp-result{background:linear-gradient(180deg,#111C30,#0B1220); border:1px solid var(--line-hi); border-radius:var(--radius-lg); padding:24px 24px 22px; box-shadow:0 40px 80px -44px rgba(0,0,0,.9);}
@@ -708,7 +715,7 @@
 @keyframes qpIn{from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:none}}
 @media (prefers-reduced-motion:no-preference){ .qp-hero .wrap > *{animation:qpIn .8s var(--ease) both;} .qp-hero .wrap > *:nth-child(2){animation-delay:.08s} .qp-hero .wrap > *:nth-child(3){animation-delay:.16s} .qp-hero .wrap > *:nth-child(4){animation-delay:.24s} .qp-grid{animation:qpIn .8s var(--ease) .25s both;} }
 @media (max-width:980px){ .qp-grid{grid-template-columns:1fr;} .qp-right{position:static;} }
-@media (max-width:640px){ .qp-cars{grid-template-columns:1fr 1fr;} .qp-vars{grid-template-columns:1fr;} .qp-tab{padding:7px 14px; font-size:14px;} }
+@media (max-width:640px){ .qp-cars{grid-template-columns:1fr 1fr;} .qp-vars{grid-template-columns:1fr;} .qp-trims{grid-template-columns:1fr;} .qp-tab{padding:7px 14px; font-size:14px;} }
 @media (max-width:640px){
   .qp-cond{padding:14px;} .qp-row{gap:8px;} .qp-row .lab{flex:0 0 48px; font-size:12.5px;} .qp-chips{gap:4px; flex-wrap:nowrap;} .qp-chip{padding:7px 9px; font-size:12.5px;}
   .qp-result{padding:20px 18px;}
@@ -776,7 +783,7 @@ body{background:#fff; color:var(--text);}
   <div class="wrap">
     <p class="eyebrow">차이드 견적기</p>
     <h1 class="qp-h1">차종 별 월 렌트료<br><span class="grad">지금 바로 확인하세요</span></h1>
-    <p class="lead">차종과 조건만 고르면 월 렌트료 예상 견적이 나옵니다. 기본 차량가 기준으로 옵션에 따른 확정 견적은 카카오톡으로 문의 주시면 확정 견적을 보내드립니다.</p>
+    <p class="lead">차종과 등급, 조건만 고르면 월 렌트료 예상 견적이 나옵니다. 옵션과 색상에 따른 확정 견적은 카카오톡으로 문의 주시면 보내드립니다.</p>
     <span class="qp-tag" id="basisTag">2026.11 조건 기준</span>
   </div>
 </section>
@@ -786,7 +793,7 @@ body{background:#fff; color:var(--text);}
     <div id="app" class="qp-loading">견적 데이터를 불러오는 중…</div>
     <div class="qp-notes">
       <p><b>이 견적은</b> 2026년 11월 견적프로그램 조건으로 계산한 참고 견적입니다. 신차 특판 출고 · 서울/경기/인천 탁송 · 만 26세 이상 · 대물 1억 · 자차 면책금 30만원 · 자가정비 · 만기 선택형 기준이며, 조건에 따라 금액은 변동 될 수 있습니다.</p>
-      <p><b>차량가는</b> 최신 연식의 가장 기본 등급 가격입니다(2026년 11월 조회). 등급을 올리거나 옵션과 색상을 더하면 월 렌트료가 달라집니다. 전기차는 국비 보조금을 반영한 금액입니다.</p>
+      <p><b>차량가는</b> 최신 연식의 등급별 기본 가격입니다(옵션 제외, 2026년 11월 조회). 옵션과 색상을 더하면 월 렌트료가 달라집니다. 전기차는 국비 보조금을 반영한 금액이며, 휠 크기 등 사양에 따라 보조금이 달라질 수 있습니다.</p>
       <p>실제 월 렌트료는 심사 결과와 출고 시점의 조건에 따라 달라질 수 있습니다. 슬림더카는 여러 금융사 조건을 비교해 가장 유리한 조건으로 안내합니다.</p>
     </div>
   </div>
@@ -849,7 +856,8 @@ body{background:#fff; color:var(--text);}
   function milLabel(){ for (var i = 0; i < MIL.length; i++) if (MIL[i][0] === st.mil) return MIL[i][1]; return ''; }
   function veh(){ for (var i = 0; i < DATA.vehicles.length; i++) if (DATA.vehicles[i].id === st.veh) return DATA.vehicles[i]; return DATA.vehicles[0]; }
   function vname(v){ return v.variant || v.trim || ''; }
-  function vgrade(v){ return ((v.year || '') + ' ' + (v.trim && v.trim !== v.variant ? v.trim + ' ' : '') + '기본 등급').replace(/^ /, ''); }
+  function vgrade(v){ return ((v.year || '') + (v.trim && v.trim !== v.variant ? ' ' + v.trim : '')).replace(/^ /, ''); }   /* 예: 27년형 프레스티지 5인승 */
+  function gkey(v){ return v.brand + '|' + v.model + '|' + (v.variant || ''); }   /* 같은 세부 모델(등급만 다른 것)끼리의 묶음 */
   function ckey(v){ return v.id + '|' + st.mil + '|' + st.dep + '|' + st.pre; }
   function rpc(fn, body, auth){
     var h = { 'Content-Type': 'application/json', 'apikey': QKEY }; if (auth) h.Authorization = 'Bearer ' + QKEY;
@@ -883,7 +891,10 @@ body{background:#fff; color:var(--text);}
     var inBrand = DATA.vehicles.filter(function(x){ return x.brand === st.brand; });
     var models = [], mIdx = {};   /* 차종별로 묶는다: 이름, 분류, 가장 낮은 차량가, 세부 모델 수 */
     inBrand.forEach(function(x){ var m = mIdx[x.model]; if (!m){ m = mIdx[x.model] = { name: x.model, cat: x.cat || '', min: x.price, n: 0 }; models.push(m); } m.n++; if (x.price < m.min) m.min = x.price; });
-    var vars = inBrand.filter(function(x){ return x.model === v.model; });
+    var rowsM = inBrand.filter(function(x){ return x.model === v.model; });
+    var vars = [], vIdx = {};   /* 세부 모델별로 묶는다: 이름, 연식, 가장 낮은 등급, 등급 수 */
+    rowsM.forEach(function(x){ var k = x.variant || '', o = vIdx[k]; if (!o){ o = vIdx[k] = { name: k, year: x.year || '', min: x, n: 0 }; vars.push(o); } o.n++; if (x.price < o.min.price) o.min = x; });
+    var trims = rowsM.filter(function(x){ return (x.variant || '') === (v.variant || ''); });
     var h = '<div class="qp-sec"><p class="qp-eb"><b>1</b>차종 선택</p><div class="qp-tabs" role="tablist">' + brands.map(function(x){ return '<button type="button" class="qp-tab" role="tab" aria-selected="' + (x === st.brand) + '" data-brand="' + x + '">' + x + '</button>'; }).join('') + '</div>';
     var lastCat = null, ch = '';
     models.forEach(function(m){
@@ -891,11 +902,12 @@ body{background:#fff; color:var(--text);}
       ch += '<button type="button" class="qp-car" aria-pressed="' + (m.name === v.model) + '" data-model="' + m.name + '"><span class="m">' + m.name + '</span><span class="p">' + man(m.min) + (m.n > 1 ? '부터' : '') + '</span></button>';
     });
     h += ch + '</div></div>';
-    h += '<div class="qp-sec" id="qpVars"><p class="qp-eb"><b>2</b>세부 모델 선택 <span class="qp-eb-s">' + v.model + '</span></p><div class="qp-vars">' + vars.map(function(x){
-      var sub = (x.year || '') + (x.trim && x.trim !== x.variant ? ' ' + x.trim : '');
-      return '<button type="button" class="qp-var" aria-pressed="' + (x.id === v.id) + '" data-veh="' + x.id + '"><span class="vn">' + (x.variant || x.trim) + '<small>' + sub + ' · 기본 등급</small></span><span class="vp">' + man(x.price) + '</span></button>'; }).join('') + '</div></div>';
+    h += '<div class="qp-sec" id="qpVars"><p class="qp-eb"><b>2</b>세부 모델 선택 <span class="qp-eb-s">' + v.model + '</span></p><div class="qp-vars">' + vars.map(function(o){
+      return '<button type="button" class="qp-var" aria-pressed="' + (o.name === (v.variant || '')) + '" data-veh="' + o.min.id + '"><span class="vn">' + (o.name || o.min.trim) + '<small>' + o.year + ' · 등급 ' + o.n + '개</small></span><span class="vp">' + man(o.min.price) + (o.n > 1 ? '부터' : '') + '</span></button>'; }).join('') + '</div></div>';
+    h += '<div class="qp-sec" id="qpTrims"><p class="qp-eb"><b>3</b>등급 선택 <span class="qp-eb-s">' + (v.variant || v.model) + '</span></p><div class="qp-trims">' + trims.map(function(x){
+      return '<button type="button" class="qp-trim" aria-pressed="' + (x.id === v.id) + '" data-veh="' + x.id + '"><span class="tn">' + x.trim + '</span><span class="tp">' + man(x.price) + '</span></button>'; }).join('') + '</div><p class="qp-opt">옵션·색상은 카카오톡으로 알려주시면 확정 견적에 반영합니다.</p></div>';
     function chips(key, items, cur, dis){ return items.map(function(it){ return '<button type="button" class="qp-chip" aria-pressed="' + (String(it[0]) === String(cur)) + '" data-' + key + '="' + it[0] + '"' + (dis && dis(it[0]) ? ' disabled' : '') + '>' + it[1] + '</button>'; }).join(''); }
-    h += '<div class="qp-sec"><p class="qp-eb"><b>3</b>조건 선택</p><div class="qp-cond">'
+    h += '<div class="qp-sec"><p class="qp-eb"><b>4</b>조건 선택</p><div class="qp-cond">'
       + '<div class="qp-row"><span class="lab">계약기간</span><div class="qp-chips">' + chips('per', PER.map(function(p, i){ return [i, p + '개월']; }), st.per) + '</div></div>'
       + '<div class="qp-row"><span class="lab">연 주행</span><div class="qp-chips">' + chips('mil', MIL, st.mil) + '</div></div>'
       + '<div class="qp-row"><span class="lab">보증금</span><div class="qp-chips">' + chips('dep', PCT.map(function(p){ return [p, Math.round(p * 100) + '%']; }), st.dep, function(p){ return p + st.pre > 0.5; }) + '</div></div>'
@@ -914,10 +926,10 @@ body{background:#fff; color:var(--text);}
   function drawResult(v, q){
     var loading = !q, err = q && q.err;
     if (err && (q.err === 'net' || q.err === 'rate_limited' || q.err === 'error')) delete cache[ckey(v)];   /* 다음에 다시 누르면 새로 물어본다 */
-    var headH = '<h2>' + v.model + ' <span>' + vname(v) + '</span></h2><p class="sub">' + vgrade(v) + ' · 기본 차량가 ' + won(v.price) + '원' + (v.subsidy ? ' · 전기차 보조금 −' + won(v.subsidy) + '원' : '') + '</p>';
+    var headH = '<div class="qp-head"><h2>' + v.model + ' <span>' + vname(v) + '</span></h2><p class="sub">' + vgrade(v) + ' · 차량가 ' + won(v.price) + '원' + (v.subsidy ? ' · 전기차 보조금 −' + won(v.subsidy) + '원' : '') + '</p></div>';
     function cta(ok){ return '<div class="qp-cta"><a class="qp-btn k" href="' + KAKAO + '" target="_blank" rel="noopener" data-kakao="result">' + KICON + '이 조건으로 카톡 확정 견적 받기</a>' + (ok ? '<button type="button" class="qp-btn o" id="copyBtn">견적 요약 복사</button>' : '') + '</div>'; }
     if (loading){
-      if (shownVeh === v.id){ elRes.classList.add('qp-busy'); return; }   /* 같은 차의 조건만 바뀜: 금액이 올 때까지 지금 숫자를 그대로 둔다 */
+      if (shownVeh === gkey(v)){ elRes.classList.add('qp-busy'); var hd = elRes.querySelector('.qp-head'); if (hd) hd.outerHTML = headH; return; }   /* 같은 세부 모델의 등급·조건만 바뀜: 금액이 올 때까지 지금 숫자를 그대로 둔다 */
       prev = {}; shownVeh = null; elRes.className = 'qp-result loading';
       elRes.innerHTML = headH + '<div class="qp-big"><span class="v qp-wait">· · ·</span><span class="u">원 / 월</span><span class="k">금액을 불러오는 중입니다</span></div>' + cta(false);
       setStick(v, null); return;
@@ -930,7 +942,7 @@ body{background:#fff; color:var(--text);}
         : (st.dep + st.pre > 0.5) ? '보증금과 선납금의 합계는 최대 50%까지 선택할 수 있습니다.' : '이 조합은 카카오톡으로 문의해 주세요.') + '</div>' + cta(false);
       setStick(v, null); return;
     }
-    if (shownVeh !== v.id) prev = {};   /* 차가 바뀌면 숫자를 처음부터 보여 준다 */
+    if (shownVeh !== gkey(v)) prev = {};   /* 세부 모델이 바뀌면 숫자를 처음부터 보여 준다 */
     var depAmt = Math.round(v.price * st.dep), preAmt = Math.round(v.price * st.pre);
     if (prev.after == null && prev.rent != null) prev.after = prev.rent;   /* 선납을 처음 고르면 월 렌트료에서 내려오는 것처럼 */
     var h = headH + '<div class="qp-big">' + tn('rent', b[0], '', 'v') + '<span class="u">원 / 월</span><span class="k">월 렌트료 · ' + PER[st.per] + '개월 · 연 ' + milLabel() + ' · 보증금 ' + Math.round(st.dep * 100) + '% · 부가세 포함</span></div>';
@@ -944,7 +956,7 @@ body{background:#fff; color:var(--text);}
     elRes.className = 'qp-result'; elRes.innerHTML = h;
     var next = { dep: st.dep ? depAmt : 0, pre: st.pre ? preAmt : 0, pre2: st.pre ? preAmt : 0 };
     Array.prototype.forEach.call(elRes.querySelectorAll('[data-tw]'), function(n){ var k = n.getAttribute('data-tw'), to = +n.getAttribute('data-val'); tween(n, prev[k], to, n.getAttribute('data-suf')); next[k] = to; });
-    prev = next; shownVeh = v.id; setStick(v, b[0]);
+    prev = next; shownVeh = gkey(v); setStick(v, b[0]);
   }
   function render(){
     var v = veh(); st.veh = v.id;
@@ -962,16 +974,16 @@ body{background:#fff; color:var(--text);}
     save();
   }
   function summary(){
-    var v = veh(), q = cache[ckey(v)]; if (!q || q.err || !q.base || !q.cell) return '[슬림더카 견적 문의] ' + v.model + ' ' + vname(v) + ' (' + vgrade(v) + ') / ' + PER[st.per] + '개월 · 연 ' + milLabel() + ' · 보증금 ' + Math.round(st.dep * 100) + '% · 선납금 ' + Math.round(st.pre * 100) + '% / 이 조건으로 확정 견적 부탁드립니다.';
+    var v = veh(), q = cache[ckey(v)]; if (!q || q.err || !q.base || !q.cell) return '[슬림더카 견적 문의] ' + v.model + ' ' + vname(v) + ' (' + vgrade(v) + ') / ' + PER[st.per] + '개월 · 연 ' + milLabel() + ' · 보증금 ' + Math.round(st.dep * 100) + '% · 선납금 ' + Math.round(st.pre * 100) + '% / 이 조건으로 확정 견적 부탁드립니다. (희망 옵션·색상: )';
     var b = q.base[st.per], r = q.cell[st.per]; if (!b || !r) return '';
     var preAmt = Math.round(v.price * st.pre);
     return ['[슬림더카 예상 견적] ' + v.model + ' ' + vname(v) + ' (' + vgrade(v) + ')',
-      '기본 차량가 ' + won(v.price) + '원' + (v.subsidy ? ' (보조금 ' + won(v.subsidy) + '원 반영)' : ''),
+      '차량가 ' + won(v.price) + '원 (옵션 제외)' + (v.subsidy ? ' · 보조금 ' + won(v.subsidy) + '원 반영' : ''),
       PER[st.per] + '개월 · 연 ' + milLabel() + ' · 보증금 ' + Math.round(st.dep * 100) + '% · 선납금 ' + Math.round(st.pre * 100) + '%',
       '월 렌트료 ' + won(b[0]) + '원 (부가세 포함)' + (st.pre && r[1] != null ? ' · 선납금 ' + won(preAmt) + '원 차감 후 실제 월 납입액 ' + won(r[1]) + '원' : ''),
       '만기 잔가 ' + won(r[3]) + '원 (' + Math.round(r[2] * 100) + '%)',
       String(DATA.meta.built || '').slice(0, 7) + ' 조건 기준 · 참고 견적 · 조건에 따라 금액 변동',
-      '이 조건으로 확정 견적 부탁드립니다.'].join('\n');
+      '이 조건으로 확정 견적 부탁드립니다. (희망 옵션·색상: )'].join('\n');
   }
   function copy(s, msg){
     if (!s) return;
@@ -979,7 +991,8 @@ body{background:#fff; color:var(--text);}
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s).then(done).catch(function(){ fallback(s, msg); }); else fallback(s, msg);
   }
   function fallback(s, msg){ var ta = document.createElement('textarea'); ta.value = s; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); showToast(msg); } catch (e) { showToast('복사가 막혀 있어요. 글자를 길게 눌러 복사해 주세요'); } document.body.removeChild(ta); }
-  function scrollVars(){ var el = document.getElementById('qpVars'); if (!el || window.innerWidth >= 980) return; var y = el.getBoundingClientRect().top + window.pageYOffset - 76; window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); }
+  function scrollVars(){ scrollTo('qpVars'); }
+  function scrollTo(id){ var el = document.getElementById(id); if (!el || window.innerWidth >= 980) return; var y = el.getBoundingClientRect().top + window.pageYOffset - 76; window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' }); }
   document.addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('button,a') : null; if (!b || !DATA) return;
     var d = b.dataset || {};
@@ -987,7 +1000,7 @@ body{background:#fff; color:var(--text);}
     if (!app.contains(b) || b.disabled) return;
     if (d.brand){ st.brand = d.brand; if (veh().brand !== st.brand){ st.veh = DATA.vehicles.filter(function(x){ return x.brand === st.brand; })[0].id; } render(); return; }
     if (d.model){ var first = DATA.vehicles.filter(function(x){ return x.brand === st.brand && x.model === d.model; })[0]; if (first){ st.veh = first.id; render(); scrollVars(); } return; }
-    if (d.veh){ st.veh = d.veh; render(); return; }
+    if (d.veh){ var wasVar = b.classList.contains('qp-var'); st.veh = d.veh; render(); if (wasVar) scrollTo('qpTrims'); return; }
     if (d.per !== undefined){ st.per = +d.per; render(); return; }
     if (d.mil){ st.mil = d.mil; render(); return; }
     if (d.dep !== undefined){ st.dep = +d.dep; render(); return; }
