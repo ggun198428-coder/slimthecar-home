@@ -725,6 +725,7 @@
   .qp-stick a{flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; background:#FEE500; color:#191919; font-weight:800; font-size:14.5px; padding:14px 18px; border-radius:100px;}
   .qp-stick a svg{width:18px; height:18px;}
   body{padding-bottom:78px;} .qp-toast{bottom:96px;}
+  .qp-toast.at{bottom:auto; left:16px; right:16px; max-width:none; transform:translateY(10px);} .qp-toast.at.on{transform:translateY(0);}   /* 휴대폰: 누른 버튼 바로 위에 알림을 띄운다(버튼을 가리지 않게). 위치는 스크립트가 정한다 */
 }
 
 /* ===== 밝은 버전 공통 (2026-11): 색·위쪽 메뉴·아래쪽·버튼 ===== */
@@ -852,7 +853,12 @@ body{background:#fff; color:var(--text);}
   var DATA = null, cache = {}, pending = {};
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function save(){ try { localStorage.setItem('chaide-quote-state-v2', JSON.stringify(st)); } catch (e) {} }
-  function showToast(m){ toast.textContent = m; toast.classList.add('on'); clearTimeout(showToast.t); showToast.t = setTimeout(function(){ toast.classList.remove('on'); }, 2600); }
+  var toastAt = null;   // 휴대폰에서 알림을 띄울 기준 버튼(누른 버튼 바로 위에 띄운다)
+  function showToast(m){ toast.textContent = m;
+    var a = toastAt; toastAt = null;
+    if (a && a.getBoundingClientRect && window.innerWidth <= 640){ toast.classList.add('at'); var r = a.getBoundingClientRect(), y = r.top - toast.offsetHeight - 10; if (y < 72) y = r.bottom + 10; toast.style.top = Math.round(y) + 'px'; }
+    else { toast.classList.remove('at'); toast.style.top = ''; }
+    toast.classList.add('on'); clearTimeout(showToast.t); showToast.t = setTimeout(function(){ toast.classList.remove('on'); }, 2600); }
   function milLabel(){ for (var i = 0; i < MIL.length; i++) if (MIL[i][0] === st.mil) return MIL[i][1]; return ''; }
   function veh(){ for (var i = 0; i < DATA.vehicles.length; i++) if (DATA.vehicles[i].id === st.veh) return DATA.vehicles[i]; return DATA.vehicles[0]; }
   function vname(v){ return v.variant || v.trim || ''; }
@@ -996,7 +1002,7 @@ body{background:#fff; color:var(--text);}
   document.addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('button,a') : null; if (!b || !DATA) return;
     var d = b.dataset || {};
-    if (d.kakao){ copy(summary(), '견적 요약을 복사했어요. 카톡 창에 붙여넣기만 하세요'); try { gtag('event', 'kakao_click', { place: 'quote_' + d.kakao, topic: veh().model }); } catch (err) {} return; }
+    if (d.kakao){ toastAt = b; copy(summary(), '견적 요약을 복사했어요. 카톡 창에 붙여넣기만 하세요'); try { gtag('event', 'kakao_click', { place: 'quote_' + d.kakao, topic: veh().model }); } catch (err) {} return; }
     if (!app.contains(b) || b.disabled) return;
     if (d.brand){ st.brand = d.brand; if (veh().brand !== st.brand){ st.veh = DATA.vehicles.filter(function(x){ return x.brand === st.brand; })[0].id; } render(); return; }
     if (d.model){ var first = DATA.vehicles.filter(function(x){ return x.brand === st.brand && x.model === d.model; })[0]; if (first){ st.veh = first.id; render(); scrollVars(); } return; }
@@ -1005,7 +1011,7 @@ body{background:#fff; color:var(--text);}
     if (d.mil){ st.mil = d.mil; render(); return; }
     if (d.dep !== undefined){ st.dep = +d.dep; render(); return; }
     if (d.pre !== undefined){ st.pre = +d.pre; render(); return; }
-    if (b.id === 'copyBtn') copy(summary(), '견적 요약을 복사했습니다');
+    if (b.id === 'copyBtn'){ toastAt = b; copy(summary(), '견적 요약을 복사했습니다'); }
   });
   function start(d){
     if (!d || !d.vehicles || !d.vehicles.length) return fail();
